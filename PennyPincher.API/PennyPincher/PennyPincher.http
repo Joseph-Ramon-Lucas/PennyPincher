@@ -1,0 +1,6 @@
+@PennyPincher_HostAddress = http://localhost:5187
+
+GET {{PennyPincher_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\gert1\\Documents\\Code_Projects\\PennyPincher\\PennyPincher.API\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{CC7B3D16-0F83-43FD-A080-1AB6826367A8}|PennyPincher\\PennyPincher.csproj|c:\\users\\gert1\\documents\\code_projects\\pennypincher\\pennypincher.api\\pennypincher\\controllers\\moneymanagementcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC7B3D16-0F83-43FD-A080-1AB6826367A8}|PennyPincher\\PennyPincher.csproj|solutionrelative:pennypincher\\controllers\\moneymanagementcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC7B3D16-0F83-43FD-A080-1AB6826367A8}|PennyPincher\\PennyPincher.csproj|c:\\users\\gert1\\documents\\code_projects\\pennypincher\\pennypincher.api\\pennypincher\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC7B3D16-0F83-43FD-A080-1AB6826367A8}|PennyPincher\\PennyPincher.csproj|solutionrelative:pennypincher\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC7B3D16-0F83-43FD-A080-1AB6826367A8}|PennyPincher\\PennyPincher.csproj|c:\\users\\gert1\\documents\\code_projects\\pennypincher\\pennypincher.api\\pennypincher\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{CC7B3D16-0F83-43FD-A080-1AB6826367A8}|PennyPincher\\PennyPincher.csproj|solutionrelative:pennypincher\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MoneyManagementController.cs",
+              "DocumentMoniker": "C:\\Users\\gert1\\Documents\\Code_Projects\\PennyPincher\\PennyPincher.API\\PennyPincher\\Controllers\\MoneyManagementController.cs",
+              "RelativeDocumentMoniker": "PennyPincher\\Controllers\\MoneyManagementController.cs",
+              "ToolTip": "C:\\Users\\gert1\\Documents\\Code_Projects\\PennyPincher\\PennyPincher.API\\PennyPincher\\Controllers\\MoneyManagementController.cs",
+              "RelativeToolTip": "PennyPincher\\Controllers\\MoneyManagementController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-12T02:22:53.069Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\gert1\\Documents\\Code_Projects\\PennyPincher\\PennyPincher.API\\PennyPincher\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "PennyPincher\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\gert1\\Documents\\Code_Projects\\PennyPincher\\PennyPincher.API\\PennyPincher\\Properties\\launchSettings.json",
+              "RelativeToolTip": "PennyPincher\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABoAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-12-12T02:12:41.305Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "WeatherForecastController.cs",
+              "DocumentMoniker": "C:\\Users\\gert1\\Documents\\Code_Projects\\PennyPincher\\PennyPincher.API\\PennyPincher\\Controllers\\WeatherForecastController.cs",
+              "RelativeDocumentMoniker": "PennyPincher\\Controllers\\WeatherForecastController.cs",
+              "ToolTip": "C:\\Users\\gert1\\Documents\\Code_Projects\\PennyPincher\\PennyPincher.API\\PennyPincher\\Controllers\\WeatherForecastController.cs",
+              "RelativeToolTip": "PennyPincher\\Controllers\\WeatherForecastController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-12T02:08:50.829Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
