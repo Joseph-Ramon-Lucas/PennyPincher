@@ -55,5 +55,22 @@ namespace PennyPincher.Controllers
             }
         }
 
+        [HttpGet("status")]
+        public string status()
+        {
+            double liabilities = expense_food + expense_living + expense_living;
+            double net = income - liabilities;
+            if(income <= liabilities)
+            {
+                return ("Uh oh, you're running out of money.\n " +
+                    "Currently, you have $" + income + " total income \n" +
+                    "and $" + liabilities + " total liabilities");
+            }
+            else
+            {
+                return ("You're currently taking home $" + net);
+            }
+        }
+
     }
 }
