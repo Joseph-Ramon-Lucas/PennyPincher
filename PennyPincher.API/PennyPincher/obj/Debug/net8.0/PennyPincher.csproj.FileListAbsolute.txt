@@ -34,3 +34,4 @@ C:\Users\gert1\Documents\Code_Projects\PennyPincher\PennyPincher.API\PennyPinche
 C:\Users\gert1\Documents\Code_Projects\PennyPincher\PennyPincher.API\PennyPincher\obj\Debug\net8.0\PennyPincher.pdb
 C:\Users\gert1\Documents\Code_Projects\PennyPincher\PennyPincher.API\PennyPincher\obj\Debug\net8.0\PennyPincher.genruntimeconfig.cache
 C:\Users\gert1\Documents\Code_Projects\PennyPincher\PennyPincher.API\PennyPincher\obj\Debug\net8.0\ref\PennyPincher.dll
+C:\Users\gert1\Documents\Code_Projects\PennyPincher\PennyPincher.API\PennyPincher\obj\Debug\net8.0\PennyPincher.sourcelink.json
