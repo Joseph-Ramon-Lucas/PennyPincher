@@ -1,10 +1,12 @@
 namespace PennyPincher.Models
 {
-    public enum categoryTypes
+    public enum CategoryTypes
     {
+        Living,
         Utilities, 
         Entertainment,
-        Shopping
+        Shopping,
+        Takeout
     }
     
     public class ItemDto
@@ -13,7 +15,7 @@ namespace PennyPincher.Models
 
         public string Name { get; set; } = string.Empty;
         
-        public categoryTypes Category { get; set; }
+        public CategoryTypes Category { get; set; }
         
         public double Price { get; set; }
     }   
