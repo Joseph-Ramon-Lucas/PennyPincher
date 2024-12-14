@@ -1,29 +1,75 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace PennyPincher.Controllers
 {
     [ApiController]
     [Route("/api/management")]
+
+    
     public class MoneyManagementController : Controller
     {
-        private static List<int> Monies = new List<int>();
+        //defining projected cash flow
+        static double income = 0;
+        static double expense_food = 0;
+        static double expense_living = 0;
+        static double expense_personal = 0;
 
-        // handle:
-        // get money, set money
-        // 
 
-        [HttpGet]
-        public List<int> getMonies()
+
+        [HttpGet("income")]
+        public double getIncome()
         {
-            return Monies;
+            return income;
 
         }
 
-        [HttpPost]
-        public ActionResult addMonies(int ammount)
+        [HttpGet("expenses")]
+        public IEnumerable<double> getExpenses()
         {
-            Monies.Add(ammount);
-            return Ok("Added "+ammount+" of money.");
+            return [expense_food, expense_living, expense_personal];
+        }
+
+        [HttpPost("income")]
+        public ActionResult setIncome(double ammount)
+        {
+            income = ammount;
+            return Ok("Income set to "+ammount+" money.");
+        }
+
+
+        [HttpPost("expenses")]
+        public ActionResult setExpenses(List<double> expenses)
+        {
+            if (expenses != null && expenses.Count > 0)
+            {
+                expense_food = expenses[0];
+                expense_living = expenses[1];
+                expense_personal = expenses[2];
+                //returning with strings for testing
+                return Ok("food: " + expense_food+"\nliving: "+expense_living+ "\npersonal: "+expense_personal);
+            }
+            else
+            {
+                return BadRequest(expenses + " must contain a list of 3 doubles");
+            }
+        }
+
+        [HttpGet("status")]
+        public string status()
+        {
+            double liabilities = expense_food + expense_living + expense_living;
+            double net = income - liabilities;
+            if(income <= liabilities)
+            {
+                return ("Uh oh, you're running out of money.\n " +
+                    "Currently, you have $" + income + " total income \n" +
+                    "and $" + liabilities + " total liabilities");
+            }
+            else
+            {
+                return ("You're currently taking home $" + net);
+            }
         }
 
     }
