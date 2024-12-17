@@ -18,7 +18,7 @@
                     Id = 1,
                     Name = "Income",
                     Description = "Salaried from Work",
-                    Ammount = (70000/12),
+                    Amount = (70000/12),
                     Flow = FlowTypes.income
 
                 }, 
@@ -26,21 +26,21 @@
                 {
                     Id = 2,
                     Name = "Apartment Rent",
-                    Ammount = 1200,
+                    Amount = 1200,
                     Flow = FlowTypes.expense,
                 },
                 new CashFlowDto()
                 {
                     Id = 3,
                     Name = "Groceries",
-                    Ammount = 5000,
+                    Amount = 5000,
                     Flow = FlowTypes.expense,
                 },
                 new CashFlowDto()
                 {
                     Id = 4,
                     Name = "Subscriptions",
-                    Ammount= 100,
+                    Amount= 100,
                     Description = "Netflix, Spotify, UberOne",
                     Flow = FlowTypes.expense,
                 },
@@ -48,7 +48,7 @@
                 {
                     Id = 5,
                     Name = "Stocks",
-                    Ammount = 40,
+                    Amount = 40,
                     Description = "Dividends return",
                     Flow = FlowTypes.income,
                 }

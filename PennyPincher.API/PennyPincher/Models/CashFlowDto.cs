@@ -12,7 +12,7 @@ namespace PennyPincher.Models
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
         // assume money is measured by a monthly basis
-        public double Ammount { get; set; }
+        public double Amount { get; set; }
         public FlowTypes Flow { get; set; }
 
     }

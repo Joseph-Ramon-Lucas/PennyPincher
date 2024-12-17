@@ -30,22 +30,21 @@ namespace PennyPincher.Controllers
             }
         }
 
-        [HttpGet("{cashFlowID}", Name = "GetFlow")]
-        public ActionResult<CashFlowDto> GetFlow(int cashFlowID)
+        [HttpGet("{targetCashFlowID}", Name = "GetFlow")]
+        public ActionResult<CashFlowDto> GetFlow(int targetCashFlowID)
         {
-            int cashFlowCount = CashFlowDataStore.CurrentCashFlow.CashFlowsList.Count();
+            List<CashFlowDto> CFList = CashFlowDataStore.CurrentCashFlow.CashFlowsList;
+            int cashFlowCount = CFList.Count();
             if (cashFlowCount == 0)
             {
                 return NotFound("no items in CashFlow");
             }
-            for (int i = 1; i<=cashFlowCount; i++)
+            int pos = CFList.FindIndex(f => f.Id == targetCashFlowID);
+
+            if (pos >= 0)
             {
-                if (i == cashFlowID)
-                {
-                    return Ok(CashFlowDataStore.CurrentCashFlow.CashFlowsList[i-1]);
-                }
+                return Ok(CFList[pos]);
             }
-            //item not found
             return NotFound("Item not found :(");
         }
         
