@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PennyPincher.Models;
 using System.Text.Json;
 
 namespace PennyPincher.Controllers
@@ -9,68 +10,50 @@ namespace PennyPincher.Controllers
     
     public class MoneyManagementController : Controller
     {
-        //defining projected cash flow
-        static double income = 0;
-        static double expense_food = 0;
-        static double expense_living = 0;
-        static double expense_personal = 0;
 
-
-
-        [HttpGet("income")]
-        public double getIncome()
-        {
-            return income;
-
+        [HttpPost]
+        public ActionResult<CashFlowDto> CreateItem(CashFlowDto cashFlow) {
+            CashFlowDataStore.CurrentCashFlow.CashFlowsList.Add(cashFlow);
+            return Ok(cashFlow);
         }
 
-        [HttpGet("expenses")]
-        public IEnumerable<double> getExpenses()
-        {
-            return [expense_food, expense_living, expense_personal];
-        }
-
-        [HttpPost("income")]
-        public ActionResult setIncome(double ammount)
-        {
-            income = ammount;
-            return Ok("Income set to "+ammount+" money.");
-        }
-
-
-        [HttpPost("expenses")]
-        public ActionResult setExpenses(List<double> expenses)
-        {
-            if (expenses != null && expenses.Count > 0)
+        [HttpGet]
+        public ActionResult<List<CashFlowDto>> GetAllItems() {
+            int currentFlowCount = CashFlowDataStore.CurrentCashFlow.CashFlowsList.Count;
+            if (currentFlowCount == 0)
             {
-                expense_food = expenses[0];
-                expense_living = expenses[1];
-                expense_personal = expenses[2];
-                //returning with strings for testing
-                return Ok("food: " + expense_food+"\nliving: "+expense_living+ "\npersonal: "+expense_personal);
+                return Ok("No Cash Flow added yet");
             }
             else
             {
-                return BadRequest(expenses + " must contain a list of 3 doubles");
-            }
-        }
+                List<CashFlowDto> flows = new List<CashFlowDto>();
+                for (int i = 0; i<currentFlowCount; i++)
+                {
+                    flows.Add(CashFlowDataStore.CurrentCashFlow.CashFlowsList[i]);
+                }
 
-        [HttpGet("status")]
-        public string status()
-        {
-            double liabilities = expense_food + expense_living + expense_living;
-            double net = income - liabilities;
-            if(income <= liabilities)
-            {
-                return ("Uh oh, you're running out of money.\n " +
-                    "Currently, you have $" + income + " total income \n" +
-                    "and $" + liabilities + " total liabilities");
-            }
-            else
-            {
-                return ("You're currently taking home $" + net);
+                return Ok(flows);
             }
         }
+        
+
+
+        //[HttpGet("status")]
+        //public ActionResult<string> status()
+        //{
+        //    double liabilities = expense_food + expense_living + expense_living;
+        //    double net = income - liabilities;
+        //    if(income <= liabilities)
+        //    {
+        //        return Ok("Uh oh, you're running out of money.\n " +
+        //            "Currently, you have $" + income + " total income \n" +
+        //            "and $" + liabilities + " total liabilities");
+        //    }
+        //    else
+        //    {
+        //        return Ok("You're currently taking home $" + net);
+        //    }
+        //}
 
     }
 }
