@@ -21,7 +21,7 @@
                     Amount = (70000/12),
                     Flow = FlowTypes.income
 
-                }, 
+                },
                 new CashFlowDto()
                 {
                     Id = 2,

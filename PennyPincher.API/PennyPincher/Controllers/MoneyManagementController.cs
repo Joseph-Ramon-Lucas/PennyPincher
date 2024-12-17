@@ -18,11 +18,31 @@ namespace PennyPincher.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<CashFlowDto>> GetAllFlows() {
-            int currentFlowCount = CashFlowDataStore.CurrentCashFlow.CashFlowsList.Count;
+        public ActionResult<List<CashFlowDto>> GetAllFlows(FlowTypes? targetFlowType) 
+        {
+            List<CashFlowDto> CFList = CashFlowDataStore.CurrentCashFlow.CashFlowsList;
+            int currentFlowCount = CFList.Count;
+            List<CashFlowDto> CFFiltered= new List<CashFlowDto>();
             if (currentFlowCount == 0)
             {
                 return Ok("No Cash Flow added yet");
+
+            }
+            if (targetFlowType != null)
+            {
+                CFList.ForEach(c =>
+                {
+                    if (c.Flow.Equals(targetFlowType))
+                    {
+                        CFFiltered.Add(c);
+                    } 
+                } );
+
+                if (CFFiltered.Count <= 0)
+                {
+                    return NotFound("No items were found for this CashFlow type");
+                }
+                return Ok(CFFiltered);
             }
             else
             {
