@@ -7,18 +7,18 @@ namespace PennyPincher.Controllers
     [ApiController]
     [Route("/api/management")]
 
-    
+
     public class MoneyManagementController : Controller
     {
 
         [HttpPost]
-        public ActionResult<CashFlowDto> CreateItem(CashFlowDto cashFlow) {
+        public ActionResult<CashFlowDto> CreateFlow(CashFlowDto cashFlow) {
             CashFlowDataStore.CurrentCashFlow.CashFlowsList.Add(cashFlow);
             return Ok(cashFlow);
         }
 
         [HttpGet]
-        public ActionResult<List<CashFlowDto>> GetAllItems() {
+        public ActionResult<List<CashFlowDto>> GetAllFlows() {
             int currentFlowCount = CashFlowDataStore.CurrentCashFlow.CashFlowsList.Count;
             if (currentFlowCount == 0)
             {
@@ -26,14 +26,27 @@ namespace PennyPincher.Controllers
             }
             else
             {
-                List<CashFlowDto> flows = new List<CashFlowDto>();
-                for (int i = 0; i<currentFlowCount; i++)
-                {
-                    flows.Add(CashFlowDataStore.CurrentCashFlow.CashFlowsList[i]);
-                }
-
-                return Ok(flows);
+                return Ok(CashFlowDataStore.CurrentCashFlow.CashFlowsList);
             }
+        }
+
+        [HttpGet("{cashFlowID}", Name = "GetFlow")]
+        public ActionResult<CashFlowDto> GetFlow(int cashFlowID)
+        {
+            int cashFlowCount = CashFlowDataStore.CurrentCashFlow.CashFlowsList.Count();
+            if (cashFlowCount == 0)
+            {
+                return NotFound("no items in CashFlow");
+            }
+            for (int i = 1; i<=cashFlowCount; i++)
+            {
+                if (i == cashFlowID)
+                {
+                    return Ok(CashFlowDataStore.CurrentCashFlow.CashFlowsList[i-1]);
+                }
+            }
+            //item not found
+            return NotFound("Item not found :(");
         }
         
 
