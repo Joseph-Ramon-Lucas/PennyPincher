@@ -14,7 +14,7 @@ namespace PennyPincher.Controllers
 
         [HttpPost]
         public ActionResult<CashFlowDto> CreateFlow(CashFlowDto cashFlow) {
-            CashFlowDataStore.CurrentCashFlow.CashFlowsList.Add(cashFlow);
+            CFList.Add(cashFlow);
             return Ok(cashFlow);
         }
 
@@ -31,13 +31,7 @@ namespace PennyPincher.Controllers
             }
             if (targetFlowType != null)
             {
-                CFList.ForEach(c =>
-                {
-                    if (c.Flow.Equals(targetFlowType))
-                    {
-                        CFFiltered.Add(c);
-                    } 
-                } );
+                CFFiltered = CFList.Where(c => c.Flow.Equals(targetFlowType)).ToList();
 
                 if (CFFiltered.Count <= 0)
                 {
@@ -50,6 +44,21 @@ namespace PennyPincher.Controllers
                 return Ok(CashFlowDataStore.CurrentCashFlow.CashFlowsList);
             }
         }
+
+        [HttpPut]
+        public ActionResult<CashFlowDto> UpdateFlow(CashFlowDto newCashFlow)
+        {
+            //when they both equal the same id, replace
+
+            CashFlowDto? CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == newCashFlow.Id);
+            if (CFIdMatch == null)
+            {
+                return BadRequest($"Could not find Cash Flow {newCashFlow.Name} to update");
+            }
+            CFList[CFIdMatch.Id-1] = newCashFlow;
+            return Ok($"Updated {newCashFlow.Name}");
+        }
+
 
         [HttpGet("{targetCashFlowID}", Name = "GetFlow")]
         public ActionResult<CashFlowDto> GetFlow(int targetCashFlowID)
@@ -94,21 +103,6 @@ namespace PennyPincher.Controllers
             return Ok(statusUpdate);
         }
 
-        //public ActionResult<string> status()
-        //{
-        //    double liabilities = expense_food + expense_living + expense_living;
-        //    double net = income - liabilities;
-        //    if(income <= liabilities)
-        //    {
-        //        return Ok("Uh oh, you're running out of money.\n " +
-        //            "Currently, you have $" + income + " total income \n" +
-        //            "and $" + liabilities + " total liabilities");
-        //    }
-        //    else
-        //    {
-        //        return Ok("You're currently taking home $" + net);
-        //    }
-        //}
 
     }
 }
