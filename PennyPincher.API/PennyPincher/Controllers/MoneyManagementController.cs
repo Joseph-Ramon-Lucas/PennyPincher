@@ -10,6 +10,7 @@ namespace PennyPincher.Controllers
 
     public class MoneyManagementController : Controller
     {
+        List<CashFlowDto> CFList = CashFlowDataStore.CurrentCashFlow.CashFlowsList;
 
         [HttpPost]
         public ActionResult<CashFlowDto> CreateFlow(CashFlowDto cashFlow) {
@@ -20,10 +21,10 @@ namespace PennyPincher.Controllers
         [HttpGet]
         public ActionResult<List<CashFlowDto>> GetAllFlows(FlowTypes? targetFlowType) 
         {
-            List<CashFlowDto> CFList = CashFlowDataStore.CurrentCashFlow.CashFlowsList;
-            int currentFlowCount = CFList.Count;
+
+            int cashFlowCount = CFList.Count;
             List<CashFlowDto> CFFiltered= new List<CashFlowDto>();
-            if (currentFlowCount == 0)
+            if (cashFlowCount == 0)
             {
                 return Ok("No Cash Flow added yet");
 
@@ -53,7 +54,6 @@ namespace PennyPincher.Controllers
         [HttpGet("{targetCashFlowID}", Name = "GetFlow")]
         public ActionResult<CashFlowDto> GetFlow(int targetCashFlowID)
         {
-            List<CashFlowDto> CFList = CashFlowDataStore.CurrentCashFlow.CashFlowsList;
             int cashFlowCount = CFList.Count();
             if (cashFlowCount == 0)
             {
@@ -67,10 +67,33 @@ namespace PennyPincher.Controllers
             }
             return NotFound("Item not found :(");
         }
-        
 
 
-        //[HttpGet("status")]
+
+        [HttpGet("status")]
+        public ActionResult<string> status()
+        {
+
+            double incomes = CFList.FindAll(e => e.Flow.Equals(FlowTypes.income)).Sum(e => e.Amount);
+            double liabilities= CFList.FindAll(e => e.Flow.Equals(FlowTypes.expense)).Sum(e => e.Amount);
+            double netIncome = incomes - liabilities;
+
+
+            string statusUpdate = string.Empty;
+            if (incomes > liabilities) {
+
+                statusUpdate = $"You have {incomes} total income and {liabilities} total liabilities.\n" +
+                                $"You're currently taking home {netIncome}";
+            }
+            else
+            {
+                statusUpdate = $"Uh oh, you're running out of money.\n" +
+                               $"Currently, you have {incomes} total income \n" +
+                               $"and {liabilities} total liabilities";
+            }
+            return Ok(statusUpdate);
+        }
+
         //public ActionResult<string> status()
         //{
         //    double liabilities = expense_food + expense_living + expense_living;
