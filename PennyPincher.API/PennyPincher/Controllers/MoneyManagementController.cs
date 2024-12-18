@@ -7,7 +7,8 @@ namespace PennyPincher.Controllers
     [ApiController]
     [Route("/api/management")]
 
-
+    // This controller is meant to model the projected cash flows you would like to acheive given incomes and expenses
+    // Model hypotheticals or goals and how they align with your current rate of spending in LogHistoryController
     public class MoneyManagementController : Controller
     {
         List<CashFlowDto> CFList = CashFlowDataStore.CurrentCashFlow.CashFlowsList;
@@ -22,13 +23,8 @@ namespace PennyPincher.Controllers
         public ActionResult<List<CashFlowDto>> GetAllFlows(FlowTypes? targetFlowType) 
         {
 
-            int cashFlowCount = CFList.Count;
             List<CashFlowDto> CFFiltered= new List<CashFlowDto>();
-            if (cashFlowCount == 0)
-            {
-                return Ok("No Cash Flow added yet");
 
-            }
             if (targetFlowType != null)
             {
                 CFFiltered = CFList.Where(c => c.Flow.Equals(targetFlowType)).ToList();
@@ -45,28 +41,14 @@ namespace PennyPincher.Controllers
             }
         }
 
-        [HttpPut]
-        public ActionResult<CashFlowDto> UpdateFlow(CashFlowDto newCashFlow)
-        {
-            //when they both equal the same id, replace
-
-            CashFlowDto? CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == newCashFlow.Id);
-            if (CFIdMatch == null)
-            {
-                return BadRequest($"Could not find Cash Flow {newCashFlow.Name} to update");
-            }
-            CFList[CFIdMatch.Id-1] = newCashFlow;
-            return Ok($"Updated {newCashFlow.Name}");
-        }
 
 
         [HttpGet("{targetCashFlowID}", Name = "GetFlow")]
         public ActionResult<CashFlowDto> GetFlow(int targetCashFlowID)
         {
-            int cashFlowCount = CFList.Count();
-            if (cashFlowCount == 0)
+            if (CFList.Count() == 0)
             {
-                return NotFound("no items in CashFlow");
+                return NotFound("No items in Cash Flow");
             }
             int pos = CFList.FindIndex(f => f.Id == targetCashFlowID);
 
@@ -75,6 +57,43 @@ namespace PennyPincher.Controllers
                 return Ok(CFList[pos]);
             }
             return NotFound("Item not found :(");
+        }
+
+        [HttpPut]
+        public ActionResult<CashFlowDto> UpdateFlow(CashFlowDto newCashFlow)
+        {
+            //when they both equal the same id, replace
+            if (CFList.Count() == 0)
+            {
+                return NotFound("No items in Cash Flow");
+            }
+            CashFlowDto? CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == newCashFlow.Id);
+            if (CFIdMatch == null)
+            {
+                return BadRequest($"Could not find Cash Flow {newCashFlow.Name} to update");
+            }
+            CFList[CFIdMatch.Id-1] = newCashFlow;
+            return Ok($"Updated Entry with {newCashFlow.Name}");
+        }
+
+        [HttpDelete]
+        public ActionResult<CashFlowDto> DeleteFlow(int targetCashFlowID)
+        {
+
+            if (CFList.Count() == 0)
+            {
+                return NotFound("No items in Cash Flow");
+            }
+            CashFlowDto? CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == targetCashFlowID);
+            if (CFIdMatch == null)
+            {
+                return BadRequest($"Could not find Cash Flow with id {targetCashFlowID} to delete");
+            }
+
+            CFList.Remove(CFIdMatch);
+            return Ok(CFList);
+            
+
         }
 
 
