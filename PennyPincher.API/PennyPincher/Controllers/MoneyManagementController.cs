@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PennyPincher.Models;
+using System.Linq;
 using System.Text.Json;
 
 namespace PennyPincher.Controllers
@@ -103,8 +104,25 @@ namespace PennyPincher.Controllers
         {
 
             double incomes = CFList.FindAll(e => e.Flow.Equals(FlowTypes.income)).Sum(e => e.Amount);
-            double liabilities= CFList.FindAll(e => e.Flow.Equals(FlowTypes.expense)).Sum(e => e.Amount);
+            double liabilities = CFList.FindAll(e => e.Flow.Equals(FlowTypes.expense)).Sum(e => e.Amount);
             double netIncome = incomes - liabilities;
+            double netIncomeRatio = Math.Round((liabilities / incomes), 4) * 100;
+            string mostCostlyName = CFList
+                .Where(e => e.Flow.Equals(FlowTypes.expense))
+                .OrderByDescending(e => e.Amount)
+                .Select(e => e.Name)
+                .FirstOrDefault() ?? "nothing at the moment";
+
+            double mostCostlyAmount = CFList
+                .Where(e => e.Flow.Equals(FlowTypes.expense))
+                .OrderByDescending(e => e.Amount)
+                .Select(e => e.Amount)
+                .FirstOrDefault<double>();
+
+            //double mostCostlyAmount = CFList
+            //    .Where(e => e.Flow.Equals(FlowTypes.expense))
+            //    .DefaultIfEmpty(new CashFlowDto { Amount=0})
+            //    .Max(e => e.Amount);
 
 
             string statusUpdate = string.Empty;
@@ -119,6 +137,9 @@ namespace PennyPincher.Controllers
                                $"Currently, you have {incomes} total income \n" +
                                $"and {liabilities} total liabilities";
             }
+            string ratioText = ($"\nYou're currently using {netIncomeRatio}% of your earnings. {Math.Round((mostCostlyAmount/incomes),4)*100}% of your earnings is going to {mostCostlyName}");
+
+            statusUpdate = statusUpdate+ ratioText;
             return Ok(statusUpdate);
         }
 
