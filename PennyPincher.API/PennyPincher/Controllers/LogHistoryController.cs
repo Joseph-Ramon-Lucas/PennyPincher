@@ -1,5 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using PennyPincher.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace PennyPincher.Controllers
 {
@@ -37,35 +38,66 @@ namespace PennyPincher.Controllers
             return Ok(foundItem);
         }
 
-        // TODO: Issue with updating item when following endpoint is hit. Need to investigate
-        [HttpPut]
-        public ActionResult<List<ItemDto>> UpdateItem(ItemDto newItem)
+        [HttpPut("{itemId}")]
+        public ActionResult UpdateItem(int itemId, ItemForUpdateDto itemWithUpdate)
         {
-            var itemToUpdate = ItemsDataStore.Current.Items.FirstOrDefault(i => i.Id == newItem.Id);
-            if (itemToUpdate == null)
+            ItemDto itemFromStore = ItemsDataStore.Current.Items.FirstOrDefault(i => i.Id == itemId);
+            if (itemFromStore == null)
             {
-                return NotFound("Item not found");
+                return NotFound();
             }
             
-            // Replace same item in data store with new item for update
-            // TODO: Is there a more optimal way to update items in a list here?
-            var place = ItemsDataStore.Current.Items.FindIndex(i => i.Id == newItem.Id);
-            ItemsDataStore.Current.Items[place] = newItem;
+            itemFromStore.Name = itemWithUpdate.Name; 
+            itemFromStore.Price = itemWithUpdate.Price;
             
-            return Ok(ItemsDataStore.Current.Items);
+            return NoContent();
         }
 
-        // TODO: Issue with updating item when following endpoint is hit. Need to investigate
-        [HttpDelete]
+        [HttpPatch("{itemId}")]
+        public ActionResult PartiallyUpdateItem(int itemId, JsonPatchDocument<ItemForUpdateDto> patchDocument)
+        {
+            ItemDto itemFromStore = ItemsDataStore.Current.Items.FirstOrDefault(i => i.Id == itemId);
+            if (itemFromStore == null)
+            {
+                return NotFound();
+            }
+
+            ItemForUpdateDto itemToPatch = new ItemForUpdateDto()
+            {
+                Name = itemFromStore.Name,
+                Price = itemFromStore.Price
+                // Category = itemFromStore.Category, TODO: Should we make Category field optional? User can have default input as null
+            };
+            
+            patchDocument.ApplyTo(itemToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!TryValidateModel(itemToPatch))
+            {
+                return BadRequest(ModelState);  
+            }
+            
+            itemFromStore.Name = itemToPatch.Name;
+            itemFromStore.Price = itemToPatch.Price;
+            
+            return NoContent();   
+        }
+        
+        [HttpDelete("{itemId}")]
         public ActionResult<List<ItemDto>> DeleteItem(ItemDto itemToDelete)
         {
-            ItemsDataStore.Current.Items.Remove(itemToDelete);
-            if (ItemsDataStore.Current.Items.Contains(itemToDelete))
+            ItemDto item = ItemsDataStore.Current.Items.FirstOrDefault(i => i.Id == itemToDelete.Id);
+            if (item == null)
             {
-                return NotFound("Error attempting to delete item");
-            }   
+                return NotFound();
+            }
             
-            return Ok(ItemsDataStore.Current.Items);
+            ItemsDataStore.Current.Items.Remove(item);
+            return NoContent();
         }
     }    
 }
