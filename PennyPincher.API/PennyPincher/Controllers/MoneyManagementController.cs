@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PennyPincher.Models;
+using System.Linq;
 using System.Text.Json;
 
 namespace PennyPincher.Controllers
@@ -6,71 +8,141 @@ namespace PennyPincher.Controllers
     [ApiController]
     [Route("/api/management")]
 
-    
+    // This controller is meant to model the projected cash flows you would like to acheive given incomes and expenses
+    // Model hypotheticals or goals and how they align with your current rate of spending in LogHistoryController
     public class MoneyManagementController : Controller
     {
-        //defining projected cash flow
-        static double income = 0;
-        static double expense_food = 0;
-        static double expense_living = 0;
-        static double expense_personal = 0;
+        List<CashFlowDto> CFList = CashFlowDataStore.CurrentCashFlow.CashFlowsList;
 
-
-
-        [HttpGet("income")]
-        public double getIncome()
-        {
-            return income;
-
+        [HttpPost]
+        public ActionResult<CashFlowDto> CreateFlow(CashFlowDto cashFlow) {
+            CFList.Add(cashFlow);
+            return Ok(cashFlow);
         }
 
-        [HttpGet("expenses")]
-        public IEnumerable<double> getExpenses()
+        [HttpGet]
+        public ActionResult<List<CashFlowDto>> GetAllFlows(FlowTypes? targetFlowType) 
         {
-            return [expense_food, expense_living, expense_personal];
-        }
 
-        [HttpPost("income")]
-        public ActionResult setIncome(double ammount)
-        {
-            income = ammount;
-            return Ok("Income set to "+ammount+" money.");
-        }
+            List<CashFlowDto> CFFiltered= new List<CashFlowDto>();
 
-
-        [HttpPost("expenses")]
-        public ActionResult setExpenses(List<double> expenses)
-        {
-            if (expenses != null && expenses.Count > 0)
+            if (targetFlowType != null)
             {
-                expense_food = expenses[0];
-                expense_living = expenses[1];
-                expense_personal = expenses[2];
-                //returning with strings for testing
-                return Ok("food: " + expense_food+"\nliving: "+expense_living+ "\npersonal: "+expense_personal);
+                CFFiltered = CFList.Where(c => c.Flow.Equals(targetFlowType)).ToList();
+
+                if (CFFiltered.Count <= 0)
+                {
+                    return NotFound("No items were found for this CashFlow type");
+                }
+                return Ok(CFFiltered);
             }
             else
             {
-                return BadRequest(expenses + " must contain a list of 3 doubles");
+                return Ok(CashFlowDataStore.CurrentCashFlow.CashFlowsList);
             }
         }
+
+
+
+        [HttpGet("{targetCashFlowID}", Name = "GetFlow")]
+        public ActionResult<CashFlowDto> GetFlow(int targetCashFlowID)
+        {
+            if (CFList.Count() == 0)
+            {
+                return NotFound("No items in Cash Flow");
+            }
+            int pos = CFList.FindIndex(f => f.Id == targetCashFlowID);
+
+            if (pos >= 0)
+            {
+                return Ok(CFList[pos]);
+            }
+            return NotFound("Item not found :(");
+        }
+
+        [HttpPut]
+        public ActionResult<CashFlowDto> UpdateFlow(CashFlowDto newCashFlow)
+        {
+            //when they both equal the same id, replace
+            if (CFList.Count() == 0)
+            {
+                return NotFound("No items in Cash Flow");
+            }
+            CashFlowDto? CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == newCashFlow.Id);
+            if (CFIdMatch == null)
+            {
+                return BadRequest($"Could not find Cash Flow {newCashFlow.Name} to update");
+            }
+            CFList[CFIdMatch.Id-1] = newCashFlow;
+            return Ok($"Updated Entry with {newCashFlow.Name}");
+        }
+
+        [HttpDelete]
+        public ActionResult<CashFlowDto> DeleteFlow(int targetCashFlowID)
+        {
+
+            if (CFList.Count() == 0)
+            {
+                return NotFound("No items in Cash Flow");
+            }
+            CashFlowDto? CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == targetCashFlowID);
+            if (CFIdMatch == null)
+            {
+                return BadRequest($"Could not find Cash Flow with id {targetCashFlowID} to delete");
+            }
+
+            CFList.Remove(CFIdMatch);
+            return Ok(CFList);
+            
+
+        }
+
+
 
         [HttpGet("status")]
-        public string status()
+        public ActionResult<string> status()
         {
-            double liabilities = expense_food + expense_living + expense_living;
-            double net = income - liabilities;
-            if(income <= liabilities)
-            {
-                return ("Uh oh, you're running out of money.\n " +
-                    "Currently, you have $" + income + " total income \n" +
-                    "and $" + liabilities + " total liabilities");
+
+            double incomes = CFList.FindAll(e => e.Flow.Equals(FlowTypes.income)).Sum(e => e.Amount);
+            double liabilities = CFList.FindAll(e => e.Flow.Equals(FlowTypes.expense)).Sum(e => e.Amount);
+            double netIncome = incomes - liabilities;
+            double netIncomeRatio = Math.Round((liabilities / incomes), 4) * 100;
+            string mostCostlyName = CFList
+                .Where(e => e.Flow.Equals(FlowTypes.expense))
+                .OrderByDescending(e => e.Amount)
+                .Select(e => e.Name)
+                .FirstOrDefault() ?? "nothing at the moment";
+
+            double mostCostlyAmount = CFList
+                .Where(e => e.Flow.Equals(FlowTypes.expense))
+                .OrderByDescending(e => e.Amount)
+                .Select(e => e.Amount)
+                .FirstOrDefault<double>();
+
+            //double mostCostlyAmount = CFList
+            //    .Where(e => e.Flow.Equals(FlowTypes.expense))
+            //    .DefaultIfEmpty(new CashFlowDto { Amount=0})
+            //    .Max(e => e.Amount);
+
+
+            string statusUpdate = string.Empty;
+            if (incomes > liabilities) {
+
+                statusUpdate = $"You have {incomes} total income and {liabilities} total liabilities.\n" +
+                                $"You're currently taking home {netIncome}";
             }
             else
             {
-                return ("You're currently taking home $" + net);
+                statusUpdate = $"Uh oh, you're running out of money.\n" +
+                               $"Currently, you have {incomes} total income \n" +
+                               $"and {liabilities} total liabilities";
             }
+            string ratioText = ($"\nYou're currently using {netIncomeRatio}% of your earnings. {Math.Round((mostCostlyAmount/incomes),4)*100}% of your earnings is going to {mostCostlyName}");
+
+            statusUpdate = statusUpdate+ ratioText;
+            return Ok(statusUpdate);
         }
+
 
     }
 }
