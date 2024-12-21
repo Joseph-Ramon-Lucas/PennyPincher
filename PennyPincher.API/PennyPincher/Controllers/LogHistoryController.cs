@@ -49,6 +49,7 @@ namespace PennyPincher.Controllers
             
             itemFromStore.Name = itemWithUpdate.Name; 
             itemFromStore.Price = itemWithUpdate.Price;
+            itemFromStore.Category = itemWithUpdate.Category;
             
             return NoContent();
         }
@@ -66,7 +67,6 @@ namespace PennyPincher.Controllers
             {
                 Name = itemFromStore.Name,
                 Price = itemFromStore.Price
-                // Category = itemFromStore.Category, TODO: Should we make Category field optional? User can have default input as null
             };
             
             patchDocument.ApplyTo(itemToPatch, ModelState);

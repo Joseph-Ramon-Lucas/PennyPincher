@@ -2,11 +2,12 @@ namespace PennyPincher.Models
 {
     public enum CategoryTypes
     {
-        Living,
-        Utilities, 
-        Entertainment,
-        Shopping,
-        Takeout
+        None = 0,
+        Living = 1,
+        Utilities = 2, 
+        Entertainment = 3,
+        Shopping = 4,
+        Takeout = 5
     }
     
     public class ItemDto
