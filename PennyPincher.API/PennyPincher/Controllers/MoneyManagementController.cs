@@ -63,7 +63,6 @@ namespace PennyPincher.Controllers
         [HttpPut]
         public ActionResult<CashFlowDto> UpdateFlow(CashFlowDto newCashFlow)
         {
-            //when they both equal the same id, replace
             if (CFList.Count() == 0)
             {
                 return NotFound("No items in Cash Flow");
@@ -76,6 +75,18 @@ namespace PennyPincher.Controllers
             CFList[CFIdMatch.Id-1] = newCashFlow;
             return Ok($"Updated Entry with {newCashFlow.Name}");
         }
+
+        [HttpPatch("{id}")]
+        public ActionResult<CashFlowPatchDto> PatchFlow(CashFlowPatchDto newCashFlow)
+        {
+            if (CFList.Count() == 0)
+            {
+                return NotFound("No items in Cash Flow");
+            }
+
+
+        }
+
 
         [HttpDelete]
         public ActionResult<CashFlowDto> DeleteFlow(int targetCashFlowID)
