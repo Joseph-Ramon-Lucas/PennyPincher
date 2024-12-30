@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using PennyPincher.Models;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 
 namespace PennyPincher.Controllers
@@ -73,16 +75,34 @@ namespace PennyPincher.Controllers
                 return BadRequest($"Could not find Cash Flow {newCashFlow.Name} to update");
             }
             CFList[CFIdMatch.Id-1] = newCashFlow;
-            return Ok($"Updated Entry with {newCashFlow.Name}");
+            return Ok($"Updated Entry {newCashFlow.Id} with {newCashFlow.Name}");
         }
 
         [HttpPatch("{id}")]
-        public ActionResult<CashFlowPatchDto> PatchFlow(CashFlowPatchDto newCashFlow)
+        public ActionResult<CashFlowPatchDto> PatchFlow(int id, JsonPatchDocument<CashFlowDto> newCashFlow)
         {
             if (CFList.Count() == 0)
             {
                 return NotFound("No items in Cash Flow");
             }
+
+            var CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == id);
+            if (CFIdMatch == null)
+            {
+                return NotFound($"Could not find existing Cash Flow to update");
+            }
+            
+
+            //Apply Patch to existing CF
+
+            newCashFlow.ApplyTo(CFIdMatch);
+
+            return Ok($"Patched Entry with {CFIdMatch}");
+
+
+
+
+
 
 
         }
@@ -130,10 +150,6 @@ namespace PennyPincher.Controllers
                 .Select(e => e.Amount)
                 .FirstOrDefault<double>();
 
-            //double mostCostlyAmount = CFList
-            //    .Where(e => e.Flow.Equals(FlowTypes.expense))
-            //    .DefaultIfEmpty(new CashFlowDto { Amount=0})
-            //    .Max(e => e.Amount);
 
 
             string statusUpdate = string.Empty;
