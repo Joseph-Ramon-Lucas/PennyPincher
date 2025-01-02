@@ -31,7 +31,7 @@ namespace PennyPincher.Controllers
             {
                 List<CashFlowDto> CFFiltered = CFList.Where(c => c.Flow.Equals(targetFlowType)).ToList();
 
-                if (CFFiltered.Count <= 0)
+                if (CFFiltered.Count == 0)
                 {
                     return NotFound("No items were found for this CashFlow type");
                 }
@@ -78,11 +78,11 @@ namespace PennyPincher.Controllers
             }
 
             
-            CFMatch.ForEach(s =>
+            CFMatch.ForEach(target =>
             {
-                s.Name = newCashFlow.Name;
-                s.Description = newCashFlow.Description;
-                s.Flow = newCashFlow.Flow;
+                target.Name = newCashFlow.Name;
+                target.Description = newCashFlow.Description;
+                target.Flow = newCashFlow.Flow;
             });
 
             return Ok($"Updated Entry {targetCashFlowID} with {newCashFlow.Name}");
@@ -119,16 +119,15 @@ namespace PennyPincher.Controllers
             {
                 return NotFound("Cash Flow Item store is empty");
             }
-            var CFIdMatch = CFList.Where(cf => cf.Id == targetCashFlowID).FirstOrDefault();
-            if (CFIdMatch == null)
+            var CFMatch = CFList.Where(cf => cf.Id == targetCashFlowID).FirstOrDefault();
+            if (CFMatch == null)
             {
                 return BadRequest($"Could not find Cash Flow with ID {targetCashFlowID} to delete");
             }
 
-            CFList.Remove(CFIdMatch);
+            CFList.Remove(CFMatch);
             return Ok(CFList);
             
-
         }
 
 
