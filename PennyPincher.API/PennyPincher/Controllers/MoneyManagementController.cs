@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using PennyPincher.Models;
+using System.Data.Common;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
@@ -40,7 +41,7 @@ namespace PennyPincher.Controllers
             }
             else
             {
-                return Ok(CashFlowDataStore.CurrentCashFlow.CashFlowsList);
+                return Ok(CFList);
             }
         }
 
@@ -51,45 +52,57 @@ namespace PennyPincher.Controllers
         {
             if (CFList.Count() == 0)
             {
-                return NotFound("No items in Cash Flow");
+                return NotFound("Cash Flow Item store is empty");
             }
-            int pos = CFList.FindIndex(f => f.Id == targetCashFlowID);
-
-            if (pos >= 0)
+            var CFMatch = CFList.Where(f => f.Id == targetCashFlowID);
+                          
+            if (CFMatch.Count() ==0)
             {
-                return Ok(CFList[pos]);
-            }
+
             return NotFound("Item not found :(");
+            }
+            return Ok(CFMatch);
+           
         }
 
-        [HttpPut]
-        public ActionResult<CashFlowDto> UpdateFlow(CashFlowDto newCashFlow)
+        [HttpPut ("{targetCashFlowID}")]
+        public ActionResult<CashFlowDto> UpdateFlow(int targetCashFlowID, CashFlowUpdateDto newCashFlow)
         {
             if (CFList.Count() == 0)
             {
-                return NotFound("No items in Cash Flow");
+                return NotFound("Cash Flow Item store is empty");
             }
-            CashFlowDto? CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == newCashFlow.Id);
-            if (CFIdMatch == null)
+            List<CashFlowDto> CFFiltered = new List<CashFlowDto>();
+
+            CFFiltered = CFList.Where(f => f.Id == targetCashFlowID).ToList();
+            if (CFFiltered.Count() == 0)
             {
-                return BadRequest($"Could not find Cash Flow {newCashFlow.Name} to update");
+                return BadRequest($"Could not find existing Cash Flow at ID {targetCashFlowID} to update");
             }
-            CFList[CFIdMatch.Id-1] = newCashFlow;
-            return Ok($"Updated Entry {newCashFlow.Id} with {newCashFlow.Name}");
+
+            
+            CFFiltered.ForEach(s =>
+            {
+                s.Name = newCashFlow.Name;
+                s.Description = newCashFlow.Description;
+                s.Flow = newCashFlow.Flow;
+            });
+
+            return Ok($"Updated Entry {targetCashFlowID} with {newCashFlow.Name}");
         }
 
-        [HttpPatch("{id}")]
-        public ActionResult<CashFlowPatchDto> PatchFlow(int id, JsonPatchDocument<CashFlowDto> newCashFlow)
+        [HttpPatch ("{targetCashFlowID}")]
+        public ActionResult<CashFlowUpdateDto> PatchFlow(int targetCashFlowID, JsonPatchDocument<CashFlowDto> newCashFlow)
         {
             if (CFList.Count() == 0)
             {
-                return NotFound("No items in Cash Flow");
+                return NotFound("Cash Flow Item store is empty");
             }
 
-            var CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == id);
+            var CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == targetCashFlowID);
             if (CFIdMatch == null)
             {
-                return NotFound($"Could not find existing Cash Flow to update");
+                return NotFound($"Could not find existing Cash Flow at ID {targetCashFlowID} to update");
             }
             
 
@@ -99,27 +112,21 @@ namespace PennyPincher.Controllers
 
             return Ok($"Patched Entry with {CFIdMatch}");
 
-
-
-
-
-
-
         }
 
 
-        [HttpDelete]
+        [HttpDelete ("{targetCashFlowID}")]
         public ActionResult<CashFlowDto> DeleteFlow(int targetCashFlowID)
         {
 
             if (CFList.Count() == 0)
             {
-                return NotFound("No items in Cash Flow");
+                return NotFound("Cash Flow Item store is empty");
             }
             CashFlowDto? CFIdMatch = CFList.FirstOrDefault(cf => cf.Id == targetCashFlowID);
             if (CFIdMatch == null)
             {
-                return BadRequest($"Could not find Cash Flow with id {targetCashFlowID} to delete");
+                return BadRequest($"Could not find Cash Flow with ID {targetCashFlowID} to delete");
             }
 
             CFList.Remove(CFIdMatch);

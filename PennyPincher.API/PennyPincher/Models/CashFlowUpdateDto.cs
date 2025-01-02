@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace PennyPincher.Models
 {
-    public class CashFlowPatchDto
+    public class CashFlowUpdateDto
     {
         [Required(ErrorMessage = "A name is required for this CashFlow")]
         [StringLength(500, MinimumLength =1, ErrorMessage ="CF Name should be between 1 and 500 characters")]
