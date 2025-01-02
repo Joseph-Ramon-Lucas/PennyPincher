@@ -89,7 +89,7 @@ namespace PennyPincher.Controllers
         }
 
         [HttpPatch ("{targetCashFlowID}")]
-        public ActionResult<CashFlowUpdateDto> PatchFlow(int targetCashFlowID, JsonPatchDocument<CashFlowDto> newCashFlow)
+        public ActionResult<CashFlowUpdateDto> PartiallyUpdateFlow(int targetCashFlowID, JsonPatchDocument<CashFlowUpdateDto> newCashFlow)
         {
             if (CFList.Count() == 0)
             {
