@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.ComponentModel.DataAnnotations;
 
 namespace PennyPincher.Models
@@ -11,6 +12,7 @@ namespace PennyPincher.Models
         [Required(ErrorMessage = "Price is required for item creation")]
         public double Price { get; set; }
         
+        [AllowNull]  
         public CategoryTypes Category { get; set; }
     }
 };

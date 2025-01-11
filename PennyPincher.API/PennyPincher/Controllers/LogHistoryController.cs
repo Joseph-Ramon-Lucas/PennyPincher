@@ -26,6 +26,20 @@ namespace PennyPincher.Controllers
             return Ok(ItemsDataStore.Current.Items);
         }
         
+        [HttpGet("{categoryType}/getcategoryitems")]
+        public ActionResult<List<ItemDto>> GetItemByCategoryType(CategoryTypes categoryType)
+        {
+            List<ItemDto> itemsByCategoryType = new List<ItemDto>();
+            itemsByCategoryType = ItemsDataStore.Current.Items.Where(c => c.Category == categoryType).ToList();
+
+            if (itemsByCategoryType.Count == 0)
+            {
+                return NotFound();  
+            }
+            
+            return Ok(itemsByCategoryType);
+        }
+        
         [HttpGet("{itemId}", Name = "GetItem")]
         public ActionResult<IEnumerable<ItemDto>> GetItem(int itemId)
         {

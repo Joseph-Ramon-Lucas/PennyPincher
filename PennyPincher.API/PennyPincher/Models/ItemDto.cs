@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace PennyPincher.Models
 {
     public enum CategoryTypes
@@ -16,6 +18,7 @@ namespace PennyPincher.Models
 
         public string Name { get; set; } = string.Empty;
         
+        [AllowNull]
         public CategoryTypes Category { get; set; }
         
         public double Price { get; set; }
