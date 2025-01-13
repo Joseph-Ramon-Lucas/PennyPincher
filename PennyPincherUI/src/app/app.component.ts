@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { LoghistoryService } from './loghistory.service';
 
 @Component({
   selector: 'app-root',
@@ -9,4 +10,12 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'PennyPincherUI';
+  logs: any[] = [];
+  logHistoryService = inject(LoghistoryService);
+
+  constructor() {
+    this.logHistoryService.get().subscribe(logs => {
+      this.logs = logs;
+    })
+  }
 }
