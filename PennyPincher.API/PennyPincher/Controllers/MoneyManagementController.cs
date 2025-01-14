@@ -82,6 +82,7 @@ namespace PennyPincher.Controllers
             {
                 target.Name = newCashFlow.Name;
                 target.Description = newCashFlow.Description;
+                target.Amount = newCashFlow.Amount;
                 target.Flow = newCashFlow.Flow;
             });
 
