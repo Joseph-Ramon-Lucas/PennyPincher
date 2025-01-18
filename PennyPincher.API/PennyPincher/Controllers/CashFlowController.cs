@@ -9,11 +9,11 @@ using System.Text.Json;
 namespace PennyPincher.Controllers
 {
     [ApiController]
-    [Route("/api/management")]
+    [Route("/api/cashflow")]
 
     // This controller is meant to model the projected cash flows you would like to acheive given incomes and expenses
     // Model hypotheticals or goals and how they align with your current rate of spending in LogHistoryController
-    public class MoneyManagementController : Controller
+    public class CashFlowController : Controller
     {
         List<CashFlowDto> CFList = CashFlowDataStore.CurrentCashFlow.CashFlowsList;
 
@@ -129,6 +129,17 @@ namespace PennyPincher.Controllers
             CFList.Remove(CFMatch);
             return Ok(CFList);
             
+        }
+
+        [HttpDelete]
+        public ActionResult<CashFlowDto> DeleteAllFlows()
+        {
+            if (CFList.Count() == 0)
+            {
+                return NotFound("Cash Flow Item store is empty");
+            }
+            CFList.Clear();
+            return Ok(CFList);
         }
 
 
