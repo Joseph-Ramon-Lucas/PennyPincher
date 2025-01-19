@@ -8,6 +8,9 @@ namespace PennyPincher.Controllers
 
     public class AnalysisBridgeController : Controller
     {
+
+
+
         [HttpGet("/api/analysis/expenses",Name="getExpenses")]
         public List<CategoryTypes> getExpenseCategoryTypes()
         {
@@ -25,8 +28,8 @@ namespace PennyPincher.Controllers
         public List<CashFlowDto> convertLogToCF(List<ItemDto> loggedItems)
         {
             List<CashFlowDto> CFLogs = new List<CashFlowDto>();
-
             List<CategoryTypes> Expenses = getExpenseCategoryTypes();
+            CFLogs.Clear();
 
             if (loggedItems.Count == 0)
             {
@@ -59,11 +62,16 @@ namespace PennyPincher.Controllers
         {
 
             List<ItemDto> loggedItems = ItemsDataStore.Current.Items;
-            List<CashFlowDto> CFLogs = convertLogToCF(loggedItems);
-            
+            List<CashFlowDto> CFLogs = new List<CashFlowDto>();
+            CFLogs = convertLogToCF(loggedItems);
 
-
-            return Ok(CFLogs);
+            CashFlowDataStore.CurrentCashFlow.CashFlowsList.Clear();
+            CFLogs.ForEach(log =>
+            {
+                CashFlowDataStore.CurrentCashFlow.CashFlowsList.Add(log);
+            });
+            return Created();
         }
+
     }
 }
