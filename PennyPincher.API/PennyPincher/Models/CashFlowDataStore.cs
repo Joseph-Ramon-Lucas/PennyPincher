@@ -29,6 +29,7 @@
                     Name = "Apartment Rent",
                     Amount = 1200,
                     Flow = FlowTypes.expense,
+                    Category = CategoryTypes.Living
                 },
                 new CashFlowDto()
                 {
@@ -36,6 +37,7 @@
                     Name = "Groceries",
                     Amount = 5000,
                     Flow = FlowTypes.expense,
+                    Category = CategoryTypes.Takeout
                 },
                 new CashFlowDto()
                 {

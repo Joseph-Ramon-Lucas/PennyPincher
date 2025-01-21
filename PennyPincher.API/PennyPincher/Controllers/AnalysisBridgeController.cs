@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PennyPincher.Models;
+using System.Xml.Linq;
 
 namespace PennyPincher.Controllers
 {
@@ -16,25 +17,24 @@ namespace PennyPincher.Controllers
             Current = 0,
             Projected =1
         }
-
-        [HttpGet("/api/analysis/expenses",Name="getExpenses")]
-        public List<CategoryTypes> GetExpenseCategoryTypes()
+        private List<CashFlowDto> CFDataStorePicker(CFDataStores TargetDataStore)
         {
-            List<CategoryTypes> ExpenseCategories = new List<CategoryTypes>() {
-                CategoryTypes.Living,
-                CategoryTypes.Utilities,
-                CategoryTypes.Entertainment,
-                CategoryTypes.Shopping,
-                CategoryTypes.Takeout
-            };
-            return ExpenseCategories;
+            List<CashFlowDto> CFData = new List<CashFlowDto>();
+            switch (TargetDataStore) // Switch case to easily analyze each datastore the same way & scalable for additional datastor
+            {
+                case CFDataStores.Current:
+                    CFData = CashFlowDataStore.CurrentItemLogCashFlow.CashFlowsList;
+                    break;
+                case CFDataStores.Projected:
+                    CFData = CashFlowDataStore.ProjectedCashFlow.CashFlowsList;
+                    break;
+                default:
+                    CFData = CashFlowDataStore.CurrentItemLogCashFlow.CashFlowsList;
+                    break;
+            }
+            return CFData;
         }
-        //todo:
-        //edit list of expenses
-        //detele from list of expenses
-
-        [HttpPost("/api/analysis/convert",Name ="convertLogToCF")]
-        public List<CashFlowDto> ConvertLogToCF(List<ItemDto> loggedItems)
+        private List<CashFlowDto> ConvertLogToCF(List<ItemDto> loggedItems)
         {
             List<CashFlowDto> CFLogs = new List<CashFlowDto>();
             List<CategoryTypes> Expenses = GetExpenseCategoryTypes();
@@ -64,6 +64,22 @@ namespace PennyPincher.Controllers
             return CFLogs;
         }
 
+        private List<CategoryTypes> GetExpenseCategoryTypes()
+        {
+            //defined which logitem categories are considered a flowtype expense
+            //hard coded list of categories for now.
+            //can possibly make separate API later for custom expense categories
+            List<CategoryTypes> ExpenseCategories = new List<CategoryTypes>() {
+                CategoryTypes.Living,
+                CategoryTypes.Utilities,
+                CategoryTypes.Entertainment,
+                CategoryTypes.Shopping,
+                CategoryTypes.Takeout
+            };
+            return ExpenseCategories;
+        }
+
+
         [HttpPost]
         public ActionResult<List<CashFlowDto>> UpdateCashFlowItemLogStore()
         {
@@ -87,22 +103,10 @@ namespace PennyPincher.Controllers
         }
 
         // Purpose: provide overall summary of financial health per chosen CashFlow
-        [HttpGet("status/{dataStore}")]
-        public ActionResult<string> status(CFDataStores dataStore)
+        [HttpGet("status/{DataStore}")]
+        public ActionResult<string> Status(CFDataStores DataStore)
         {
-            List<CashFlowDto> CFData = new List<CashFlowDto>();
-            switch (dataStore) // Switch case to easily analyze each datastore the same way & scalable for additional datastores
-            {
-                case CFDataStores.Current:
-                    CFData = CashFlowDataStore.CurrentItemLogCashFlow.CashFlowsList;
-                    break;
-                case CFDataStores.Projected:
-                    CFData = CashFlowDataStore.ProjectedCashFlow.CashFlowsList;
-                    break;
-                default:
-                    CFData = CashFlowDataStore.CurrentItemLogCashFlow.CashFlowsList;
-                    break;
-            }
+            List<CashFlowDto> CFData = CFDataStorePicker(DataStore);
 
             double incomes = CFData.FindAll(e => e.Flow.Equals(FlowTypes.income)).Sum(e => e.Amount);
             double liabilities = CFData.FindAll(e => e.Flow.Equals(FlowTypes.expense)).Sum(e => e.Amount);
@@ -135,7 +139,8 @@ namespace PennyPincher.Controllers
                                $"Currently, you have {incomes} total income \n" +
                                $"and {liabilities} total liabilities";
             }
-            string ratioText = ($"\nYou're currently using {netIncomeRatio}% of your earnings. {Math.Round((mostCostlyAmount / incomes), 4) * 100}% of your earnings is going to {mostCostlyName}");
+            string ratioText = ($"\nYou're currently using {netIncomeRatio}% of your earnings." +
+                                $"{Math.Round((mostCostlyAmount / incomes), 4) * 100}% of your earnings is going to {mostCostlyName}");
 
             statusUpdate = statusUpdate + ratioText;
             return Ok(statusUpdate);
@@ -144,7 +149,53 @@ namespace PennyPincher.Controllers
         //todo:
         //compare to CurrentCF
 
+        [HttpGet("/status/compare/{DataStore}")]
+        //curr.category should === proj.name?
+        //categories should be lumped to CF name?
 
+        //Purpose: to compare if the financial health & statuses of Current Cashflow is meeting that of a Projected Cashflow
+        public ActionResult<string> CompareCashFlows(CFDataStores DataStore)
+        {
+            List<CashFlowDto> CFData = CFDataStorePicker(DataStore);
+
+            if (CFData == CurrItemLogsCF)
+            {
+                return NotFound("These CashFlows are Identical. They're both the Current Item Logs");
+            }
+            if (CFData.Count == 0 | CurrItemLogsCF.Count == 0)
+            {
+                return NotFound("1 or both of these CashFlows are empty");
+            }
+            var TopCostlyCurr = CurrItemLogsCF
+                .Where(e => e.Flow == FlowTypes.expense)
+                .OrderByDescending(e => e.Amount)
+                .Take(CurrItemLogsCF.Count());
+
+            var TopCostlyProj = ProjectedCF
+                .Where(e => e.Flow == FlowTypes.expense)
+                .OrderByDescending(e => e.Amount)
+                .Take(ProjectedCF.Count());
+
+
+            string compStatment = ($"Here are the top expenses between current spending and projected spending:\n");
+            string columns = "Current Expenses\n----------------\n";
+
+
+
+
+            foreach (var c in TopCostlyCurr)
+            {
+                columns += (c.Name + "\t"+ c.Amount + "\n");
+            }
+            columns += "\n\nProjected Expenses\n----------------\n";
+            foreach (var p in TopCostlyProj)
+            {
+                columns += (p.Name + "\t" + p.Amount + "\n");
+            }
+
+            string analysis = compStatment + columns;
+            return Ok(analysis);
+        }
 
     }
 }
