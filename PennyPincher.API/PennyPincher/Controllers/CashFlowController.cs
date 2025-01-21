@@ -15,11 +15,11 @@ namespace PennyPincher.Controllers
     // Model hypotheticals or goals and how they align with your current rate of spending in LogHistoryController
     public class CashFlowController : Controller
     {
-        List<CashFlowDto> CFList = CashFlowDataStore.CurrentCashFlow.CashFlowsList;
+        List<CashFlowDto> ProjectedCF = CashFlowDataStore.ProjectedCashFlow.CashFlowsList;
 
         [HttpPost]
         public ActionResult<CashFlowDto> CreateFlow(CashFlowDto cashFlow) {
-            CFList.Add(cashFlow);
+            ProjectedCF.Add(cashFlow);
             return Ok(cashFlow);
         }
 
@@ -29,7 +29,7 @@ namespace PennyPincher.Controllers
 
             if (targetFlowType != null)
             {
-                List<CashFlowDto> CFFiltered = CFList.Where(c => c.Flow.Equals(targetFlowType)).ToList();
+                List<CashFlowDto> CFFiltered = ProjectedCF.Where(c => c.Flow.Equals(targetFlowType)).ToList();
 
                 if (CFFiltered.Count == 0)
                 {
@@ -39,7 +39,7 @@ namespace PennyPincher.Controllers
             }
             else
             {
-                return Ok(CFList);
+                return Ok(ProjectedCF);
             }
         }
 
@@ -48,11 +48,11 @@ namespace PennyPincher.Controllers
         [HttpGet("{targetCashFlowID}", Name = "GetFlow")]
         public ActionResult<CashFlowDto> GetFlow(int targetCashFlowID)
         {
-            if (CFList.Count() == 0)
+            if (ProjectedCF.Count() == 0)
             {
                 return NotFound("Cash Flow Item store is empty");
             }
-            var CFMatch = CFList.Where(f => f.Id == targetCashFlowID);
+            var CFMatch = ProjectedCF.Where(f => f.Id == targetCashFlowID);
                           
             if (CFMatch.Count() ==0)
             {
@@ -66,12 +66,12 @@ namespace PennyPincher.Controllers
         [HttpPut ("{targetCashFlowID}")]
         public ActionResult<CashFlowDto> UpdateFlow(int targetCashFlowID, CashFlowUpdateDto newCashFlow)
         {
-            if (CFList.Count() == 0)
+            if (ProjectedCF.Count() == 0)
             {
                 return NotFound("Cash Flow Item store is empty");
             }
 
-            var CFMatch = CFList.Where(f => f.Id == targetCashFlowID).ToList();
+            var CFMatch = ProjectedCF.Where(f => f.Id == targetCashFlowID).ToList();
             if (CFMatch.Count() == 0)
             {
                 return NotFound($"Could not find existing Cash Flow at ID {targetCashFlowID} to update");
@@ -92,12 +92,12 @@ namespace PennyPincher.Controllers
         [HttpPatch ("{targetCashFlowID}")]
         public ActionResult<CashFlowUpdateDto> PartiallyUpdateFlow(int targetCashFlowID, JsonPatchDocument<CashFlowUpdateDto> newCashFlow)
         {
-            if (CFList.Count() == 0)
+            if (ProjectedCF.Count() == 0)
             {
                 return NotFound("Cash Flow Item store is empty");
             }
 
-            var CFIdMatch = CFList.Where(cf => cf.Id == targetCashFlowID).FirstOrDefault();
+            var CFIdMatch = ProjectedCF.Where(cf => cf.Id == targetCashFlowID).FirstOrDefault();
             if (CFIdMatch == null)
             {
                 return NotFound($"Could not find existing Cash Flow at ID {targetCashFlowID} to update");
@@ -116,72 +116,30 @@ namespace PennyPincher.Controllers
         public ActionResult<CashFlowDto> DeleteFlow(int targetCashFlowID)
         {
 
-            if (CFList.Count() == 0)
+            if (ProjectedCF.Count() == 0)
             {
                 return NotFound("Cash Flow Item store is empty");
             }
-            var CFMatch = CFList.Where(cf => cf.Id == targetCashFlowID).FirstOrDefault();
+            var CFMatch = ProjectedCF.Where(cf => cf.Id == targetCashFlowID).FirstOrDefault();
             if (CFMatch == null)
             {
                 return BadRequest($"Could not find Cash Flow with ID {targetCashFlowID} to delete");
             }
 
-            CFList.Remove(CFMatch);
-            return Ok(CFList);
+            ProjectedCF.Remove(CFMatch);
+            return Ok(ProjectedCF);
             
         }
 
         [HttpDelete]
         public ActionResult<CashFlowDto> DeleteAllFlows()
         {
-            if (CFList.Count() == 0)
+            if (ProjectedCF.Count() == 0)
             {
                 return NotFound("Cash Flow Item store is empty");
             }
-            CFList.Clear();
-            return Ok(CFList);
-        }
-
-
-
-        [HttpGet("status")]
-        public ActionResult<string> status()
-        {
-
-            double incomes = CFList.FindAll(e => e.Flow.Equals(FlowTypes.income)).Sum(e => e.Amount);
-            double liabilities = CFList.FindAll(e => e.Flow.Equals(FlowTypes.expense)).Sum(e => e.Amount);
-            double netIncome = incomes - liabilities;
-            double netIncomeRatio = Math.Round((liabilities / incomes), 4) * 100;
-            string mostCostlyName = CFList
-                .Where(e => e.Flow.Equals(FlowTypes.expense))
-                .OrderByDescending(e => e.Amount)
-                .Select(e => e.Name)
-                .FirstOrDefault() ?? "nothing at the moment";
-
-            double mostCostlyAmount = CFList
-                .Where(e => e.Flow.Equals(FlowTypes.expense))
-                .OrderByDescending(e => e.Amount)
-                .Select(e => e.Amount)
-                .FirstOrDefault<double>();
-
-
-
-            string statusUpdate = string.Empty;
-            if (incomes > liabilities) {
-
-                statusUpdate = $"You have {incomes} total income and {liabilities} total liabilities.\n" +
-                                $"You're currently taking home {netIncome}";
-            }
-            else
-            {
-                statusUpdate = $"Uh oh, you're running out of money.\n" +
-                               $"Currently, you have {incomes} total income \n" +
-                               $"and {liabilities} total liabilities";
-            }
-            string ratioText = ($"\nYou're currently using {netIncomeRatio}% of your earnings. {Math.Round((mostCostlyAmount/incomes),4)*100}% of your earnings is going to {mostCostlyName}");
-
-            statusUpdate = statusUpdate+ ratioText;
-            return Ok(statusUpdate);
+            ProjectedCF.Clear();
+            return Ok(ProjectedCF);
         }
 
 
