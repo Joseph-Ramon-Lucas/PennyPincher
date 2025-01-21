@@ -6,8 +6,8 @@ namespace PennyPincher.Models
 
     public enum FlowTypes
     {
-        income,
-        expense
+        income = 0,
+        expense= 1
     }
     public class CashFlowDto : CashFlowUpdateDto
     {
