@@ -5,6 +5,7 @@
         public List<CashFlowDto> CashFlowsList { get; set; }
         // Singleton pattern implemented below, to ensure that we are using the same single CashFlowDataStore
         public static CashFlowDataStore CurrentCashFlow { get; } = new CashFlowDataStore();
+        public static CashFlowDataStore CashFlowItemLogs { get; } = new CashFlowDataStore();
 
         public CashFlowDataStore()
         {
