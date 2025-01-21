@@ -8,11 +8,10 @@ namespace PennyPincher.Controllers
 
     public class AnalysisBridgeController : Controller
     {
-
-
+        List<CashFlowDto> CFILs = CashFlowDataStore.CashFlowItemLogs.CashFlowsList;
 
         [HttpGet("/api/analysis/expenses",Name="getExpenses")]
-        public List<CategoryTypes> getExpenseCategoryTypes()
+        public List<CategoryTypes> GetExpenseCategoryTypes()
         {
             List<CategoryTypes> ExpenseCategories = new List<CategoryTypes>() {
                 CategoryTypes.Living,
@@ -23,12 +22,15 @@ namespace PennyPincher.Controllers
             };
             return ExpenseCategories;
         }
+        //todo:
+        //edit list of expenses
+        //detele from list of expenses
 
-        [HttpPost(Name ="convertLogToCF")]
-        public List<CashFlowDto> convertLogToCF(List<ItemDto> loggedItems)
+        [HttpPost("/api/analysis/convert",Name ="convertLogToCF")]
+        public List<CashFlowDto> ConvertLogToCF(List<ItemDto> loggedItems)
         {
             List<CashFlowDto> CFLogs = new List<CashFlowDto>();
-            List<CategoryTypes> Expenses = getExpenseCategoryTypes();
+            List<CategoryTypes> Expenses = GetExpenseCategoryTypes();
             CFLogs.Clear();
 
             if (loggedItems.Count == 0)
@@ -37,7 +39,6 @@ namespace PennyPincher.Controllers
             }
             foreach (var item in loggedItems)
             {
-
                 CashFlowDto newCF = new CashFlowDto()
                 {
                     Id = item.Id,
@@ -45,7 +46,6 @@ namespace PennyPincher.Controllers
                     Amount = item.Price,
                     Description = string.Empty,
                     Flow = FlowTypes.income
-
                 };
 
                 if (Expenses.Contains(item.Category))
@@ -57,21 +57,32 @@ namespace PennyPincher.Controllers
             return CFLogs;
         }
 
-        [HttpGet]
-        public ActionResult<List<CashFlowDto>> getLogItems()
+        [HttpPost]
+        public ActionResult<List<CashFlowDto>> UpdateCashFlowItemLogStore()
         {
 
             List<ItemDto> loggedItems = ItemsDataStore.Current.Items;
-            List<CashFlowDto> CFLogs = new List<CashFlowDto>();
-            CFLogs = convertLogToCF(loggedItems);
+            List<CashFlowDto> ConvertedItemLogs = ConvertLogToCF(loggedItems);
 
-            CashFlowDataStore.CurrentCashFlow.CashFlowsList.Clear();
-            CFLogs.ForEach(log =>
+            CFILs.Clear();
+            ConvertedItemLogs.ForEach(c =>
             {
-                CashFlowDataStore.CurrentCashFlow.CashFlowsList.Add(log);
+                //store converted logs for viewing without overwriting current CashFlows
+                CFILs.Add(c);
             });
             return Created();
         }
+
+        [HttpGet]
+        public ActionResult<List<CashFlowDto>> GetCashFlowItemLogStore()
+        {
+            return Ok(CFILs);
+        }
+
+        //todo:
+        //compare to CurrentCF
+
+
 
     }
 }
