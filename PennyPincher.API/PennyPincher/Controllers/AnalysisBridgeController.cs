@@ -147,11 +147,7 @@ namespace PennyPincher.Controllers
             return Ok(statusUpdate);
         }
 
-
-
         [HttpGet("/status/compare/{DataStore}")]
-
-
         //Purpose: to compare if the financial health & statuses of Current Cashflow is meeting that of a Projected Cashflow
         public ActionResult<string> CompareCashFlows(CFDataStores DataStore)
         {
@@ -170,7 +166,7 @@ namespace PennyPincher.Controllers
                 .OrderByDescending(e => e.Amount)
                 .Take(5);
 
-            var ProjTopCostly = ProjectedCF
+            var ProjTopCostly = CFData
                 .Where(e => e.Flow == FlowTypes.expense)
                 .OrderByDescending(e => e.Amount)
                 .Take(5);
@@ -185,7 +181,7 @@ namespace PennyPincher.Controllers
                 })
                 .OrderByDescending(e => e.Amount);
 
-            var ProjCategoriesSum = ProjectedCF
+            var ProjCategoriesSum = CFData
                 .Where(e =>  e.Flow == FlowTypes.expense)
                 .GroupBy (e => e.Category)
                 .Select(g => new CashFlowDto()
