@@ -25,6 +25,8 @@ namespace PennyPincher.Models
         [EnumDataType(typeof(FlowTypes))]
         public FlowTypes Flow { get; set; }
 
-
+        [AllowNull]
+        [EnumDataType(typeof(CategoryTypes))]
+        public CategoryTypes Category { get; set; }
     }
 }

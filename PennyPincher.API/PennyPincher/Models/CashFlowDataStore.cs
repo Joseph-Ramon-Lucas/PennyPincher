@@ -4,7 +4,8 @@
     {
         public List<CashFlowDto> CashFlowsList { get; set; }
         // Singleton pattern implemented below, to ensure that we are using the same single CashFlowDataStore
-        public static CashFlowDataStore CurrentCashFlow { get; } = new CashFlowDataStore();
+        public static CashFlowDataStore ProjectedCashFlow { get; } = new CashFlowDataStore();
+        public static CashFlowDataStore CurrentItemLogCashFlow { get; } = new CashFlowDataStore();
 
         public CashFlowDataStore()
         {
@@ -19,7 +20,8 @@
                     Name = "Income",
                     Description = "Salaried from Work",
                     Amount = (70000/12),
-                    Flow = FlowTypes.income
+                    Flow = FlowTypes.income,
+                    Category = CategoryTypes.None
 
                 },
                 new CashFlowDto()
@@ -28,6 +30,7 @@
                     Name = "Apartment Rent",
                     Amount = 1200,
                     Flow = FlowTypes.expense,
+                    Category = CategoryTypes.Living
                 },
                 new CashFlowDto()
                 {
@@ -35,6 +38,7 @@
                     Name = "Groceries",
                     Amount = 5000,
                     Flow = FlowTypes.expense,
+                    Category = CategoryTypes.Takeout
                 },
                 new CashFlowDto()
                 {
@@ -43,6 +47,7 @@
                     Amount= 100,
                     Description = "Netflix, Spotify, UberOne",
                     Flow = FlowTypes.expense,
+                    Category = CategoryTypes.Entertainment
                 },
                 new CashFlowDto()
                 {
