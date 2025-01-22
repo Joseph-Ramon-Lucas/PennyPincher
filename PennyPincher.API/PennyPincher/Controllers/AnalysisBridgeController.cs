@@ -52,7 +52,8 @@ namespace PennyPincher.Controllers
                     Name = item.Name,
                     Amount = item.Price,
                     Description = string.Empty,
-                    Flow = FlowTypes.income
+                    Flow = FlowTypes.income,
+                    Category = item.Category,
                 };
 
                 if (Expenses.Contains(item.Category))
@@ -146,12 +147,10 @@ namespace PennyPincher.Controllers
             return Ok(statusUpdate);
         }
 
-        //todo:
-        //compare to CurrentCF
+
 
         [HttpGet("/status/compare/{DataStore}")]
-        //curr.category should === proj.name?
-        //categories should be lumped to CF name?
+
 
         //Purpose: to compare if the financial health & statuses of Current Cashflow is meeting that of a Projected Cashflow
         public ActionResult<string> CompareCashFlows(CFDataStores DataStore)
@@ -166,34 +165,81 @@ namespace PennyPincher.Controllers
             {
                 return NotFound("1 or both of these CashFlows are empty");
             }
-            var TopCostlyCurr = CurrItemLogsCF
+            var CurrTopCostly = CurrItemLogsCF
                 .Where(e => e.Flow == FlowTypes.expense)
                 .OrderByDescending(e => e.Amount)
-                .Take(CurrItemLogsCF.Count());
+                .Take(5);
 
-            var TopCostlyProj = ProjectedCF
+            var ProjTopCostly = ProjectedCF
                 .Where(e => e.Flow == FlowTypes.expense)
                 .OrderByDescending(e => e.Amount)
-                .Take(ProjectedCF.Count());
+                .Take(5);
+
+            var CurrCategoriesSum = CurrItemLogsCF
+                .Where(e => e.Flow == FlowTypes.expense)
+                .GroupBy(e => e.Category)
+                .Select(g => new CashFlowDto()
+                {
+                    Amount = g.Sum(e => e.Amount),
+                    Category = g.Key,
+                })
+                .OrderByDescending(e => e.Amount);
+
+            var ProjCategoriesSum = ProjectedCF
+                .Where(e =>  e.Flow == FlowTypes.expense)
+                .GroupBy (e => e.Category)
+                .Select(g => new CashFlowDto()
+                {
+                    Amount = g.Sum(e  => e.Amount),
+                    Category = g.Key,
+                })
+                .OrderByDescending (e => e.Amount);
+
+            double CurrMostCostlyCategoryPrice = CurrCategoriesSum.Max(e => e.Amount);
+            CategoryTypes CurrMostCostlyCategory = CurrCategoriesSum.OrderByDescending(e => e.Amount)
+                                                                .Select(e => e.Category)
+                                                                .FirstOrDefault();
+
+            CategoryTypes ProjMostCostlyCurrCategory = ProjCategoriesSum.Where(e => e.Category == CurrMostCostlyCategory)
+                                                                .Select (e => e.Category)
+                                                                .FirstOrDefault();
+
+            CategoryTypes ProjMostCostlyCurrCategoryDisplay = (ProjMostCostlyCurrCategory == CategoryTypes.None ? CurrMostCostlyCategory : ProjMostCostlyCurrCategory);
+            double ProjMostCostlyCurrCategoryPrice = ProjMostCostlyCurrCategory == CategoryTypes.None ? 0 :
+                                                                    ProjCategoriesSum.Where(e => e.Category == CurrMostCostlyCategory)
+                                                                    .Select(e => e.Amount)
+                                                                    .FirstOrDefault();
+            double CostlyCategoryRatio = Math.Round((CurrMostCostlyCategoryPrice / ProjMostCostlyCurrCategoryPrice), 4) * 100;
 
 
             string compStatment = ($"Here are the top expenses between current spending and projected spending:\n");
             string columns = "Current Expenses\n----------------\n";
 
-
-
-
-            foreach (var c in TopCostlyCurr)
+            foreach (var c in CurrTopCostly)
             {
-                columns += (c.Name + "\t"+ c.Amount + "\n");
+                columns += $"{c.Name,-20}\t{c.Amount,-20}\n";
             }
             columns += "\n\nProjected Expenses\n----------------\n";
-            foreach (var p in TopCostlyProj)
+            foreach (var p in ProjTopCostly)
             {
-                columns += (p.Name + "\t" + p.Amount + "\n");
+                columns += $"{p.Name,-20}\t{p.Amount,-20}\n";
             }
 
-            string analysis = compStatment + columns;
+            string CurrOtherCategoryStats = string.Empty;
+            foreach (var item in CurrCategoriesSum.Skip(1)) // skipping over the most costly item
+            {
+                CurrOtherCategoryStats += $"{item.Category,-20}\t{item.Amount,-20}\n";
+            }
+
+            string CurrCostlyCatAnalysis = $"\n\nYou are currently spending {CurrMostCostlyCategoryPrice} towards this category: {CurrMostCostlyCategory}\n"+
+                                   $"How your current spending in other categories rank:\n\n"+
+                                   $"{CurrOtherCategoryStats}";
+
+            string ProjCostlyCatAnalysis = $"\n\nYou projected to spend {ProjMostCostlyCurrCategoryPrice} towards this category: {ProjMostCostlyCurrCategoryDisplay}\n"+
+                                               $"So far you have spent {CostlyCategoryRatio}% out of your {ProjMostCostlyCurrCategoryDisplay} budget";
+
+
+            string analysis = compStatment + columns + CurrCostlyCatAnalysis + ProjCostlyCatAnalysis;
             return Ok(analysis);
         }
 

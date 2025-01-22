@@ -20,7 +20,8 @@
                     Name = "Income",
                     Description = "Salaried from Work",
                     Amount = (70000/12),
-                    Flow = FlowTypes.income
+                    Flow = FlowTypes.income,
+                    Category = CategoryTypes.None
 
                 },
                 new CashFlowDto()
@@ -46,6 +47,7 @@
                     Amount= 100,
                     Description = "Netflix, Spotify, UberOne",
                     Flow = FlowTypes.expense,
+                    Category = CategoryTypes.Entertainment
                 },
                 new CashFlowDto()
                 {
