@@ -112,15 +112,15 @@ namespace PennyPincher.Controllers
             return NoContent();   
         }
         
-        [HttpDelete("{itemId}")]
-        public ActionResult<List<ItemDto>> DeleteItem(ItemDto itemToDelete)
+        [HttpDelete]
+        public ActionResult DeleteItem(ItemDto itemToDelete)
         {
             ItemDto item = ItemsDataStore.Current.Items.FirstOrDefault(i => i.Id == itemToDelete.Id);
             if (item == null)
             {
                 return NotFound();
             }
-            
+
             ItemsDataStore.Current.Items.Remove(item);
             return NoContent();
         }
