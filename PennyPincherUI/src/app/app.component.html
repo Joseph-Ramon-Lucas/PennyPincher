@@ -1,16 +1,10 @@
-<h2>Testing the communication between Angular and ASP.NET Core</h2>
+<h1>Personal Finance History</h1>
 
-@for (log of logs; track $index) {
+<div>
   <div>
-    <div>
-      Name: {{log.name}}
-    </div>
-    <div>
-      Category: {{log.category}}
-    </div>
-    <div>
-      Price: {{log.price}}
-    </div>
+    <expense-table/>
   </div>
-  <hr>
-}
+  <div>
+    <expense-form/>
+  </div>
+</div>

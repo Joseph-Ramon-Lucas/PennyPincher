@@ -1,21 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { LoghistoryService } from './loghistory.service';
+import { ExpenseTable } from './expenses/expense-table.component';
+import { ExpenseForm } from './expenses/expense-form.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [ExpenseTable, ExpenseForm],
+  template: ``,
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'PennyPincherUI';
-  logs: any[] = [];
-  logHistoryService = inject(LoghistoryService);
-
-  constructor() {
-    this.logHistoryService.get().subscribe(logs => {
-      this.logs = logs;
-    })
-  }
 }

@@ -12,6 +12,12 @@ namespace PennyPincher.Controllers
         public ActionResult<ItemDto> CreateItem(ItemDto item)
         {
             ItemsDataStore.Current.Items.Add(item);
+
+            if (!ItemsDataStore.Current.Items.Contains(item))
+            {
+                return NotFound();
+            }
+            
             return Ok(item);
         }
         
@@ -29,6 +35,11 @@ namespace PennyPincher.Controllers
         [HttpGet("{categoryType}/getcategoryitems")]
         public ActionResult<List<ItemDto>> GetItemByCategoryType(CategoryTypes categoryType)
         {
+            if (categoryType == null)
+            {
+                return NotFound();
+            }
+            
             List<ItemDto> itemsByCategoryType = new List<ItemDto>();
             itemsByCategoryType = ItemsDataStore.Current.Items.Where(c => c.Category == categoryType).ToList();
 
