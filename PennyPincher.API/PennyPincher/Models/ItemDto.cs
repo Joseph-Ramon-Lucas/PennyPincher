@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace PennyPincher.Models
@@ -21,6 +22,7 @@ namespace PennyPincher.Models
         [AllowNull]
         public CategoryTypes Category { get; set; }
         
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
         public double Price { get; set; }
     }   
 }

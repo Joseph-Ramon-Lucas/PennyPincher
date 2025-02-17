@@ -12,6 +12,12 @@ namespace PennyPincher.Controllers
         public ActionResult<ItemDto> CreateItem(ItemDto item)
         {
             ItemsDataStore.Current.Items.Add(item);
+
+            if (!ItemsDataStore.Current.Items.Contains(item))
+            {
+                return NotFound();
+            }
+            
             return Ok(item);
         }
         
@@ -29,6 +35,11 @@ namespace PennyPincher.Controllers
         [HttpGet("{categoryType}/getcategoryitems")]
         public ActionResult<List<ItemDto>> GetItemByCategoryType(CategoryTypes categoryType)
         {
+            if (categoryType == null)
+            {
+                return NotFound();
+            }
+            
             List<ItemDto> itemsByCategoryType = new List<ItemDto>();
             itemsByCategoryType = ItemsDataStore.Current.Items.Where(c => c.Category == categoryType).ToList();
 
@@ -101,15 +112,15 @@ namespace PennyPincher.Controllers
             return NoContent();   
         }
         
-        [HttpDelete("{itemId}")]
-        public ActionResult<List<ItemDto>> DeleteItem(ItemDto itemToDelete)
+        [HttpDelete]
+        public ActionResult DeleteItem(ItemDto itemToDelete)
         {
             ItemDto item = ItemsDataStore.Current.Items.FirstOrDefault(i => i.Id == itemToDelete.Id);
             if (item == null)
             {
                 return NotFound();
             }
-            
+
             ItemsDataStore.Current.Items.Remove(item);
             return NoContent();
         }
