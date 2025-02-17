@@ -20,7 +20,7 @@ namespace PennyPincher.Controllers
         private List<CashFlowDto> CFDataStorePicker(CFDataStores TargetDataStore)
         {
             List<CashFlowDto> CFData = new List<CashFlowDto>();
-            switch (TargetDataStore) // Switch case to easily analyze each datastore the same way & scalable for additional datastor
+            switch (TargetDataStore) // Switch case to easily analyze each datastore the same way & scalable for additional datastores
             {
                 case CFDataStores.Current:
                     CFData = CashFlowDataStore.CurrentItemLogCashFlow.CashFlowsList;
@@ -104,7 +104,7 @@ namespace PennyPincher.Controllers
         }
 
         // Purpose: provide overall summary of financial health per chosen CashFlow
-        [HttpGet("status/{DataStore}")]
+        [HttpGet("getstatus/{DataStore}")]
         public ActionResult<string> Status(CFDataStores DataStore)
         {
             List<CashFlowDto> CFData = CFDataStorePicker(DataStore);
@@ -147,7 +147,7 @@ namespace PennyPincher.Controllers
             return Ok(statusUpdate);
         }
 
-        [HttpGet("/status/compare/{DataStore}")]
+        [HttpGet("/getstatus/compare/{DataStore}")]
         //Purpose: to compare if the financial health & statuses of Current Cashflow is meeting that of a Projected Cashflow
         public ActionResult<string> CompareCashFlows(CFDataStores DataStore)
         {
