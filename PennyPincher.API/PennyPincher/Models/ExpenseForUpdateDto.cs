@@ -3,16 +3,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PennyPincher.Models
 {
-    public class ItemForCreationDto
+    public class ExpenseForUpdateDto
     {
         [Required(ErrorMessage = "Name is required for item creation")]
         [MaxLength(500)]
         public string Name { get; set; } = string.Empty;
         
-        [Required(ErrorMessage = "Price is required for item creation")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
         public double Price { get; set; }
         
-        [AllowNull]
+        [AllowNull]  
         public CategoryTypes Category { get; set; }
-    }    
-}
+    }
+};

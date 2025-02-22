@@ -1,32 +1,32 @@
 namespace PennyPincher.Models;
 
-public class ItemsDataStore
+public class ExpenseDataStore
 {
-    public List<ItemDto> Items { get; set; }
+    public List<ExpenseDto> Expenses { get; set; }
     
     // Singleton pattern implemented below, to ensure that we are using the same single ItemsDataStore
-    public static ItemsDataStore Current { get; } = new ItemsDataStore();
+    public static ExpenseDataStore Current { get; } = new ExpenseDataStore();
 
-    public ItemsDataStore()
+    public ExpenseDataStore()
     {
         // Init dummy data
-        Items = new List<ItemDto>()
+        Expenses = new List<ExpenseDto>()
         {
-            new ItemDto()
+            new ExpenseDto()
             {
                 Id = 1,
                 Name = "Starbucks Coffee",
                 Category = CategoryTypes.Takeout,
                 Price = 4.50
             },
-            new ItemDto()
+            new ExpenseDto()
             {
                 Id = 2,
                 Name = "Netflix Subscription",
                 Category = CategoryTypes.Entertainment,
                 Price = 15.20
             },
-            new ItemDto()
+            new ExpenseDto()
             {
                 Id = 3,
                 Name = "January 2025 Rent",

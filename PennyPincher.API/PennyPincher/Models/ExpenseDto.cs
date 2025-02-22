@@ -5,7 +5,8 @@ namespace PennyPincher.Models
 {
     public enum CategoryTypes
     {
-        None = 0,
+        Undefined = 0,
+        None = 1,
         Living = 1,
         Utilities = 2, 
         Entertainment = 3,
@@ -13,7 +14,7 @@ namespace PennyPincher.Models
         Takeout = 5
     }
     
-    public class ItemDto
+    public class ExpenseDto
     {
         public int Id { get; set; }
 

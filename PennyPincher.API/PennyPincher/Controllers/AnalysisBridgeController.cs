@@ -34,7 +34,7 @@ namespace PennyPincher.Controllers
             }
             return CFData;
         }
-        private List<CashFlowDto> ConvertLogToCF(List<ItemDto> loggedItems)
+        private List<CashFlowDto> ConvertLogToCF(List<ExpenseDto> loggedItems)
         {
             List<CashFlowDto> CFLogs = new List<CashFlowDto>();
             List<CategoryTypes> Expenses = GetExpenseCategoryTypes();
@@ -85,7 +85,7 @@ namespace PennyPincher.Controllers
         public ActionResult<List<CashFlowDto>> UpdateCashFlowItemLogStore()
         {
 
-            List<ItemDto> loggedItems = ItemsDataStore.Current.Items;
+            List<ExpenseDto> loggedItems = ExpenseDataStore.Current.Expenses;
             List<CashFlowDto> ConvertedItemLogs = ConvertLogToCF(loggedItems);
 
             CurrItemLogsCF.Clear();
