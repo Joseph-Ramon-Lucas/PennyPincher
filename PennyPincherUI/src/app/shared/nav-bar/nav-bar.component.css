@@ -3,6 +3,7 @@
 	align-items: center;
 	justify-content: center;
 	bottom: 0;
+	flex-wrap: wrap;
 }
 .buttonContainer {
 	display: flex;
@@ -16,6 +17,9 @@
 }
 .mobileButton {
 	display: none;
+}
+a {
+	text-decoration: none;
 }
 @media (min-width: 500px) and (max-width: 768px) {
 	input[type="text"] {
