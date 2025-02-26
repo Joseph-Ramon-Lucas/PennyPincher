@@ -1,0 +1,14 @@
+div {
+	color: blue;
+}
+
+.buttonContainer {
+	display: flex;
+	padding: 50px;
+}
+
+.buttonContainer {
+	display: flex;
+	justify-content: center;
+	color: aqua;
+}

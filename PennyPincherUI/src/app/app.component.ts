@@ -10,9 +10,6 @@ import {
 	selector: "app-root",
 	imports: [RouterModule, RouterOutlet, RouterLink, RouterLinkActive],
 	templateUrl: "./app.component.html",
-	template: `
-
-  `,
 	styleUrl: "./app.component.css",
 })
 export class AppComponent {
