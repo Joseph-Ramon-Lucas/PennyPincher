@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
+import { NavBarComponent } from "../nav-bar/nav-bar.component";
 
 @Component({
-  selector: 'app-cash-flows',
-  imports: [],
-  templateUrl: './cash-flows.component.html',
-  styleUrl: './cash-flows.component.css'
+	selector: "app-cash-flows",
+	imports: [NavBarComponent],
+	templateUrl: "./cash-flows.component.html",
+	styleUrl: "./cash-flows.component.css",
 })
-export class CashFlowsComponent {
-
-}
+export class CashFlowsComponent {}
