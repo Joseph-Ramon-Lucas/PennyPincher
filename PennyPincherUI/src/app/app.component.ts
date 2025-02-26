@@ -1,12 +1,20 @@
 import { Component, inject } from "@angular/core";
-import { ExpenseTable } from "./expenses/expense-table.component";
-import { ExpenseForm } from "./expenses/expense-form.component";
-import { ExpenseComponent } from "./expenses/expense.component";
+import {
+	RouterModule,
+	RouterOutlet,
+	RouterLink,
+	RouterLinkActive,
+} from "@angular/router";
 
 @Component({
 	selector: "app-root",
-	imports: [ExpenseComponent],
+	imports: [RouterModule, RouterOutlet, RouterLink, RouterLinkActive],
 	templateUrl: "./app.component.html",
+	template: `
+
+  `,
 	styleUrl: "./app.component.css",
 })
-export class AppComponent {}
+export class AppComponent {
+	title = "Penny Pincher";
+}
