@@ -1,14 +1,21 @@
 div {
-	color: blue;
+	background-color: blue;
+	margin: 0;
+	padding: 0;
 }
-
-.buttonContainer {
-	display: flex;
+button {
 	padding: 50px;
 }
 
 .buttonContainer {
 	display: flex;
+	padding: 50px;
+	border: 2px solid rgb(140 140 140);
+}
+
+.buttonContainer {
+	display: flex;
+	flex-direction: row;
 	justify-content: center;
 	color: aqua;
 }
