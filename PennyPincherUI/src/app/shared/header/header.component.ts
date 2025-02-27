@@ -1,10 +1,9 @@
 import { Component } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
-import { NavBarComponent } from "../nav-bar/nav-bar.component";
 
 @Component({
 	selector: "app-header",
-	imports: [RouterLink, RouterLinkActive, RouterLinkActive, NavBarComponent],
+	imports: [RouterLink, RouterLinkActive, RouterLinkActive],
 	templateUrl: "./header.component.html",
 	styleUrl: "./header.component.css",
 })

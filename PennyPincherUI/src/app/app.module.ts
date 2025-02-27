@@ -5,11 +5,10 @@ import { BrowserModule } from "@angular/platform-browser";
 import { RouterModule } from "@angular/router";
 
 import { AppComponent } from "./app.component";
-import { ExpenseForm } from "./expenses/expense-form.component";
 
 @NgModule({
 	imports: [BrowserModule, RouterModule, CommonModule, FormsModule],
-	declarations: [AppComponent, ExpenseForm],
+	declarations: [AppComponent],
 	providers: [],
 	bootstrap: [AppComponent],
 })

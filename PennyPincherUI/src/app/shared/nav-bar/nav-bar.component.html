@@ -7,14 +7,14 @@
         <mat-icon>payments</mat-icon>
         <p>Expenses</p>
       </button>
-      <button class="mobileButton" mat-fab>
+      <button class="mobileButton" mat-fab matTooltip="Expenses">
         <mat-icon>payments</mat-icon>
       </button>
     </a>
   </div>
   <div class="buttonContainer">
     <a [routerLink]="['/dashboard']" routerLinkActive="router-link-active">
-      <button class="desktopButton" mat-fab extended>
+      <button class="desktopButton" mat-fab extended matTooltip="Dashboard">
         <mat-icon>bar_chart_4_bars</mat-icon>
         <p>Dashboard</p>
       </button>
@@ -25,7 +25,7 @@
   </div>
   <div class="buttonContainer">
     <a [routerLink]="['/budget']" routerLinkActive="router-link-active">
-      <button class="desktopButton" mat-fab extended>
+      <button class="desktopButton" mat-fab extended matTooltip="Budget">
         <mat-icon>savings</mat-icon>
         <p>Budget</p>
       </button>
