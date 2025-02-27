@@ -1,1 +1,26 @@
 <h3>Add New Expense</h3>
+
+<div>
+  <mat-form-field>
+    <mat-label>Item Name</mat-label>
+    <input id="Name" type="text" matInput />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Category</mat-label>
+    <mat-select id="Category">
+      <mat-option value="0">None</mat-option>
+      <mat-option value="1">Living</mat-option>
+      <mat-option value="2">Utilities</mat-option>
+      <mat-option value="3">Entertainment</mat-option>
+      <mat-option value="4">Shopping</mat-option>
+      <mat-option value="5">Takeout</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Price</mat-label>
+    <input id="Price" type="number" matInput />
+  </mat-form-field>
+  <button id="addButton" mat-fab>
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

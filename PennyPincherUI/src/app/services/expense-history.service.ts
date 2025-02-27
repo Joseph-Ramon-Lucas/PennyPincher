@@ -1,40 +1,32 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment.development';
-import { Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { inject, Injectable } from "@angular/core";
+import { environment } from "../../environments/environment.development";
+import type { Observable } from "rxjs";
+import type { Expense } from "../models/expense";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class ExpenseHistoryService {
+	private http = inject(HttpClient);
+	private apiUrl = environment.apiURL + "/api/history";
 
-  private http = inject(HttpClient);
-  private apiUrl = environment.apiURL + '/api/history';
+	constructor() {}
 
-  constructor() {}
+	public addItem(itemToAdd: Expense): Observable<any> {
+		return this.http.post<Expense>(this.apiUrl, itemToAdd);
+		// this.http.post(this.apiUrl, itemToAdd).subscribe(newItem => {
+		//   console.log('Added new item: ', newItem);
+		// });
+	}
 
-  public addItem(itemToAdd : any): Observable<any> {
-    return this.http.post(this.apiUrl, itemToAdd);
-    // this.http.post(this.apiUrl, itemToAdd).subscribe(newItem => {
-    //   console.log('Added new item: ', newItem);
-    // });
-  }
+	public getAllItems(): Observable<Expense[]> {
+		return this.http.get<Expense[]>(this.apiUrl);
+	}
 
-  public getAllItems(): Observable<any> {
-    return this.http.get(this.apiUrl);
-  }
+	public getItemById(): any {}
 
-  public getItemById(): any {
+	public getItemByCategory(): any {}
 
-  }
+	public updateItem(): any {}
 
-  public getItemByCategory(): any {
-
-  }
-
-  public updateItem(): any {
-
-  }
-
-  public deleteItem(): void {
-
-  }
+	public deleteItem(): void {}
 }
