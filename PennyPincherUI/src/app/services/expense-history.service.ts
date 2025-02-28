@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { environment } from "../../environments/environment.development";
 import type { Observable } from "rxjs";
@@ -47,7 +47,16 @@ export class ExpenseHistoryService {
 		);
 	}
 
-	public deleteItem(itemToDelete: Expense): Observable<Expense> {
-		return this.http.delete<Expense>(this.apiUrl);
+	public deleteItem(itemToDelete: Expense): Observable<Expense[]> {
+		const options = {
+			headers: new HttpHeaders({
+				"Content-Type": "application/json-patch+json",
+			}),
+
+			body: itemToDelete,
+		};
+		console.log("OPTIONS!!!", options);
+
+		return this.http.delete<Expense[]>(this.apiUrl, options);
 	}
 }

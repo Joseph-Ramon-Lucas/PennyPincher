@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { Expense } from "../models/expense";
-import { ExpenseHistoryService } from "../services/expense-history.service";
+import { Component, inject } from "@angular/core";
+import { ExpenseForUpdateDto } from "../../../models/expense";
+import { ExpenseHistoryService } from "../../../services/expense-history.service";
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -10,11 +10,10 @@ import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatCardModule } from "@angular/material/card";
 import { FormsModule } from "@angular/forms";
+import { MatTabsModule } from "@angular/material/tabs";
 
 @Component({
-	selector: "expense-form",
-	templateUrl: "./expense-form.component.html",
-	styleUrl: "./expense-form.component.css",
+	selector: "edit-expense-panel",
 	imports: [
 		MatFormFieldModule,
 		MatInputModule,
@@ -25,21 +24,23 @@ import { FormsModule } from "@angular/forms";
 		MatTooltipModule,
 		MatCardModule,
 		FormsModule,
+		MatTabsModule,
 	],
-	changeDetection: ChangeDetectionStrategy.OnPush,
+	templateUrl: "./edit-expense-panel.component.html",
+	styleUrl: "./edit-expense-panel.component.css",
 })
-export class ExpenseForm {
-	title = "ExpenseForm";
+export class EditExpensePanelComponent {
+	title = "edit-item";
 	submitted = false;
 	expenseHistoryService = inject(ExpenseHistoryService);
-	newItem = new Expense(1, "", 0, 0); //item id default to 1 for now
+	newItemId = 0;
+	newItem = new ExpenseForUpdateDto("", 0, 0);
 
-	constructor() {}
 	handleSubmit() {
 		console.log(this.newItem);
 
 		this.expenseHistoryService
-			.addItem(this.newItem)
+			.updateItem(this.newItemId, this.newItem)
 			.subscribe(() => this.onSubmit());
 	}
 

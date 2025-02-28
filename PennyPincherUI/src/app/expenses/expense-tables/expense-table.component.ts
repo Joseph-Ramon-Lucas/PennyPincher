@@ -5,8 +5,8 @@ import {
 	type OnInit,
 	type SimpleChanges,
 } from "@angular/core";
-import type { Expense } from "../models/expense";
-import { ExpenseHistoryService } from "../services/expense-history.service";
+import type { Expense } from "../../models/expense";
+import { ExpenseHistoryService } from "../../services/expense-history.service";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatButtonModule } from "@angular/material/button";
@@ -40,6 +40,7 @@ export class ExpenseTable implements OnInit {
 	// }
 
 	updateTable(): void {
+		this.expenses = [];
 		this.expenseHistoryService.getAllItems().subscribe((expenses) => {
 			this.expenses = expenses;
 		});

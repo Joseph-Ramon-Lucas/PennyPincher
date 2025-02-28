@@ -1,6 +1,6 @@
 import { Component, inject } from "@angular/core";
-import { ExpenseTable } from "./expense-table.component";
-import { ExpenseForm } from "./expense-form.component";
+import { ExpenseTable } from "./expense-tables/expense-table.component";
+import { ExpenseForm } from "./expense-forms/expense-form.component";
 
 @Component({
 	selector: "app-expense",

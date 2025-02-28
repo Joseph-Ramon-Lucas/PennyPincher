@@ -14,22 +14,22 @@
   </div>
   <div class="buttonContainer">
     <a [routerLink]="['/dashboard']" routerLinkActive="router-link-active">
-      <button class="desktopButton" mat-fab extended matTooltip="Dashboard">
+      <button class="desktopButton" mat-fab extended>
         <mat-icon>bar_chart_4_bars</mat-icon>
         <p>Dashboard</p>
       </button>
-      <button class="mobileButton" mat-fab>
+      <button class="mobileButton" mat-fab matTooltip="Dashboard">
         <mat-icon>bar_chart_4_bars</mat-icon>
       </button>
     </a>
   </div>
   <div class="buttonContainer">
     <a [routerLink]="['/budget']" routerLinkActive="router-link-active">
-      <button class="desktopButton" mat-fab extended matTooltip="Budget">
+      <button class="desktopButton" mat-fab extended>
         <mat-icon>savings</mat-icon>
         <p>Budget</p>
       </button>
-      <button class="mobileButton" mat-fab>
+      <button class="mobileButton" mat-fab matTooltip="Budget">
         <mat-icon>savings</mat-icon>
       </button>
     </a>
