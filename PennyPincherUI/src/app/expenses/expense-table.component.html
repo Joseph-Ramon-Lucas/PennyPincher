@@ -5,7 +5,10 @@
     <mat-icon>refresh</mat-icon>
   </button>
 </div>
-<div>
+<div [style.display]="expenses.length === 0 ? 'flex' : 'none'">
+  <mat-spinner></mat-spinner>
+</div>
+<div [style.display]="expenses.length != 0 ? 'flex' : 'none'">
   <table>
     <thead>
       <tr>

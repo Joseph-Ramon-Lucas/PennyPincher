@@ -5,5 +5,7 @@ div {
 	justify-content: center;
 	align-items: flex-start;
 
+	flex-wrap: wrap;
+
 	margin: 20px;
 }
