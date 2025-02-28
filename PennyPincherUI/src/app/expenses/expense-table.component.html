@@ -1,6 +1,11 @@
 <h2>Expense History Table</h2>
 
 <div>
+  <button (click)="updateTable()" mat-mini-fab matTooltip="Refresh Table">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>
+<div>
   <table>
     <thead>
       <tr>
@@ -11,11 +16,11 @@
     </thead>
     <tbody>
       @for (expense of expenses; track $index) {
-        <tr>
-          <td>{{expense.name}}</td>
-          <td>{{expense.category}}</td>
-          <td>{{expense.price}}</td>
-        </tr>
+      <tr>
+        <td>{{ expense.name }}</td>
+        <td>{{ expense.category }}</td>
+        <td>{{ expense.price }}</td>
+      </tr>
       }
     </tbody>
   </table>

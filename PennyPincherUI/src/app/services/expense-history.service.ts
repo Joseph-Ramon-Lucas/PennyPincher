@@ -11,7 +11,7 @@ export class ExpenseHistoryService {
 
 	constructor() {}
 
-	public addItem(itemToAdd: Expense): Observable<any> {
+	public addItem(itemToAdd: Expense): Observable<Expense> {
 		return this.http.post<Expense>(this.apiUrl, itemToAdd);
 		// this.http.post(this.apiUrl, itemToAdd).subscribe(newItem => {
 		//   console.log('Added new item: ', newItem);
