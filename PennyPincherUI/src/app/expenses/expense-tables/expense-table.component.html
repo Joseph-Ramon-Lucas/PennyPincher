@@ -12,6 +12,7 @@
   <table>
     <thead>
       <tr>
+        <th>Id</th>
         <th>Name</th>
         <th>Category</th>
         <th>Price</th>
@@ -20,6 +21,7 @@
     <tbody>
       @for (expense of expenses; track $index) {
       <tr>
+        <td>{{ expense.id }}</td>
         <td>{{ expense.name }}</td>
         <td>{{ expense.category }}</td>
         <td>{{ expense.price }}</td>
