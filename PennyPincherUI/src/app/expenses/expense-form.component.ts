@@ -32,7 +32,7 @@ export class ExpenseForm {
 	title = "ExpenseForm";
 	submitted = false;
 	expenseHistoryService = inject(ExpenseHistoryService);
-	newItem = new Expense(1, "", 0, 0);
+	newItem = new Expense(1, "", 0, 0); //item id default to 1 for now
 
 	constructor() {}
 	handleSubmit() {
