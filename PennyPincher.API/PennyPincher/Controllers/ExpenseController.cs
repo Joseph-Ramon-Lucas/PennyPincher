@@ -56,7 +56,7 @@ namespace PennyPincher.Controllers
         public ActionResult<IEnumerable<ExpenseDto>> GetExpense(int expenseId)
         {
             var foundExpense = ExpenseDataStore.Current.Expenses
-                .FirstOrDefault(i => i.Id == expenseId);
+                .FirstOrDefault(e => e.Id == expenseId);
             
             if (foundExpense == null)
             {
@@ -70,7 +70,7 @@ namespace PennyPincher.Controllers
         public ActionResult UpdateExpense(int expenseId, ExpenseForUpdateDto expenseWithUpdateDto)
         {
             ExpenseDto? foundExpense = ExpenseDataStore.Current.Expenses
-                .FirstOrDefault(i => i.Id == expenseId);
+                .FirstOrDefault(e => e.Id == expenseId);
             
             if (foundExpense == null)
             {
@@ -85,10 +85,10 @@ namespace PennyPincher.Controllers
         }
 
         [HttpPatch("{itemId}")]
-        public ActionResult PartiallyUpdateExpense(int itemId, JsonPatchDocument<ExpenseForUpdateDto> patchDocument)
+        public ActionResult PartiallyUpdateExpense(int expenseId, JsonPatchDocument<ExpenseForUpdateDto> patchDocument)
         {
             ExpenseDto? expenseFromStore = ExpenseDataStore.Current.Expenses
-                .FirstOrDefault(i => i.Id == itemId);
+                .FirstOrDefault(e => e.Id == expenseId);
             
             if (expenseFromStore == null)
             {
@@ -120,17 +120,17 @@ namespace PennyPincher.Controllers
         }
         
         [HttpDelete]
-        public ActionResult DeleteExpense(ExpenseDto expenseToDelete)
+        public ActionResult DeleteExpense(int expenseId)
         {
-            ExpenseDto? expense = ExpenseDataStore.Current.Expenses
-                .FirstOrDefault(i => i.Id == expenseToDelete.Id);
+            ExpenseDto? foundExpense = ExpenseDataStore.Current.Expenses
+                .FirstOrDefault(e => e.Id == expenseId);
             
-            if (expense == null)
+            if (foundExpense == null)
             {
                 return NotFound();
             }
 
-            ExpenseDataStore.Current.Expenses.Remove(expense);
+            ExpenseDataStore.Current.Expenses.Remove(foundExpense);
             return NoContent();
         }
     }    
