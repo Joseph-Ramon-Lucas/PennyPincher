@@ -1,7 +1,3 @@
-DROP DATABASE IF EXISTS penny_pinchers_db;
-
-CREATE DATABASE penny_pinchers_db;
-
 CREATE TYPE expense_category AS ENUM (
     'undefined', 
     'none', 
@@ -24,17 +20,19 @@ CREATE TABLE users (
 );
 
 CREATE TABLE expenses (
-    id SERIAL FOREIGN KEY,
+    id SERIAL PRIMARY KEY,
+	id users_id NOT NULL REFERENCES users(id),
     name character(500),
     category_type expense_category,
     price decimal
 );
 
-CREATE TABLE cashflows {
-    id SERIAL FOREIGN KEY,
+CREATE TABLE cashflows (
+    id SERIAL PRIMARY KEY,
+	id users_id NOT NULL REFERENCES users(id),
     name character(500),
     description character(500),
     amount decimal, 
     flow_type cashflow_flow_type,
     expense_category expense_category   
-}
+);

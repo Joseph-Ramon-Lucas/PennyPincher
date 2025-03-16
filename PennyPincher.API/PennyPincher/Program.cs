@@ -7,6 +7,9 @@ namespace PennyPincher
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Add configuration for connection string
+            
+
             // Add services to the container.
             builder.Services.AddControllers()
                 .AddNewtonsoftJson() // This replaces the default JSON input and output formatters with JSON.NET
