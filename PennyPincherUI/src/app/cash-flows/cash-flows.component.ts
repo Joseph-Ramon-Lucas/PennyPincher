@@ -1,10 +1,12 @@
 import { Component } from "@angular/core";
-import { NavBarComponent } from "../shared/nav-bar/nav-bar.component";
+import { CashFlowTableComponent } from "./cash-flow-table/cash-flow-table.component";
 
 @Component({
 	selector: "app-cash-flows",
-	imports: [],
+	imports: [CashFlowTableComponent],
 	templateUrl: "./cash-flows.component.html",
 	styleUrl: "./cash-flows.component.css",
 })
-export class CashFlowsComponent {}
+export class CashFlowsComponent {
+	title = "Budget Cash Flows";
+}

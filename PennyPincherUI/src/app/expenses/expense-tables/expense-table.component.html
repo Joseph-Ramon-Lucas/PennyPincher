@@ -23,7 +23,11 @@
       <tr>
         <td>{{ expense.id }}</td>
         <td>{{ expense.name }}</td>
-        <td>{{ expense.category }}</td>
+        <td>
+          @switch (expense.category) { @case (0) {None} @case (1) {Living} @case
+          (2) {Utilities} @case (3) {Entertainment} @case (4) {Shopping} @case
+          (5) {Takeout} }
+        </td>
         <td>{{ expense.price }}</td>
       </tr>
       }
