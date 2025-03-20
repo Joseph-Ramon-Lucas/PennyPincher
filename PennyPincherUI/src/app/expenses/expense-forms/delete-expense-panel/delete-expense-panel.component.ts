@@ -1,5 +1,5 @@
 import { Component, inject } from "@angular/core";
-import { Expense, ExpenseForUpdateDto } from "../../../models/expense";
+import { ExpenseDto, ExpenseForUpdateDto } from "../../../models/expense";
 import { ExpenseHistoryService } from "../../../services/expense-history.service";
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
@@ -33,7 +33,7 @@ export class DeleteExpensePanelComponent {
 	title = "delete-expense";
 	submitted = false;
 	expenseHistoryService = inject(ExpenseHistoryService);
-	newItem = new Expense(1, "a", 1, 1); //dummy data to avoid nulls - all we care about is the id
+	newItem = new ExpenseDto(1, "a", 1, 1); //dummy data to avoid nulls - all we care about is the id
 
 	handleSubmit() {
 		console.log(this.newItem);

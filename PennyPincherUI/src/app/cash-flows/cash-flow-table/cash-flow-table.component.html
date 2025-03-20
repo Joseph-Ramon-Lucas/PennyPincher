@@ -7,40 +7,43 @@
       </button>
     </mat-card-content>
   </div>
-  <!-- <div [style.display]="cashFlows.length === 0 ? 'flex' : 'none'">
+  <div [style.display]="cashFlows.length === 0 ? 'flex' : 'none'">
     <mat-spinner></mat-spinner>
   </div>
-  <div [style.display]="cashFlows.length != 0 ? 'flex' : 'none'"></div> -->
-  <table>
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Amount</th>
-        <th>FlowType</th>
-        <th>Category</th>
-      </tr>
-    </thead>
-    @for (cf of cashFlows; track $index) {
-    <tbody>
-      <tr>
-        <td>{{ cf.id }}</td>
-        <td>{{ cf.name }}</td>
-        <td>{{ cf.description }}</td>
-        <td>{{ cf.amount }}</td>
-        @if (cf.flow == 0) {
-        <td>Income</td>
-        } @else {
-        <td>Expense</td>
+  <div [style.display]="cashFlows.length != 0 ? 'flex' : 'none'">
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Amount</th>
+          <th>FlowType</th>
+          <th>Category</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cf of cashFlows; track $index) {
+        <tr>
+          <td>{{ cf.id }}</td>
+          <td>{{ cf.name }}</td>
+          <td>{{ cf.description }}</td>
+          <td>{{ cf.amount }}</td>
+          @if (cf.flow == 0) {
+          <td>Income</td>
+          } @else {
+          <td>Expense</td>
+          }
+          <td>
+            @switch (cf.category) { @case (0) {None} @case (1) {Living} @case
+            (2) {Utilities} @case (3) {Entertainment} @case (4) {Shopping} @case
+            (5) {Takeout} }
+          </td>
+        </tr>
+        } @empty {
+        <tr></tr>
         }
-        <td>{{ cf.category }}</td>
-      </tr>
-    </tbody>
-    } @empty {
-    <mat-spinner
-      [style.display]="cashFlows.length === 0 ? 'flex' : 'none'"
-    ></mat-spinner>
-    }
-  </table>
+      </tbody>
+    </table>
+  </div>
 </mat-card>

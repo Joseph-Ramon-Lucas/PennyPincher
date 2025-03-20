@@ -5,7 +5,7 @@ import type {
 	CashFlowDto,
 	CashFlowUpdateDto,
 	FLOW_TYPES,
-} from "../models/cashflowdto";
+} from "../models/cashflow";
 import type { Observable } from "rxjs";
 
 @Injectable({

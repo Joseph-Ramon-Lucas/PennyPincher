@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { Expense } from "../../../models/expense";
+import { ExpenseDto } from "../../../models/expense";
 import { ExpenseHistoryService } from "../../../services/expense-history.service";
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
@@ -34,7 +34,7 @@ export class AddExpensePanelComponent {
 	title = "add-expense";
 	submitted = false;
 	expenseHistoryService = inject(ExpenseHistoryService);
-	newItem = new Expense(1, "", 0, 0);
+	newItem = new ExpenseDto(1, "", 0, 0);
 
 	handleSubmit() {
 		console.log(this.newItem);
