@@ -1,4 +1,4 @@
-import { Component, inject } from "@angular/core";
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from "@angular/core";
 import { RouterModule, RouterOutlet } from "@angular/router";
 import { NavBarComponent } from "./shared/nav-bar/nav-bar.component";
 import { HeaderComponent } from "./shared/header/header.component";
@@ -8,6 +8,7 @@ import { HeaderComponent } from "./shared/header/header.component";
 	imports: [RouterModule, RouterOutlet, HeaderComponent, NavBarComponent],
 	templateUrl: "./app.component.html",
 	styleUrls: ["./app.component.css"],
+	schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppComponent {
 	title = "Penny Pincher";

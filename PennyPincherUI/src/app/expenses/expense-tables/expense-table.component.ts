@@ -5,7 +5,7 @@ import {
 	type OnInit,
 	type SimpleChanges,
 } from "@angular/core";
-import type { Expense } from "../../models/expense";
+import { CATEGORY_TYPES, type Expense } from "../../models/expense";
 import { ExpenseHistoryService } from "../../services/expense-history.service";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
@@ -29,7 +29,6 @@ export class ExpenseTable implements OnInit {
 	title = "ExpenseTable";
 	expenses: Expense[] = [];
 	expenseHistoryService = inject(ExpenseHistoryService);
-
 	constructor() {}
 	ngOnInit(): void {
 		this.updateTable();

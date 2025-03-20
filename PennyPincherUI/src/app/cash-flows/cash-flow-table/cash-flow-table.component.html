@@ -1,0 +1,46 @@
+<mat-card>
+  <mat-card-header>Budget Cash Flows Tables</mat-card-header>
+  <div>
+    <mat-card-content>
+      <button (click)="updateTable()" mat-mini-fab matTooltip="Refresh Table">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </mat-card-content>
+  </div>
+  <!-- <div [style.display]="cashFlows.length === 0 ? 'flex' : 'none'">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div [style.display]="cashFlows.length != 0 ? 'flex' : 'none'"></div> -->
+  <table>
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Amount</th>
+        <th>FlowType</th>
+        <th>Category</th>
+      </tr>
+    </thead>
+    @for (cf of cashFlows; track $index) {
+    <tbody>
+      <tr>
+        <td>{{ cf.id }}</td>
+        <td>{{ cf.name }}</td>
+        <td>{{ cf.description }}</td>
+        <td>{{ cf.amount }}</td>
+        @if (cf.flow == 0) {
+        <td>Income</td>
+        } @else {
+        <td>Expense</td>
+        }
+        <td>{{ cf.category }}</td>
+      </tr>
+    </tbody>
+    } @empty {
+    <mat-spinner
+      [style.display]="cashFlows.length === 0 ? 'flex' : 'none'"
+    ></mat-spinner>
+    }
+  </table>
+</mat-card>

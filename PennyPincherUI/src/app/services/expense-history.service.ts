@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { environment } from "../../environments/environment.development";
 import type { Observable } from "rxjs";
-import {
+import type {
 	CATEGORY_TYPES,
 	Expense,
 	ExpenseForUpdateDto,
