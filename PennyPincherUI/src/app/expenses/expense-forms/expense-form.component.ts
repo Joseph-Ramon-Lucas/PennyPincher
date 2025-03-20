@@ -36,5 +36,4 @@ import { DeleteExpensePanelComponent } from "./delete-expense-panel/delete-expen
 })
 export class ExpenseForm {
 	title = "ExpenseForm";
-	constructor() {}
 }

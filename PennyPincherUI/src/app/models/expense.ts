@@ -1,4 +1,4 @@
-export class Expense {
+export class ExpenseDto {
 	constructor(
 		public id: number,
 		public name: string,

@@ -5,7 +5,7 @@ import {
 	type OnInit,
 	type SimpleChanges,
 } from "@angular/core";
-import { CATEGORY_TYPES, type Expense } from "../../models/expense";
+import { CATEGORY_TYPES, type ExpenseDto } from "../../models/expense";
 import { ExpenseHistoryService } from "../../services/expense-history.service";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
@@ -27,7 +27,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 })
 export class ExpenseTable implements OnInit {
 	title = "ExpenseTable";
-	expenses: Expense[] = [];
+	expenses: ExpenseDto[] = [];
 	expenseHistoryService = inject(ExpenseHistoryService);
 	constructor() {}
 	ngOnInit(): void {
@@ -39,7 +39,6 @@ export class ExpenseTable implements OnInit {
 	// }
 
 	updateTable(): void {
-		this.expenses = [];
 		this.expenseHistoryService.getAllItems().subscribe((expenses) => {
 			this.expenses = expenses;
 		});

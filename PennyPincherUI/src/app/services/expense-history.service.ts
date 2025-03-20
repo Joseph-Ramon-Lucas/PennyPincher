@@ -4,7 +4,7 @@ import { environment } from "../../environments/environment.development";
 import type { Observable } from "rxjs";
 import type {
 	CATEGORY_TYPES,
-	Expense,
+	ExpenseDto,
 	ExpenseForUpdateDto,
 } from "../models/expense";
 
@@ -14,25 +14,25 @@ export class ExpenseHistoryService {
 	private apiUrl = `${environment.apiURL}/api/history`;
 	constructor() {}
 
-	public addItem(itemToAdd: Expense): Observable<Expense> {
-		return this.http.post<Expense>(this.apiUrl, itemToAdd);
+	public addItem(itemToAdd: ExpenseDto): Observable<ExpenseDto> {
+		return this.http.post<ExpenseDto>(this.apiUrl, itemToAdd);
 		// this.http.post(this.apiUrl, itemToAdd).subscribe(newItem => {
 		//   console.log('Added new item: ', newItem);
 		// });
 	}
 
-	public getAllItems(): Observable<Expense[]> {
-		return this.http.get<Expense[]>(this.apiUrl);
+	public getAllItems(): Observable<ExpenseDto[]> {
+		return this.http.get<ExpenseDto[]>(this.apiUrl);
 	}
 
-	public getItemById(itemId: number): Observable<Expense[]> {
-		return this.http.get<Expense[]>(`${this.apiUrl}/${itemId}`);
+	public getItemById(itemId: number): Observable<ExpenseDto[]> {
+		return this.http.get<ExpenseDto[]>(`${this.apiUrl}/${itemId}`);
 	}
 
 	public getItemByCategory(
 		categoryType: CATEGORY_TYPES,
-	): Observable<Expense[]> {
-		return this.http.get<Expense[]>(
+	): Observable<ExpenseDto[]> {
+		return this.http.get<ExpenseDto[]>(
 			`${this.apiUrl}/${categoryType}/getcategoryitems`,
 		);
 	}
@@ -47,7 +47,7 @@ export class ExpenseHistoryService {
 		);
 	}
 
-	public deleteItem(itemToDelete: Expense): Observable<Expense[]> {
+	public deleteItem(itemToDelete: ExpenseDto): Observable<ExpenseDto[]> {
 		const options = {
 			headers: new HttpHeaders({
 				"Content-Type": "application/json-patch+json",
@@ -57,6 +57,6 @@ export class ExpenseHistoryService {
 		};
 		console.log("OPTIONS!!!", options);
 
-		return this.http.delete<Expense[]>(this.apiUrl, options);
+		return this.http.delete<ExpenseDto[]>(this.apiUrl, options);
 	}
 }
