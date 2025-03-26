@@ -19,8 +19,8 @@ import { CashFlowService } from "../../services/cash-flow.service";
 	styleUrl: "./cash-flow-table.component.css",
 })
 export class CashFlowTableComponent implements OnInit {
-	cashFlows: CashFlowDto[] = [];
 	cashFlowService = inject(CashFlowService);
+	cashFlows: CashFlowDto[] = [];
 
 	ngOnInit(): void {
 		this.updateTable();
@@ -28,7 +28,16 @@ export class CashFlowTableComponent implements OnInit {
 
 	updateTable(): void {
 		this.cashFlowService.GetAllFlows().subscribe((cf) => {
+			console.log("table component before cfs", this.cashFlows);
 			this.cashFlows = cf;
+			console.log("table component after cfs", this.cashFlows);
+		});
+	}
+	deleteRow(idToDelete: number): void {
+		this.cashFlowService.DeleteFlow(idToDelete).subscribe({
+			complete: () => {
+				this.updateTable();
+			},
 		});
 	}
 }

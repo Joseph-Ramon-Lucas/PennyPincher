@@ -20,6 +20,7 @@
           <th>Amount</th>
           <th>FlowType</th>
           <th>Category</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -38,6 +39,15 @@
             @switch (cf.category) { @case (0) {None} @case (1) {Living} @case
             (2) {Utilities} @case (3) {Entertainment} @case (4) {Shopping} @case
             (5) {Takeout} }
+          </td>
+          <td>
+            <button
+              mat-fab
+              (click)="deleteRow(cf.id)"
+              style="align-items: center"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
           </td>
         </tr>
         } @empty {

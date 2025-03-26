@@ -14,7 +14,6 @@ import type { Observable } from "rxjs";
 export class CashFlowService {
 	private http = inject(HttpClient);
 	private apiUrl = `${environment.apiURL}/api/cashflow`;
-	constructor() {}
 
 	public CreateFlow(cashFlow: CashFlowDto): Observable<CashFlowDto> {
 		return this.http.post<CashFlowDto>(this.apiUrl, cashFlow);

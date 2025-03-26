@@ -1,4 +1,13 @@
-import { Component, inject } from "@angular/core";
+import {
+	Component,
+	EventEmitter,
+	inject,
+	input,
+	Input,
+	OnChanges,
+	Output,
+	SimpleChanges,
+} from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
@@ -30,16 +39,27 @@ import { CashFlowDto } from "../../../models/cashflow";
 	],
 	templateUrl: "./add-cash-flow-panel.component.html",
 	styleUrl: "./add-cash-flow-panel.component.css",
+	outputs: [],
 })
 export class AddCashFlowPanelComponent {
 	title = "add-cashflow";
 	submitted = false;
 	cashflowService = inject(CashFlowService);
 	newCashflow = new CashFlowDto(1, "", "", 0, 0, 0);
+	cashFlows: CashFlowDto[] = [];
+
+	updateTable(): void {
+		this.cashflowService.GetAllFlows().subscribe((cf) => {
+			this.cashFlows = cf;
+		});
+	}
 
 	handleSubmit() {
-		this.cashflowService.CreateFlow(this.newCashflow).subscribe(() => {
-			this.submitted = true;
+		this.cashflowService.CreateFlow(this.newCashflow).subscribe({
+			complete: () => {
+				this.submitted = true;
+				this.updateTable();
+			},
 		});
 	}
 }
