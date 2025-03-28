@@ -1,11 +1,5 @@
-import {
-	Component,
-	inject,
-	type OnChanges,
-	type OnInit,
-	type SimpleChanges,
-} from "@angular/core";
-import { CATEGORY_TYPES, type ExpenseDto } from "../../models/expense";
+import { Component, inject, type OnInit } from "@angular/core";
+import { CATEGORY_TYPES, ExpenseDto } from "../../models/expense";
 import { ExpenseHistoryService } from "../../services/expense-history.service";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
@@ -33,14 +27,22 @@ export class ExpenseTable implements OnInit {
 	ngOnInit(): void {
 		this.updateTable();
 	}
-	// ngOnChanges(changes: SimpleChanges): void {
-	// 	console.log("changes!", changes);
-	// 	this.updateTable();
-	// }
 
 	updateTable(): void {
 		this.expenseHistoryService.getAllItems().subscribe((expenses) => {
 			this.expenses = expenses;
+		});
+	}
+
+	deleteRow(idToDelete: number): void {
+		//temp expense dto item
+		//plans to convert to just an id
+		const expenseToDelete = new ExpenseDto(idToDelete, "", 0, 1);
+
+		this.expenseHistoryService.deleteItem(expenseToDelete).subscribe({
+			complete: () => {
+				this.updateTable();
+			},
 		});
 	}
 }

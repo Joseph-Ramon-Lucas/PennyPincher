@@ -16,6 +16,7 @@
         <th>Name</th>
         <th>Category</th>
         <th>Price</th>
+        <th>Delete?</th>
       </tr>
     </thead>
     <tbody>
@@ -29,6 +30,15 @@
           (5) {Takeout} }
         </td>
         <td>{{ expense.price }}</td>
+        <td>
+          <button
+            mat-fab
+            (click)="deleteRow(expense.id)"
+            style="align-items: center"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
       </tr>
       }
     </tbody>
