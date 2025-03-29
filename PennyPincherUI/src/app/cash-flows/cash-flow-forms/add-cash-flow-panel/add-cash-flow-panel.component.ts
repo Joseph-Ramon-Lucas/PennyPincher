@@ -27,6 +27,7 @@ import { MatRadioModule } from "@angular/material/radio";
 import { CashFlowService } from "../../../services/cash-flow.service";
 import { CashFlowDto, FLOW_TYPES } from "../../../models/cashflow";
 import { CATEGORY_TYPES } from "../../../models/expense";
+import { Subject } from "rxjs";
 
 @Component({
 	selector: "app-add-cash-flow-panel",
@@ -49,9 +50,7 @@ import { CATEGORY_TYPES } from "../../../models/expense";
 })
 export class AddCashFlowPanelComponent {
 	title = "add-cashflow";
-	submitted = false;
 	cashflowService = inject(CashFlowService);
-
 	cashFlows: CashFlowDto[] = [];
 
 	newCashFlowForm = new FormGroup({
@@ -83,7 +82,8 @@ export class AddCashFlowPanelComponent {
 
 		this.cashflowService.CreateFlow(newCF).subscribe({
 			complete: () => {
-				this.submitted = true;
+				// push update upon successful submission to refresh table
+				this.cashflowService.isSubmitted$.next(true);
 				this.updateTable();
 			},
 		});

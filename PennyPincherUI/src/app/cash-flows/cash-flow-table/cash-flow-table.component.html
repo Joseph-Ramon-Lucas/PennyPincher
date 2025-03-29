@@ -7,10 +7,13 @@
       </button>
     </mat-card-content>
   </div>
-  <div [style.display]="cashFlows.length === 0 ? 'flex' : 'none'">
+  @if (cashFlows.length === 0) {
+  <div>
     <mat-spinner></mat-spinner>
   </div>
-  <div [style.display]="cashFlows.length != 0 ? 'flex' : 'none'">
+  } @else {
+
+  <div>
     <table>
       <thead>
         <tr>
@@ -56,4 +59,5 @@
       </tbody>
     </table>
   </div>
+  }
 </mat-card>

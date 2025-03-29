@@ -1,10 +1,11 @@
-import { Component, inject, type OnInit } from "@angular/core";
+import { Component, inject, OnDestroy, type OnInit } from "@angular/core";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardHeader, MatCardModule } from "@angular/material/card";
 import { MatIcon } from "@angular/material/icon";
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import type { CashFlowDto } from "../../models/cashflow";
 import { CashFlowService } from "../../services/cash-flow.service";
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
 	selector: "app-cash-flow-table",
@@ -18,19 +19,30 @@ import { CashFlowService } from "../../services/cash-flow.service";
 	templateUrl: "./cash-flow-table.component.html",
 	styleUrl: "./cash-flow-table.component.css",
 })
-export class CashFlowTableComponent implements OnInit {
-	cashFlowService = inject(CashFlowService);
-	cashFlows: CashFlowDto[] = [];
+export class CashFlowTableComponent implements OnInit, OnDestroy {
+	private cashFlowService = inject(CashFlowService);
+	protected cashFlows: CashFlowDto[] = [];
+	private destroySubject$ = new Subject<void>();
 
 	ngOnInit(): void {
 		this.updateTable();
+		this.cashFlowService.isSubmitted$
+			.pipe(takeUntil(this.destroySubject$))
+			.subscribe((result: boolean) => {
+				if (result) {
+					this.updateTable();
+				}
+			});
+	}
+
+	ngOnDestroy(): void {
+		this.destroySubject$.next();
+		this.destroySubject$.complete();
 	}
 
 	updateTable(): void {
 		this.cashFlowService.GetAllFlows().subscribe((cf) => {
-			console.log("table component before cfs", this.cashFlows);
 			this.cashFlows = cf;
-			console.log("table component after cfs", this.cashFlows);
 		});
 	}
 	deleteRow(idToDelete: number): void {
