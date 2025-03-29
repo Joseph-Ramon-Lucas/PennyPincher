@@ -6,7 +6,7 @@ import type {
 	CashFlowUpdateDto,
 	FLOW_TYPES,
 } from "../models/cashflow";
-import type { Observable } from "rxjs";
+import { Subject, type Observable } from "rxjs";
 
 @Injectable({
 	providedIn: "root",
@@ -14,6 +14,8 @@ import type { Observable } from "rxjs";
 export class CashFlowService {
 	private http = inject(HttpClient);
 	private apiUrl = `${environment.apiURL}/api/cashflow`;
+
+	public isSubmitted$ = new Subject<boolean>();
 
 	public CreateFlow(cashFlow: CashFlowDto): Observable<CashFlowDto> {
 		return this.http.post<CashFlowDto>(this.apiUrl, cashFlow);

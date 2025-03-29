@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	inject,
+	input,
+	output,
+	signal,
+} from "@angular/core";
 import { ExpenseDto } from "../../../models/expense";
 import { ExpenseHistoryService } from "../../../services/expense-history.service";
 import { MatSelectModule } from "@angular/material/select";
@@ -28,23 +36,21 @@ import { MatTabsModule } from "@angular/material/tabs";
 		FormsModule,
 		MatTabsModule,
 	],
-	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddExpensePanelComponent {
 	title = "add-expense";
-	submitted = false;
+
 	expenseHistoryService = inject(ExpenseHistoryService);
 	newItem = new ExpenseDto(1, "", 0, 0);
 
 	handleSubmit() {
 		console.log(this.newItem);
 
-		this.expenseHistoryService
-			.addItem(this.newItem)
-			.subscribe(() => this.onSubmit());
-	}
-
-	onSubmit() {
-		this.submitted = true;
+		this.expenseHistoryService.addItem(this.newItem).subscribe({
+			complete: () => {
+				// push update upon successful submission to refresh table
+				this.expenseHistoryService.isSubmitted$.next(true);
+			},
+		});
 	}
 }

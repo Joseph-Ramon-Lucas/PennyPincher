@@ -1,46 +1,56 @@
-<h2>Expense History Table</h2>
-
-<div>
-  <button (click)="updateTable()" mat-mini-fab matTooltip="Refresh Table">
-    <mat-icon>refresh</mat-icon>
-  </button>
-</div>
-<div [style.display]="expenses.length === 0 ? 'flex' : 'none'">
-  <mat-spinner></mat-spinner>
-</div>
-<div [style.display]="expenses.length != 0 ? 'flex' : 'none'">
-  <table>
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Price</th>
-        <th>Delete?</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (expense of expenses; track $index) {
-      <tr>
-        <td>{{ expense.id }}</td>
-        <td>{{ expense.name }}</td>
-        <td>
-          @switch (expense.category) { @case (0) {None} @case (1) {Living} @case
-          (2) {Utilities} @case (3) {Entertainment} @case (4) {Shopping} @case
-          (5) {Takeout} }
-        </td>
-        <td>{{ expense.price }}</td>
-        <td>
-          <button
-            mat-fab
-            (click)="deleteRow(expense.id)"
-            style="align-items: center"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </tr>
+<mat-card>
+  <mat-card-header>Budget Cash Flows Tables</mat-card-header>
+  <div>
+    <mat-card-content>
+      <button (click)="updateTable()" mat-mini-fab matTooltip="Refresh Table">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </mat-card-content>
+  </div>
+  <div>
+    <mat-card-content>
+      @if(expenses.length === 0) {
+      <div>
+        <mat-spinner></mat-spinner>
+      </div>
+      } @else {
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Delete?</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (expense of expenses; track $index) {
+            <tr>
+              <td>{{ expense.id }}</td>
+              <td>{{ expense.name }}</td>
+              <td>
+                @switch (expense.category) { @case (0) {None} @case (1) {Living}
+                @case (2) {Utilities} @case (3) {Entertainment} @case (4)
+                {Shopping} @case (5) {Takeout} }
+              </td>
+              <td>{{ expense.price }}</td>
+              <td>
+                <button
+                  mat-fab
+                  (click)="deleteRow(expense.id)"
+                  style="align-items: center"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
       }
-    </tbody>
-  </table>
-</div>
+    </mat-card-content>
+  </div>
+</mat-card>

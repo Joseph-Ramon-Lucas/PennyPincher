@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { environment } from "../../environments/environment.development";
-import type { Observable } from "rxjs";
+import { Subject, type Observable } from "rxjs";
 import type {
 	CATEGORY_TYPES,
 	ExpenseDto,
@@ -12,7 +12,8 @@ import type {
 export class ExpenseHistoryService {
 	private http = inject(HttpClient);
 	private apiUrl = `${environment.apiURL}/api/history`;
-	constructor() {}
+
+	public isSubmitted$: Subject<boolean> = new Subject<boolean>();
 
 	public addItem(itemToAdd: ExpenseDto): Observable<ExpenseDto> {
 		return this.http.post<ExpenseDto>(this.apiUrl, itemToAdd);

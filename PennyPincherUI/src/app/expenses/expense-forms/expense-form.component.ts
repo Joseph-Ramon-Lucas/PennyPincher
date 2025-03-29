@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, output } from "@angular/core";
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -11,8 +11,6 @@ import { FormsModule } from "@angular/forms";
 import { MatTabsModule } from "@angular/material/tabs";
 import { AddExpensePanelComponent } from "./add-expense-panel/add-expense-panel.component";
 import { EditExpensePanelComponent } from "./edit-expense-panel/edit-expense-panel.component";
-import { DeleteExpensePanelComponent } from "./delete-expense-panel/delete-expense-panel.component";
-
 @Component({
 	selector: "expense-form",
 	templateUrl: "./expense-form.component.html",
@@ -30,9 +28,7 @@ import { DeleteExpensePanelComponent } from "./delete-expense-panel/delete-expen
 		MatTabsModule,
 		AddExpensePanelComponent,
 		EditExpensePanelComponent,
-		DeleteExpensePanelComponent,
 	],
-	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExpenseForm {
 	title = "ExpenseForm";
