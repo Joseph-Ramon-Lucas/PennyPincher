@@ -4,6 +4,7 @@
 	justify-content: center;
 	bottom: 0;
 	flex-wrap: wrap;
+	background-color: teal;
 }
 .buttonContainer {
 	display: flex;
@@ -21,16 +22,25 @@
 a {
 	text-decoration: none;
 }
+/* tablet + desktop */
 @media (min-width: 500px) and (max-width: 768px) {
 	input[type="text"] {
 		width: 70%;
 	}
 }
+/* mobile */
 @media (max-width: 499px) {
 	.desktopButton {
 		display: none;
 	}
 	.mobileButton {
 		display: flex;
+	}
+	.navButtons {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		bottom: 0;
+		flex-wrap: wrap;
 	}
 }
