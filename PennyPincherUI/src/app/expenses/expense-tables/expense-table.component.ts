@@ -1,14 +1,5 @@
-import {
-	ChangeDetectionStrategy,
-	Component,
-	effect,
-	inject,
-	Injector,
-	OnDestroy,
-	signal,
-	type OnInit,
-} from "@angular/core";
-import { CATEGORY_TYPES, ExpenseDto } from "../../models/expense";
+import { Component, inject, type OnDestroy, type OnInit } from "@angular/core";
+import { ExpenseDto } from "../../models/expense";
 import { ExpenseHistoryService } from "../../services/expense-history.service";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from "@angular/material/divider";
@@ -16,7 +7,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatCard, MatCardContent, MatCardHeader } from "@angular/material/card";
-import { Subject, takeUntil } from "rxjs";
+import { takeUntil } from "rxjs";
 
 @Component({
 	selector: "expense-table",
@@ -37,23 +28,20 @@ export class ExpenseTable implements OnInit, OnDestroy {
 	title = "ExpenseTable";
 	protected expenses: ExpenseDto[] = [];
 	private expenseHistoryService = inject(ExpenseHistoryService);
-	private destroySubject$: Subject<void> = new Subject<void>();
 
 	ngOnInit(): void {
 		this.updateTable();
 		// update the table when a user submits data via the form
-		this.expenseHistoryService.isSubmitted$
-			.pipe(takeUntil(this.destroySubject$))
-			.subscribe((result: boolean) => {
-				if (result) {
-					this.updateTable();
-				}
+		this.expenseHistoryService.submissionComplete$
+			.pipe(takeUntil(this.expenseHistoryService.destroySubject$))
+			.subscribe(() => {
+				this.updateTable();
 			});
 	}
 
 	ngOnDestroy(): void {
-		this.destroySubject$.next();
-		this.destroySubject$.complete();
+		this.expenseHistoryService.destroySubject$.next();
+		this.expenseHistoryService.destroySubject$.complete();
 	}
 
 	updateTable(): void {

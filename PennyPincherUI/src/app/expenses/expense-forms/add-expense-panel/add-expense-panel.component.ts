@@ -7,7 +7,7 @@ import {
 	output,
 	signal,
 } from "@angular/core";
-import { ExpenseDto } from "../../../models/expense";
+import { CATEGORY_TYPES, ExpenseDto } from "../../../models/expense";
 import { ExpenseHistoryService } from "../../../services/expense-history.service";
 import { MatSelectModule } from "@angular/material/select";
 import { MatInputModule } from "@angular/material/input";
@@ -17,7 +17,7 @@ import { MatDividerModule } from "@angular/material/divider";
 import { MatIconModule } from "@angular/material/icon";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatCardModule } from "@angular/material/card";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatTabsModule } from "@angular/material/tabs";
 
 @Component({
@@ -35,21 +35,27 @@ import { MatTabsModule } from "@angular/material/tabs";
 		MatCardModule,
 		FormsModule,
 		MatTabsModule,
+		ReactiveFormsModule,
 	],
 })
 export class AddExpensePanelComponent {
 	title = "add-expense";
 
-	expenseHistoryService = inject(ExpenseHistoryService);
-	newItem = new ExpenseDto(1, "", 0, 0);
+	private expenseHistoryService = inject(ExpenseHistoryService);
+	protected expenseForm = this.expenseHistoryService.expenseForm;
 
 	handleSubmit() {
-		console.log(this.newItem);
+		const newItem: ExpenseDto = new ExpenseDto(
+			this.expenseForm.value.id ?? 0,
+			this.expenseForm.value.name ?? "",
+			this.expenseForm.value.category ?? CATEGORY_TYPES.None,
+			this.expenseForm.value.price ?? 0,
+		);
 
-		this.expenseHistoryService.addItem(this.newItem).subscribe({
+		this.expenseHistoryService.addItem(newItem).subscribe({
 			complete: () => {
 				// push update upon successful submission to refresh table
-				this.expenseHistoryService.isSubmitted$.next(true);
+				this.expenseHistoryService.submissionComplete$.next();
 			},
 		});
 	}

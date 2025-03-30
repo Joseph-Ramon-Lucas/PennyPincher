@@ -2,18 +2,27 @@ import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { environment } from "../../environments/environment.development";
 import { Subject, type Observable } from "rxjs";
-import type {
+import {
 	CATEGORY_TYPES,
-	ExpenseDto,
-	ExpenseForUpdateDto,
+	type ExpenseDto,
+	type ExpenseForUpdateDto,
 } from "../models/expense";
+import { FormControl, FormGroup } from "@angular/forms";
 
 @Injectable({ providedIn: "root" })
 export class ExpenseHistoryService {
 	private http = inject(HttpClient);
 	private apiUrl = `${environment.apiURL}/api/history`;
 
-	public isSubmitted$: Subject<boolean> = new Subject<boolean>();
+	public submissionComplete$: Subject<void> = new Subject<void>();
+	public destroySubject$: Subject<void> = new Subject<void>();
+
+	public expenseForm = new FormGroup({
+		id: new FormControl(0),
+		name: new FormControl(""),
+		category: new FormControl(CATEGORY_TYPES.None),
+		price: new FormControl(0),
+	});
 
 	public addItem(itemToAdd: ExpenseDto): Observable<ExpenseDto> {
 		return this.http.post<ExpenseDto>(this.apiUrl, itemToAdd);

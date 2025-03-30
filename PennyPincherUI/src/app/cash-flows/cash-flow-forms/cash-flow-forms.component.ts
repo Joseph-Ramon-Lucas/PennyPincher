@@ -10,6 +10,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { AddCashFlowPanelComponent } from "./add-cash-flow-panel/add-cash-flow-panel.component";
+import { EditCashFlowPanelComponent } from "./edit-cash-flow-panel/edit-cash-flow-panel.component";
 
 @Component({
 	selector: "app-cash-flow-forms",
@@ -25,6 +26,7 @@ import { AddCashFlowPanelComponent } from "./add-cash-flow-panel/add-cash-flow-p
 		FormsModule,
 		MatTabsModule,
 		AddCashFlowPanelComponent,
+		EditCashFlowPanelComponent,
 	],
 	templateUrl: "./cash-flow-forms.component.html",
 	styleUrl: "./cash-flow-forms.component.css",
