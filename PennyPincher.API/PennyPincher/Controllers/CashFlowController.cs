@@ -86,7 +86,7 @@ namespace PennyPincher.Controllers
                 target.Flow = newCashFlow.Flow;
             });
 
-            return Ok($"Updated Entry {targetCashFlowID} with {newCashFlow.Name}");
+            return NoContent();
         }
 
         [HttpPatch ("{targetCashFlowID}")]

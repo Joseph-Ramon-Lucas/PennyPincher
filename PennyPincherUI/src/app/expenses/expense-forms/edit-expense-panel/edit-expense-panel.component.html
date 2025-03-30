@@ -1,35 +1,39 @@
 <div>
-  <mat-form-field>
-    <mat-label><h1>Item ID to edit</h1></mat-label>
-    <input id="Id" type="number" [(ngModel)]="newItemId" matInput />
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>Expense Name</mat-label>
-    <input id="Name" type="text" [(ngModel)]="newItem.name" matInput />
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>Category</mat-label>
-    <mat-select id="Category" [(ngModel)]="newItem.category">
-      <mat-option value="0">None</mat-option>
-      <mat-option value="1">Living</mat-option>
-      <mat-option value="2">Utilities</mat-option>
-      <mat-option value="3">Entertainment</mat-option>
-      <mat-option value="4">Shopping</mat-option>
-      <mat-option value="5">Takeout</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>Price</mat-label>
-    <input id="Price" type="number" [(ngModel)]="newItem.price" matInput />
-  </mat-form-field>
-  <div>
-    <button
-      class="submit-button"
-      (click)="handleSubmit()"
-      matTooltip="Confirm Edit"
-      mat-fab
-    >
-      <mat-icon>done_outline</mat-icon>
-    </button>
-  </div>
+  <form [formGroup]="expenseForm" (submit)="handleSubmit()">
+    <div>
+      <mat-form-field>
+        <mat-label>Item ID to edit</mat-label>
+        <input id="Id" type="number" formControlName="id" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Expense Name</mat-label>
+        <input id="Name" type="text" formControlName="name" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select id="Category" formControlName="category">
+          <mat-option value="0">None</mat-option>
+          <mat-option value="1">Living</mat-option>
+          <mat-option value="2">Utilities</mat-option>
+          <mat-option value="3">Entertainment</mat-option>
+          <mat-option value="4">Shopping</mat-option>
+          <mat-option value="5">Takeout</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Price</mat-label>
+        <input id="Price" type="number" formControlName="price" matInput />
+      </mat-form-field>
+      <div>
+        <button
+          class="submit-button"
+          type="submit"
+          matTooltip="Confirm Edit"
+          mat-fab
+        >
+          <mat-icon>done_outline</mat-icon>
+        </button>
+      </div>
+    </div>
+  </form>
 </div>

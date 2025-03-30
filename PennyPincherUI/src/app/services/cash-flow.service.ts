@@ -1,12 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { environment } from "../../environments/environment.development";
-import type {
-	CashFlowDto,
-	CashFlowUpdateDto,
+import {
+	type CashFlowDto,
+	type CashFlowUpdateDto,
 	FLOW_TYPES,
 } from "../models/cashflow";
 import { Subject, type Observable } from "rxjs";
+import { FormControl, FormGroup } from "@angular/forms";
+import { CATEGORY_TYPES } from "../models/expense";
 
 @Injectable({
 	providedIn: "root",
@@ -15,7 +17,17 @@ export class CashFlowService {
 	private http = inject(HttpClient);
 	private apiUrl = `${environment.apiURL}/api/cashflow`;
 
-	public isSubmitted$ = new Subject<boolean>();
+	public submissionComplete$ = new Subject<void>();
+	public destroySubject$ = new Subject<void>();
+
+	public cashFlowForm = new FormGroup({
+		id: new FormControl(0),
+		name: new FormControl(""),
+		description: new FormControl(""),
+		amount: new FormControl(0),
+		flow: new FormControl(FLOW_TYPES.income),
+		category: new FormControl(CATEGORY_TYPES.None),
+	});
 
 	public CreateFlow(cashFlow: CashFlowDto): Observable<CashFlowDto> {
 		return this.http.post<CashFlowDto>(this.apiUrl, cashFlow);

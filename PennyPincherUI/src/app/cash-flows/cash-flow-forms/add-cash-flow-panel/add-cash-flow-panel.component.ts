@@ -50,41 +50,23 @@ import { Subject } from "rxjs";
 })
 export class AddCashFlowPanelComponent {
 	title = "add-cashflow";
-	cashflowService = inject(CashFlowService);
-	cashFlows: CashFlowDto[] = [];
-
-	newCashFlowForm = new FormGroup({
-		id: new FormControl(0),
-		name: new FormControl(""),
-		description: new FormControl(""),
-		amount: new FormControl(0),
-		flow: new FormControl(FLOW_TYPES.income),
-		category: new FormControl(CATEGORY_TYPES.None),
-	});
-
-	updateTable(): void {
-		this.cashflowService.GetAllFlows().subscribe((cf) => {
-			this.cashFlows = cf;
-		});
-	}
+	private cashFlowService = inject(CashFlowService);
+	protected cashFlowForm = this.cashFlowService.cashFlowForm;
 
 	handleSubmit() {
-		console.log(this.newCashFlowForm.value.id);
-
 		const newCF = new CashFlowDto(
-			this.newCashFlowForm.value.id ?? 0,
-			this.newCashFlowForm.value.name ?? "",
-			this.newCashFlowForm.value.description ?? "",
-			this.newCashFlowForm.value.amount ?? 0,
-			this.newCashFlowForm.value.flow ?? FLOW_TYPES.income,
-			this.newCashFlowForm.value.category ?? CATEGORY_TYPES.None,
+			this.cashFlowForm.value.id ?? 0,
+			this.cashFlowForm.value.name ?? "",
+			this.cashFlowForm.value.description ?? "",
+			this.cashFlowForm.value.amount ?? 0,
+			this.cashFlowForm.value.flow ?? FLOW_TYPES.income,
+			this.cashFlowForm.value.category ?? CATEGORY_TYPES.None,
 		);
 
-		this.cashflowService.CreateFlow(newCF).subscribe({
+		this.cashFlowService.CreateFlow(newCF).subscribe({
 			complete: () => {
 				// push update upon successful submission to refresh table
-				this.cashflowService.isSubmitted$.next(true);
-				this.updateTable();
+				this.cashFlowService.submissionComplete$.next();
 			},
 		});
 	}
