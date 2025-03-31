@@ -105,7 +105,7 @@ namespace PennyPincher.Controllers
 
         // Purpose: provide overall summary of financial health per chosen CashFlow
         [HttpGet("getstatus/{DataStore}")]
-        public ActionResult<string> Status(CFDataStores DataStore)
+        public IActionResult Status(CFDataStores DataStore)
         {
             List<CashFlowDto> CFData = CFDataStorePicker(DataStore);
 
@@ -125,7 +125,7 @@ namespace PennyPincher.Controllers
                 .Select(e => e.Amount)
                 .FirstOrDefault<double>();
 
-
+            double percentOfEarningsGoingToMostCostlyAmount = Math.Round((mostCostlyAmount / incomes), 4) * 100;
 
             string statusUpdate = string.Empty;
             if (incomes > liabilities)
@@ -144,7 +144,18 @@ namespace PennyPincher.Controllers
                                 $"{Math.Round((mostCostlyAmount / incomes), 4) * 100}% of your earnings is going to {mostCostlyName}");
 
             statusUpdate = statusUpdate + ratioText;
-            return Ok(statusUpdate);
+            var statuses = new
+            {
+                incomes,
+                netIncome,
+                liabilities,
+                netIncomeRatio,
+                mostCostlyName,
+                mostCostlyAmount,
+                percentOfEarningsGoingToMostCostlyAmount
+            };
+
+            return Ok(statuses);
         }
 
         [HttpGet("/getstatus/compare/{DataStore}")]
@@ -236,7 +247,22 @@ namespace PennyPincher.Controllers
 
 
             string analysis = compStatment + columns + CurrCostlyCatAnalysis + ProjCostlyCatAnalysis;
-            return Ok(analysis);
+
+            var analysisVariables = new
+            {
+                CurrTopCostly,
+                ProjTopCostly,
+                CurrCategoriesSum,
+                ProjCategoriesSum,
+                CurrMostCostlyCategoryPrice,
+                ProjMostCostlyCurrCategoryPrice,
+                CurrMostCostlyCategory,
+                ProjMostCostlyCurrCategory,
+                CostlyCategoryRatio,
+
+            };
+
+            return Ok(analysisVariables);
         }
 
     }
