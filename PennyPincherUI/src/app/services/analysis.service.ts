@@ -3,7 +3,11 @@ import { inject, Injectable } from "@angular/core";
 import { environment } from "../../environments/environment.development";
 import type { CashFlowDto } from "../models/cashflow";
 import type { Observable } from "rxjs";
-import type { CFDataStores } from "../models/analysis";
+import type {
+	AnalysisComparisonDto,
+	AnalysisStatusDto,
+	CFDataStores,
+} from "../models/analysis";
 
 @Injectable({
 	providedIn: "root",
@@ -20,12 +24,16 @@ export class AnalysisService {
 		return this.http.get<CashFlowDto[]>(this.apiUrl);
 	}
 
-	public Status(DataStore: CFDataStores): Observable<string> {
-		return this.http.get<string>(`${this.apiUrl}/getstatus/${DataStore}`);
+	public Status(DataStore: CFDataStores): Observable<AnalysisStatusDto> {
+		return this.http.get<AnalysisStatusDto>(
+			`${this.apiUrl}/getstatus/${DataStore}`,
+		);
 	}
 
-	public CompareCashFlows(DataStore: CFDataStores): Observable<string> {
-		return this.http.get<string>(
+	public CompareCashFlows(
+		DataStore: CFDataStores,
+	): Observable<AnalysisComparisonDto> {
+		return this.http.get<AnalysisComparisonDto>(
 			`${this.apiUrl}/getstatus/compare/${DataStore}`,
 		);
 	}

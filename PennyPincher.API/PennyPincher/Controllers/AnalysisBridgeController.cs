@@ -105,14 +105,14 @@ namespace PennyPincher.Controllers
 
         // Purpose: provide overall summary of financial health per chosen CashFlow
         [HttpGet("getstatus/{DataStore}")]
-        public IActionResult Status(CFDataStores DataStore)
+        public ActionResult<AnalysisStatusDto> Status(CFDataStores DataStore)
         {
             List<CashFlowDto> CFData = CFDataStorePicker(DataStore);
 
-            double incomes = CFData.FindAll(e => e.Flow.Equals(FlowTypes.income)).Sum(e => e.Amount);
+            double grossIncome = CFData.FindAll(e => e.Flow.Equals(FlowTypes.income)).Sum(e => e.Amount);
             double liabilities = CFData.FindAll(e => e.Flow.Equals(FlowTypes.expense)).Sum(e => e.Amount);
-            double netIncome = incomes - liabilities;
-            double netIncomeRatio = Math.Round((liabilities / incomes), 4) * 100;
+            double netIncome = grossIncome - liabilities;
+            double netIncomeRatio = Math.Round((liabilities / grossIncome), 4) * 100;
             string mostCostlyName = CFData
                 .Where(e => e.Flow.Equals(FlowTypes.expense))
                 .OrderByDescending(e => e.Amount)
@@ -125,34 +125,34 @@ namespace PennyPincher.Controllers
                 .Select(e => e.Amount)
                 .FirstOrDefault<double>();
 
-            double percentOfEarningsGoingToMostCostlyAmount = Math.Round((mostCostlyAmount / incomes), 4) * 100;
+            double percentOfEarningsGoingToMostCostlyAmount = Math.Round((mostCostlyAmount / grossIncome), 4) * 100;
 
             string statusUpdate = string.Empty;
-            if (incomes > liabilities)
+            if (grossIncome > liabilities)
             {
 
-                statusUpdate = $"You have {incomes} total income and {liabilities} total liabilities.\n" +
+                statusUpdate = $"You have {grossIncome} total income and {liabilities} total liabilities.\n" +
                                 $"You're currently taking home {netIncome}";
             }
             else
             {
                 statusUpdate = $"Uh oh, you're running out of money.\n" +
-                               $"Currently, you have {incomes} total income \n" +
+                               $"Currently, you have {grossIncome} total income \n" +
                                $"and {liabilities} total liabilities";
             }
             string ratioText = ($"\nYou're currently using {netIncomeRatio}% of your earnings." +
-                                $"{Math.Round((mostCostlyAmount / incomes), 4) * 100}% of your earnings is going to {mostCostlyName}");
+                                $"{Math.Round((mostCostlyAmount / grossIncome), 4) * 100}% of your earnings is going to {mostCostlyName}");
 
             statusUpdate = statusUpdate + ratioText;
-            var statuses = new
+            AnalysisStatusDto statuses = new AnalysisStatusDto()
             {
-                incomes,
-                netIncome,
-                liabilities,
-                netIncomeRatio,
-                mostCostlyName,
-                mostCostlyAmount,
-                percentOfEarningsGoingToMostCostlyAmount
+                GrossIncome = grossIncome,
+                NetIncome = netIncome,
+                Liabilities = liabilities,
+                NetIncomeRatio = netIncomeRatio,
+                MostCostlyName = mostCostlyName,
+                MostCostlyAmount = mostCostlyAmount,
+                PercentOfEarningsGoingToMostCostlyAmount = percentOfEarningsGoingToMostCostlyAmount
             };
 
             return Ok(statuses);
@@ -160,7 +160,7 @@ namespace PennyPincher.Controllers
 
         [HttpGet("/getstatus/compare/{DataStore}")]
         //Purpose: to compare if the financial health & statuses of Current Cashflow is meeting that of a Projected Cashflow
-        public ActionResult<string> CompareCashFlows(CFDataStores DataStore)
+        public ActionResult<AnalysisComparisonDto> CompareCashFlows(CFDataStores DataStore)
         {
             List<CashFlowDto> CFData = CFDataStorePicker(DataStore);
 
@@ -182,7 +182,7 @@ namespace PennyPincher.Controllers
                 .OrderByDescending(e => e.Amount)
                 .Take(5);
 
-            var CurrCategoriesSum = CurrItemLogsCF
+            var CurrCategoriesSummed = CurrItemLogsCF
                 .Where(e => e.Flow == FlowTypes.expense)
                 .GroupBy(e => e.Category)
                 .Select(g => new CashFlowDto()
@@ -192,7 +192,7 @@ namespace PennyPincher.Controllers
                 })
                 .OrderByDescending(e => e.Amount);
 
-            var ProjCategoriesSum = CFData
+            var ProjCategoriesSummed = CFData
                 .Where(e =>  e.Flow == FlowTypes.expense)
                 .GroupBy (e => e.Category)
                 .Select(g => new CashFlowDto()
@@ -202,18 +202,18 @@ namespace PennyPincher.Controllers
                 })
                 .OrderByDescending (e => e.Amount);
 
-            double CurrMostCostlyCategoryPrice = CurrCategoriesSum.Max(e => e.Amount);
-            CategoryTypes CurrMostCostlyCategory = CurrCategoriesSum.OrderByDescending(e => e.Amount)
+            double CurrMostCostlyCategoryPrice = CurrCategoriesSummed.Max(e => e.Amount);
+            CategoryTypes CurrMostCostlyCategory = CurrCategoriesSummed.OrderByDescending(e => e.Amount)
                                                                 .Select(e => e.Category)
                                                                 .FirstOrDefault();
 
-            CategoryTypes ProjMostCostlyCurrCategory = ProjCategoriesSum.Where(e => e.Category == CurrMostCostlyCategory)
+            CategoryTypes ProjMostCostlyCurrCategory = ProjCategoriesSummed.Where(e => e.Category == CurrMostCostlyCategory)
                                                                 .Select (e => e.Category)
                                                                 .FirstOrDefault();
 
             CategoryTypes ProjMostCostlyCurrCategoryDisplay = (ProjMostCostlyCurrCategory == CategoryTypes.None ? CurrMostCostlyCategory : ProjMostCostlyCurrCategory);
             double ProjMostCostlyCurrCategoryPrice = ProjMostCostlyCurrCategory == CategoryTypes.None ? 0 :
-                                                                    ProjCategoriesSum.Where(e => e.Category == CurrMostCostlyCategory)
+                                                                    ProjCategoriesSummed.Where(e => e.Category == CurrMostCostlyCategory)
                                                                     .Select(e => e.Amount)
                                                                     .FirstOrDefault();
             double CostlyCategoryRatio = Math.Round((CurrMostCostlyCategoryPrice / ProjMostCostlyCurrCategoryPrice), 4) * 100;
@@ -233,7 +233,7 @@ namespace PennyPincher.Controllers
             }
 
             string CurrOtherCategoryStats = string.Empty;
-            foreach (var item in CurrCategoriesSum.Skip(1)) // skipping over the most costly item
+            foreach (var item in CurrCategoriesSummed.Skip(1)) // skipping over the most costly item
             {
                 CurrOtherCategoryStats += $"{item.Category,-20}\t{item.Amount,-20}\n";
             }
@@ -248,17 +248,15 @@ namespace PennyPincher.Controllers
 
             string analysis = compStatment + columns + CurrCostlyCatAnalysis + ProjCostlyCatAnalysis;
 
-            var analysisVariables = new
+            AnalysisComparisonDto analysisVariables = new AnalysisComparisonDto()
             {
-                CurrTopCostly,
-                ProjTopCostly,
-                CurrCategoriesSum,
-                ProjCategoriesSum,
-                CurrMostCostlyCategoryPrice,
-                ProjMostCostlyCurrCategoryPrice,
-                CurrMostCostlyCategory,
-                ProjMostCostlyCurrCategory,
-                CostlyCategoryRatio,
+                CurrentTopExpenses = CurrTopCostly,
+                CurrentCategorySum = CurrCategoriesSummed,
+                CurrentMostCostlyCategoryAmount = CurrMostCostlyCategoryPrice,
+                ProjectedTopExpenses = ProjTopCostly,
+                ProjectedCategorySum = ProjCategoriesSummed,
+                ProjectedMostCostlyCategory = ProjMostCostlyCurrCategory,
+                CostlyCategoryRatio = CostlyCategoryRatio,
 
             };
 
