@@ -54,6 +54,7 @@ export class AddCashFlowPanelComponent {
 	protected cashFlowForm = this.cashFlowService.cashFlowForm;
 
 	handleSubmit() {
+		console.log("FLOWW", this.cashFlowForm.value.flow);
 		const newCF = new CashFlowDto(
 			this.cashFlowForm.value.id ?? 0,
 			this.cashFlowForm.value.name ?? "",
