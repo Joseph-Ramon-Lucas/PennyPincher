@@ -158,7 +158,7 @@ namespace PennyPincher.Controllers
             return Ok(statuses);
         }
 
-        [HttpGet("/getstatus/compare/{DataStore}")]
+        [HttpGet("getstatus/compare/{DataStore}")]
         //Purpose: to compare if the financial health & statuses of Current Cashflow is meeting that of a Projected Cashflow
         public ActionResult<AnalysisComparisonDto> CompareCashFlows(CFDataStores DataStore)
         {

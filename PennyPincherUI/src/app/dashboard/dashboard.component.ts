@@ -1,9 +1,9 @@
 import { Component } from "@angular/core";
-import { NavBarComponent } from "../shared/nav-bar/nav-bar.component";
+import { AnalysisComponent } from "./analysis/analysis.component";
 
 @Component({
 	selector: "app-dashboard",
-	imports: [],
+	imports: [AnalysisComponent],
 	templateUrl: "./dashboard.component.html",
 	styleUrl: "./dashboard.component.css",
 })
