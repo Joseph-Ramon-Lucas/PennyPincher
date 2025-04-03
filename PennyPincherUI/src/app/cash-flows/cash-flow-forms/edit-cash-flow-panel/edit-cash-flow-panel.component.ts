@@ -10,7 +10,7 @@ import { MatSelectModule } from "@angular/material/select";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { CashFlowService } from "../../../services/cash-flow.service";
-import { MatRadioButton } from "@angular/material/radio";
+import { MatRadioButton, MatRadioModule } from "@angular/material/radio";
 import {
 	type CashFlowDto,
 	CashFlowUpdateDto,
@@ -31,8 +31,8 @@ import { CATEGORY_TYPES } from "../../../models/expense";
 		MatCardModule,
 		FormsModule,
 		MatTabsModule,
+		MatRadioModule,
 		ReactiveFormsModule,
-		MatRadioButton,
 	],
 	templateUrl: "./edit-cash-flow-panel.component.html",
 	styleUrl: "./edit-cash-flow-panel.component.css",
@@ -44,6 +44,8 @@ export class EditCashFlowPanelComponent {
 	protected cashFlowForm = this.cashFlowService.cashFlowForm;
 
 	handleSubmit(): void {
+		console.log("FLOWW", this.cashFlowForm.value.flow);
+
 		const newCashFlowId = this.cashFlowForm.value.id ?? 0;
 		const newCashFlow: CashFlowUpdateDto = new CashFlowUpdateDto(
 			this.cashFlowForm.value.name ?? "",
