@@ -1,0 +1,46 @@
+<p>analysis works!</p>
+
+<h1>Financial Summary</h1>
+
+<div>
+  <h2>Status:</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>GrossIncome</th>
+        <th>NetIncome</th>
+        <th>Liabilities</th>
+        <th>NetIncomeRatio</th>
+        <th>MostCostlyName</th>
+        <th>MostCostlyAmount</th>
+        <th>PercentOfEarningsGoingToMostCostlyAmount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          {{ statuses.GrossIncome }}
+        </td>
+        <td>
+          {{ statuses.NetIncome }}
+        </td>
+        <td>
+          {{ statuses.Liabilities }}
+        </td>
+        <td>
+          {{ statuses.NetIncomeRatio }}
+        </td>
+        <td>
+          {{ statuses.MostCostlyName }}
+        </td>
+        <td>
+          {{ statuses.MostCostlyAmount }}
+        </td>
+        <td>
+          {{ statuses.PercentOfEarningsGoingToMostCostlyAmount }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <button (click)="printStatus()">Get Status</button>
+</div>
