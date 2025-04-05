@@ -1,23 +1,30 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { type ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { CashFlowFormsComponent } from './cash-flow-forms.component';
+import { CashFlowFormsComponent } from "./cash-flow-forms.component";
+import {
+	HttpTestingController,
+	provideHttpClientTesting,
+} from "@angular/common/http/testing";
+import { provideHttpClient } from "@angular/common/http";
 
-describe('CashFlowFormsComponent', () => {
-  let component: CashFlowFormsComponent;
-  let fixture: ComponentFixture<CashFlowFormsComponent>;
+describe("CashFlowFormsComponent", () => {
+	let component: CashFlowFormsComponent;
+	let fixture: ComponentFixture<CashFlowFormsComponent>;
+	let httpTesting: HttpTestingController;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CashFlowFormsComponent]
-    })
-    .compileComponents();
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [CashFlowFormsComponent],
+			providers: [provideHttpClient(), provideHttpClientTesting()],
+		}).compileComponents();
 
-    fixture = TestBed.createComponent(CashFlowFormsComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+		httpTesting = TestBed.inject(HttpTestingController);
+		fixture = TestBed.createComponent(CashFlowFormsComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it("should create", () => {
+		expect(component).toBeTruthy();
+	});
 });
