@@ -19,28 +19,29 @@
     <tbody>
       <tr>
         <td>
-          {{ statuses.GrossIncome }}
+          {{ statuses().grossIncome }}
         </td>
         <td>
-          {{ statuses.NetIncome }}
+          {{ statuses().netIncome }}
         </td>
         <td>
-          {{ statuses.Liabilities }}
+          {{ statuses().liabilities }}
         </td>
         <td>
-          {{ statuses.NetIncomeRatio }}
+          {{ statuses().netIncomeRatio }}
         </td>
         <td>
-          {{ statuses.MostCostlyName }}
+          {{ statuses().mostCostlyName }}
         </td>
         <td>
-          {{ statuses.MostCostlyAmount }}
+          {{ statuses().mostCostlyAmount }}
         </td>
         <td>
-          {{ statuses.PercentOfEarningsGoingToMostCostlyAmount }}
+          {{ statuses().percentOfEarningsGoingToMostCostlyAmount }}
         </td>
       </tr>
     </tbody>
   </table>
+  <h3>this is some data: {{ this.statuses().grossIncome }}</h3>
   <button (click)="printStatus()">Get Status</button>
 </div>

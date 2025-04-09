@@ -1,4 +1,10 @@
-import { Component, inject, type OnInit } from "@angular/core";
+import {
+	Component,
+	inject,
+	signal,
+	type WritableSignal,
+	type OnInit,
+} from "@angular/core";
 import { AnalysisService } from "../../services/analysis.service";
 import {
 	AnalysisComparisonDto,
@@ -16,16 +22,10 @@ import { CashFlowDto } from "../../models/cashflow";
 export class AnalysisComponent implements OnInit {
 	private analysisService = inject(AnalysisService);
 	private dataStore: CFDataStores = 1;
-	protected statuses: AnalysisStatusDto = new AnalysisStatusDto(
-		0,
-		0,
-		0,
-		0,
-		"",
-		0,
-		0,
-	);
-	protected comparisons: AnalysisComparisonDto = new AnalysisComparisonDto(
+	tempAnsly = new AnalysisStatusDto(0, 0, 0, 0, "", 0, 0);
+
+	public statuses: WritableSignal<AnalysisStatusDto> = signal(this.tempAnsly);
+	public comparisons: AnalysisComparisonDto = new AnalysisComparisonDto(
 		[new CashFlowDto(0, "", "", 0, 0, 0)],
 		[new CashFlowDto(0, "", "", 0, 0, 0)],
 		[new CashFlowDto(0, "", "", 0, 0, 0)],
@@ -47,7 +47,9 @@ export class AnalysisComponent implements OnInit {
 				this.analysisService
 					.Status(this.dataStore)
 					.subscribe((result: AnalysisStatusDto) => {
-						this.statuses = result;
+						console.log("API RESULT", result.grossIncome);
+
+						this.statuses.set(result);
 					});
 				this.analysisService
 					.CompareCashFlows(this.dataStore)
@@ -59,7 +61,9 @@ export class AnalysisComponent implements OnInit {
 	}
 
 	printStatus(): void {
-		console.log(this.statuses);
+		console.log(this.statuses());
+		console.log("test hte gfross data", this.statuses().grossIncome);
+
 		console.log(this.comparisons);
 	}
 }

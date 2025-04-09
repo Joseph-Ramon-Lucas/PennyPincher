@@ -8,26 +8,26 @@ export enum CFDataStores {
 
 export class AnalysisStatusDto {
 	constructor(
-		public GrossIncome: number,
-		public NetIncome: number,
-		public Liabilities: number,
-		public NetIncomeRatio: number,
-		public MostCostlyName: string,
-		public MostCostlyAmount: number,
-		public PercentOfEarningsGoingToMostCostlyAmount: number,
+		public grossIncome: number,
+		public netIncome: number,
+		public liabilities: number,
+		public netIncomeRatio: number,
+		public mostCostlyName: string,
+		public mostCostlyAmount: number,
+		public percentOfEarningsGoingToMostCostlyAmount: number,
 	) {}
 }
 
 export class AnalysisComparisonDto {
 	constructor(
-		public CurrentTopExpenses: CashFlowDto[],
-		public ProjectedTopExpenses: CashFlowDto[],
-		public CurrentCategorySum: CashFlowDto[],
-		public ProjectedCategorySum: CashFlowDto[],
-		public CurrentMostCostlyCategoryAmount: number,
-		public ProjectedMostCostlyCategoryAmount: number,
-		public CurrentMostCostlyCategory: CATEGORY_TYPES,
-		public ProjectedMostCostlyCategory: CATEGORY_TYPES,
-		public CostlyCategoryRatio: number,
+		public currentTopExpenses: CashFlowDto[],
+		public projectedTopExpenses: CashFlowDto[],
+		public currentCategorySum: CashFlowDto[],
+		public projectedCategorySum: CashFlowDto[],
+		public currentMostCostlyCategoryAmount: number,
+		public projectedMostCostlyCategoryAmount: number,
+		public currentMostCostlyCategory: CATEGORY_TYPES,
+		public projectedMostCostlyCategory: CATEGORY_TYPES,
+		public costlyCategoryRatio: number,
 	) {}
 }
