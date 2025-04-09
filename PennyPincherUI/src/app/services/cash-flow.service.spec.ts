@@ -22,4 +22,12 @@ describe("CashFlowService", () => {
 	it("should be created", () => {
 		expect(service).toBeTruthy();
 	});
+
+	it("should have an http service", () => {
+		expect(httpTesting).toBeTruthy();
+	});
+
+	it("should have a data form", () => {
+		expect(service.cashFlowForm).toBeTruthy();
+	});
 });
