@@ -1,4 +1,4 @@
-import { TestBed } from "@angular/core/testing";
+import { fakeAsync, TestBed, tick } from "@angular/core/testing";
 import {
 	HttpTestingController,
 	provideHttpClientTesting,
@@ -32,13 +32,42 @@ describe("ExpenseHistoryService", () => {
 		expect(service.expenseForm).toBeTruthy();
 	});
 
+	describe("destroy component subject", () => {
+		it("should have a destroy subject subject", () => {
+			expect(service.destroySubject$).toBeTruthy();
+		});
+		it("should return a void subject", () => {
+			expect(service.destroySubject$).toEqual(new Subject<void>());
+		});
+		it("should push a void value", fakeAsync(() => {
+			service.destroySubject$.next();
+			service.destroySubject$.subscribe((data) => {
+				expect(data).toBeDefined;
+			});
+			tick();
+		}));
+	});
+
 	describe("submission Complete Subject", () => {
 		it("should have a submission complete subject", () => {
 			expect(service.submissionComplete$).toBeTruthy();
 		});
 
-		it("submission complete should return a void subject", () => {
+		it("should return a void subject", () => {
 			expect(service.submissionComplete$).toEqual(new Subject<void>());
 		});
+
+		it("should push a void value", () => {
+			expect(service.submissionComplete$.next()).toEqual(
+				new Subject<void>().next(),
+			);
+		});
+		it("should detect a pushed value", fakeAsync(() => {
+			service.submissionComplete$.next();
+			service.submissionComplete$.subscribe((data) => {
+				expect(data).toBeDefined();
+			});
+			tick();
+		}));
 	});
 });
