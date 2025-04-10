@@ -1,1 +1,49 @@
-<app-analysis />
+<mat-card>
+  <mat-card-header>
+    <mat-card-title><strong>Financial Summary</strong></mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div>
+      <mat-card-subtitle><strong>Status Update:</strong></mat-card-subtitle>
+      <table>
+        <tbody>
+          <tr>
+            <td>Gross Income:</td>
+            <td>{{ statuses().grossIncome }}</td>
+          </tr>
+          <tr>
+            <td>Gross Liabilities:</td>
+            <td>{{ statuses().liabilities }}</td>
+          </tr>
+          <tr>
+            <td>Net Income:</td>
+            <td>{{ statuses().netIncome }}</td>
+          </tr>
+        </tbody>
+      </table>
+      @if(statuses().grossIncome > statuses().liabilities) {
+      <p>
+        You have ${{ statuses().grossIncome }} total income and ${{
+          statuses().liabilities
+        }}
+        total liabilities <br />
+        You're currently taking home ${{ statuses().netIncome }}
+      </p>
+      } @else {
+      <p>
+        Uh oh, you're running out of money! <br />
+        Currently, you have ${{ statuses().grossIncome }} total income <br />
+        and ${{ statuses().liabilities }} total liabilities.
+      </p>
+      }
+      <p>
+        You're currently using {{ statuses().netIncomeRatio }}% of your
+        earnings. <br />
+        {{ statuses().percentOfEarningsGoingToMostCostlyAmount }}% of your
+        earnings is going to {{ statuses().mostCostlyName }}.
+      </p>
+
+      <button (click)="printStatus()">log Status</button>
+    </div>
+  </mat-card-content>
+</mat-card>
