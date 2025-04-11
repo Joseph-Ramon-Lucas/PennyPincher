@@ -101,9 +101,7 @@
 
           <tr>
             <td>
-              @switch (item.category) { @case (0) {None} @case (1) {Living}
-              @case (2) {Utilities} @case (3) {Entertainment} @case (4)
-              {Shopping} @case (5) {Takeout} }
+              {{ this.categoryEnumToString(item.category) }}
             </td>
             <td>
               {{ item.amount }}

@@ -6,6 +6,7 @@ import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import type { CashFlowDto } from "../../models/cashflow";
 import { CashFlowService } from "../../services/cash-flow.service";
 import { takeUntil } from "rxjs";
+import { UtilityService } from "../../services/utility.service";
 
 @Component({
 	selector: "app-cash-flow-table",
@@ -22,6 +23,8 @@ import { takeUntil } from "rxjs";
 export class CashFlowTableComponent implements OnInit, OnDestroy {
 	protected cashFlows: CashFlowDto[] = [];
 	private cashFlowService = inject(CashFlowService);
+	protected utilityService = inject(UtilityService);
+	protected categoryEnumToString = this.utilityService.categoryEnumToString;
 
 	ngOnInit(): void {
 		this.updateTable();

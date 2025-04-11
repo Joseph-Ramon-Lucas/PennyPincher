@@ -8,6 +8,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatCard, MatCardContent, MatCardHeader } from "@angular/material/card";
 import { takeUntil } from "rxjs";
+import { UtilityService } from "../../services/utility.service";
 
 @Component({
 	selector: "expense-table",
@@ -28,6 +29,8 @@ export class ExpenseTable implements OnInit, OnDestroy {
 	title = "ExpenseTable";
 	protected expenses: ExpenseDto[] = [];
 	private expenseHistoryService = inject(ExpenseHistoryService);
+	protected utilityService = inject(UtilityService);
+	protected categoryEnumToString = this.utilityService.categoryEnumToString;
 
 	ngOnInit(): void {
 		this.updateTable();
