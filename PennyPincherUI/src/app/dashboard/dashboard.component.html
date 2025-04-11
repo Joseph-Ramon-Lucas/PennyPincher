@@ -131,15 +131,8 @@
         budget
       </p>
     </div>
-
-    <canvas
-      baseChart
-      [data]="barChartData"
-      [options]="barChartOptions"
-      [plugins]="barChartPlugins"
-      [legend]="barChartLegend"
-      [type]="'bar'"
-    >
-    </canvas>
+    <div>
+      <app-status-chart [statuses]="this.statuses()" />
+    </div>
   </mat-card-content>
 </mat-card>
