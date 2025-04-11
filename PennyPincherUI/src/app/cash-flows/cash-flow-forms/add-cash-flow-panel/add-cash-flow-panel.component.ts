@@ -1,19 +1,5 @@
-import {
-	Component,
-	EventEmitter,
-	inject,
-	input,
-	Input,
-	OnChanges,
-	Output,
-	SimpleChanges,
-} from "@angular/core";
-import {
-	FormControl,
-	FormGroup,
-	FormsModule,
-	ReactiveFormsModule,
-} from "@angular/forms";
+import { Component, inject } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatButtonModule } from "@angular/material/button";
 import { MatCardModule } from "@angular/material/card";
 import { MatDividerModule } from "@angular/material/divider";
@@ -27,7 +13,6 @@ import { MatRadioModule } from "@angular/material/radio";
 import { CashFlowService } from "../../../services/cash-flow.service";
 import { CashFlowDto, FLOW_TYPES } from "../../../models/cashflow";
 import { CATEGORY_TYPES } from "../../../models/expense";
-import { Subject } from "rxjs";
 
 @Component({
 	selector: "app-add-cash-flow-panel",

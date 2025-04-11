@@ -1,4 +1,5 @@
 import {
+	ChangeDetectionStrategy,
 	Component,
 	inject,
 	type OnInit,
@@ -14,14 +15,16 @@ import { CashFlowDto } from "../models/cashflow";
 import { AnalysisService } from "../services/analysis.service";
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
-import { CATEGORY_TYPES } from "../models/expense";
 import { UtilityService } from "../services/utility.service";
+import { BaseChartDirective } from "ng2-charts";
+import type { ChartConfiguration } from "chart.js";
 
 @Component({
 	selector: "app-dashboard",
-	imports: [MatCardModule, MatButtonModule],
+	imports: [MatCardModule, MatButtonModule, BaseChartDirective],
 	templateUrl: "./dashboard.component.html",
 	styleUrl: "./dashboard.component.css",
+	changeDetection: ChangeDetectionStrategy.Default,
 })
 export class DashboardComponent implements OnInit {
 	private analysisService = inject(AnalysisService);
@@ -49,6 +52,21 @@ export class DashboardComponent implements OnInit {
 	protected comparisons: WritableSignal<AnalysisComparisonDto> = signal(
 		this.DEFAULT_ANALYSIS_COMPARISON,
 	);
+
+	public barChartLegend = true;
+	public barChartPlugins = [];
+
+	public barChartData: ChartConfiguration<"bar">["data"] = {
+		labels: ["2006", "2007", "2008", "2009", "2010", "2011", "2012"],
+		datasets: [
+			{ data: [65, 59, 80, 81, 56, 55, 40], label: "Series A" },
+			{ data: [28, 48, 40, 19, 86, 27, 90], label: "Series B" },
+		],
+	};
+
+	public barChartOptions: ChartConfiguration<"bar">["options"] = {
+		responsive: false,
+	};
 
 	ngOnInit(): void {
 		this.getFinancialData();
