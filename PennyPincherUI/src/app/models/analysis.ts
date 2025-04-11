@@ -28,6 +28,7 @@ export class AnalysisComparisonDto {
 		public projectedMostCostlyCategoryAmount: number,
 		public currentMostCostlyCategory: CATEGORY_TYPES,
 		public projectedMostCostlyCategory: CATEGORY_TYPES,
+		public projectedMostCostlyCurrentCategoryDisplay: CATEGORY_TYPES,
 		public costlyCategoryRatio: number,
 	) {}
 }

@@ -40,9 +40,7 @@
             <td>Expense</td>
             }
             <td>
-              @switch (cf.category) { @case (0) {None} @case (1) {Living} @case
-              (2) {Utilities} @case (3) {Entertainment} @case (4) {Shopping}
-              @case (5) {Takeout} }
+              {{ this.categoryEnumToString(cf.category) }}
             </td>
             <td>
               <button
