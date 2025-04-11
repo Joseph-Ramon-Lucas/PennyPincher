@@ -6,14 +6,16 @@ import {
 	type WritableSignal,
 } from "@angular/core";
 import {
-	type CFDataStores,
 	AnalysisStatusDto,
 	AnalysisComparisonDto,
+	CFDataStores,
 } from "../models/analysis";
 import { CashFlowDto } from "../models/cashflow";
 import { AnalysisService } from "../services/analysis.service";
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
+import { CATEGORY_TYPES } from "../models/expense";
+import { UtilityService } from "../services/utility.service";
 
 @Component({
 	selector: "app-dashboard",
@@ -23,7 +25,10 @@ import { MatButtonModule } from "@angular/material/button";
 })
 export class DashboardComponent implements OnInit {
 	private analysisService = inject(AnalysisService);
-	private dataStore: CFDataStores = 1;
+	private utilityService = inject(UtilityService);
+	private dataStore: WritableSignal<CFDataStores> = signal(
+		CFDataStores.Projected,
+	);
 	private DEFAULT_ANALYSIS_STATUS = new AnalysisStatusDto(0, 0, 0, 0, "", 0, 0);
 	private DEFAULT_ANALYSIS_COMPARISON = new AnalysisComparisonDto(
 		[new CashFlowDto(0, "", "", 0, 0, 0)],
@@ -35,11 +40,13 @@ export class DashboardComponent implements OnInit {
 		0,
 		0,
 		0,
+		0,
 	);
-	public statuses: WritableSignal<AnalysisStatusDto> = signal(
+	protected categoryEnumToString = this.utilityService.categoryEnumToString;
+	protected statuses: WritableSignal<AnalysisStatusDto> = signal(
 		this.DEFAULT_ANALYSIS_STATUS,
 	);
-	public comparisons: WritableSignal<AnalysisComparisonDto> = signal(
+	protected comparisons: WritableSignal<AnalysisComparisonDto> = signal(
 		this.DEFAULT_ANALYSIS_COMPARISON,
 	);
 
@@ -51,22 +58,31 @@ export class DashboardComponent implements OnInit {
 		this.analysisService.UpdateCashFlowItemLogStore().subscribe({
 			complete: () => {
 				this.analysisService
-					.Status(this.dataStore)
+					.Status(this.dataStore())
 					.subscribe((result: AnalysisStatusDto) => {
-						console.log("API RESULT", result.grossIncome);
-
 						this.statuses.set(result);
 					});
 				this.analysisService
-					.CompareCashFlows(this.dataStore)
+					.CompareCashFlows(this.dataStore())
 					.subscribe((result: AnalysisComparisonDto) => {
+						console.log(
+							"comparison data:",
+							result,
+							"datastore:",
+							this.dataStore(),
+						);
 						this.comparisons.set(result);
 					});
 			},
 		});
 	}
 
-	printStatus(): void {
+	printStatus(cfType: number): void {
+		if (cfType === 0) {
+			this.dataStore.set(CFDataStores.Current);
+		} else {
+			this.dataStore.set(CFDataStores.Projected);
+		}
 		this.getFinancialData();
 		console.log(this.statuses());
 		console.log("test hte gfross data", this.statuses()?.grossIncome ?? 0);

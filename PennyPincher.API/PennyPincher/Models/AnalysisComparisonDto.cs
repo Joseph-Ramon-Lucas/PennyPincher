@@ -10,6 +10,7 @@
         public double ProjectedMostCostlyCategoryAmount { get; set; }
         public CategoryTypes CurrentMostCostlyCategory { get; set; }
         public CategoryTypes ProjectedMostCostlyCategory { get; set; }
+        public CategoryTypes ProjectedMostCostlyCurrentCategoryDisplay { get; set; }
         public double CostlyCategoryRatio { get; set; }
     }
 }

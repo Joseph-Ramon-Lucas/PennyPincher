@@ -256,6 +256,7 @@ namespace PennyPincher.Controllers
                 ProjectedTopExpenses = ProjTopCostly,
                 ProjectedCategorySum = ProjCategoriesSummed,
                 ProjectedMostCostlyCategory = ProjMostCostlyCurrCategory,
+                ProjectedMostCostlyCurrentCategoryDisplay = ProjMostCostlyCurrCategoryDisplay,
                 CostlyCategoryRatio = CostlyCategoryRatio,
 
             };
