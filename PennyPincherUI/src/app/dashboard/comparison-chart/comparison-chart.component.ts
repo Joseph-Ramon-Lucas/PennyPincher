@@ -4,7 +4,6 @@ import {
 	input,
 	type InputSignal,
 	type OnChanges,
-	SimpleChanges,
 } from "@angular/core";
 import type { ChartConfiguration } from "chart.js";
 import { BaseChartDirective } from "ng2-charts";
@@ -40,7 +39,7 @@ export class ComparisonChartComponent implements OnChanges {
 	public barChartLegend = true;
 	public barChartPlugins = [];
 	public barChartOptions: ChartConfiguration<"bar">["options"] = {
-		responsive: true,
+		responsive: false,
 	};
 
 	public barChartData: ChartConfiguration<"bar">["data"] = {
