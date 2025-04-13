@@ -13,10 +13,11 @@ import { AnalysisStatusDto } from "../../models/analysis";
 	imports: [BaseChartDirective],
 	templateUrl: "./status-chart.component.html",
 	styleUrl: "./status-chart.component.css",
+	standalone: true,
 })
 export class StatusChartComponent implements OnChanges {
 	private DEFAULT_ANALYSIS_STATUS = new AnalysisStatusDto(0, 0, 0, 0, "", 0, 0);
-	statuses: InputSignal<AnalysisStatusDto> = input(
+	public statuses: InputSignal<AnalysisStatusDto> = input(
 		this.DEFAULT_ANALYSIS_STATUS,
 	);
 	public pieChartLegend = true;
@@ -32,10 +33,12 @@ export class StatusChartComponent implements OnChanges {
 	];
 
 	ngOnChanges(): void {
-		console.log("CHART GANG", this.statuses(), this.statuses().liabilities);
 		this.pieChartDatasets = [
 			{
-				data: [this.statuses().netIncome, this.statuses().liabilities],
+				data: [
+					Math.max(this.statuses().netIncome, 0),
+					this.statuses().liabilities,
+				],
 			},
 		];
 	}

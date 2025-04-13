@@ -1,0 +1,78 @@
+<mat-card appearance="outlined">
+  <mat-card-subtitle
+    ><strong><h2>Current Expenses vs Budget:</h2></strong></mat-card-subtitle
+  >
+
+  <table>
+    <tbody>
+      <tr>
+        <td><h3>Current Expenses</h3></td>
+      </tr>
+
+      @for(c of comparisons().currentTopExpenses; track c){
+      <tr>
+        <td>
+          {{ c.name }}
+        </td>
+        <td>
+          {{ c.amount }}
+        </td>
+      </tr>
+      }
+      <tr>
+        <td><h3>Projected Expenses</h3></td>
+      </tr>
+      @for(p of comparisons().projectedTopExpenses;track p){
+      <tr>
+        <td>
+          {{ p.name }}
+        </td>
+        <td>
+          {{ p.amount }}
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+  <p>
+    You are currently spending
+    {{ comparisons().currentMostCostlyCategoryAmount }} towards this category:
+    {{ this.categoryEnumToString(comparisons().currentMostCostlyCategory) }}
+    <br />
+    How your current spending in other categories rank: <br />
+  </p>
+  <table>
+    <tbody>
+      @for(item of comparisons().currentCategorySum;track item; let first =
+      $first) { @if (!first){
+
+      <tr>
+        <td>
+          {{ this.categoryEnumToString(item.category) }}
+        </td>
+        <td>
+          {{ item.amount }}
+        </td>
+      </tr>
+      } }
+    </tbody>
+  </table>
+  <br />
+  <p>
+    You projected to spend
+    {{ comparisons().projectedMostCostlyCategoryAmount }} towards this category:
+    {{
+      this.categoryEnumToString(
+        comparisons().projectedMostCostlyCurrentCategoryDisplay
+      )
+    }}
+    <br />
+    So far you have spent {{ comparisons().costlyCategoryRatio }}% out of your
+    {{
+      this.categoryEnumToString(
+        comparisons().projectedMostCostlyCurrentCategoryDisplay
+      )
+    }}
+    budget
+  </p>
+</mat-card>
