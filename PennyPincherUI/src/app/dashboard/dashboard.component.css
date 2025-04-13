@@ -2,5 +2,10 @@ div {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	flex-direction: column;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+mat-card {
+	padding: 15px;
 }

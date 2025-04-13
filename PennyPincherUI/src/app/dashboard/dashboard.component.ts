@@ -18,10 +18,20 @@ import { MatButtonModule } from "@angular/material/button";
 import { UtilityService } from "../services/utility.service";
 import type { ChartConfiguration } from "chart.js";
 import { StatusChartComponent } from "./status-chart/status-chart.component";
+import { ComparisonChartComponent } from "./comparison-chart/comparison-chart.component";
+import { StatusTextComponent } from "./status-text/status-text.component";
+import { ComparisonTextComponent } from "./comparison-text/comparison-text.component";
 
 @Component({
 	selector: "app-dashboard",
-	imports: [MatCardModule, MatButtonModule, StatusChartComponent],
+	imports: [
+		MatCardModule,
+		MatButtonModule,
+		StatusChartComponent,
+		StatusTextComponent,
+		ComparisonChartComponent,
+		ComparisonTextComponent,
+	],
 	templateUrl: "./dashboard.component.html",
 	styleUrl: "./dashboard.component.css",
 	changeDetection: ChangeDetectionStrategy.Default,
@@ -88,7 +98,6 @@ export class DashboardComponent implements OnInit {
 		}
 		this.getFinancialData();
 		console.log(this.statuses());
-		console.log("test hte gfross data", this.statuses()?.grossIncome ?? 0);
 
 		console.log(this.comparisons());
 	}
