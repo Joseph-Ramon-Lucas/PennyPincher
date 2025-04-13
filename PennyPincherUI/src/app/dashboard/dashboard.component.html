@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card id="base-card">
   <mat-card-header>
     <mat-card-title><strong>Financial Summary</strong></mat-card-title>
   </mat-card-header>
@@ -6,6 +6,14 @@
     <div id="status">
       <div id="status-text">
         <app-status-text [statuses]="this.statuses()" />
+        <div>
+          <button mat-flat-button (click)="switchCFData(0)">
+            Current Status
+          </button>
+          <button mat-flat-button (click)="switchCFData(1)">
+            Budget Status
+          </button>
+        </div>
       </div>
       <div id="status-chart">
         <mat-card>
@@ -13,17 +21,15 @@
         </mat-card>
       </div>
     </div>
-    <div>
-      <button (click)="printStatus(0)">log Current Status</button>
-      <button (click)="printStatus(1)">log Projected Status</button>
-    </div>
   </mat-card-content>
   <mat-card-content>
-    <div id="comparison-text">
-      <app-comparison-text [comparisons]="this.comparisons()" />
-    </div>
-    <div id="comparsion-chart">
-      <app-comparison-chart [comparisons]="this.comparisons()" />
+    <div id="comparisons">
+      <div id="comparison-text">
+        <app-comparison-text [comparisons]="this.comparisons()" />
+      </div>
+      <div id="comparsion-chart">
+        <app-comparison-chart [comparisons]="this.comparisons()" />
+      </div>
     </div>
   </mat-card-content>
 </mat-card>

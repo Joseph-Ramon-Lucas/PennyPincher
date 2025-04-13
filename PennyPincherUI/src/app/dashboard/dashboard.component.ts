@@ -16,7 +16,6 @@ import { AnalysisService } from "../services/analysis.service";
 import { MatCardModule } from "@angular/material/card";
 import { MatButtonModule } from "@angular/material/button";
 import { UtilityService } from "../services/utility.service";
-import type { ChartConfiguration } from "chart.js";
 import { StatusChartComponent } from "./status-chart/status-chart.component";
 import { ComparisonChartComponent } from "./comparison-chart/comparison-chart.component";
 import { StatusTextComponent } from "./status-text/status-text.component";
@@ -38,10 +37,11 @@ import { ComparisonTextComponent } from "./comparison-text/comparison-text.compo
 })
 export class DashboardComponent implements OnInit {
 	private analysisService = inject(AnalysisService);
-	private utilityService = inject(UtilityService);
 	private dataStore: WritableSignal<CFDataStores> = signal(
 		CFDataStores.Projected,
 	);
+	private utilityService = inject(UtilityService);
+	protected categoryEnumToString = this.utilityService.categoryEnumToString;
 	private DEFAULT_ANALYSIS_STATUS = new AnalysisStatusDto(0, 0, 0, 0, "", 0, 0);
 	private DEFAULT_ANALYSIS_COMPARISON = new AnalysisComparisonDto(
 		[new CashFlowDto(0, "", "", 0, 0, 0)],
@@ -55,7 +55,6 @@ export class DashboardComponent implements OnInit {
 		0,
 		0,
 	);
-	protected categoryEnumToString = this.utilityService.categoryEnumToString;
 	protected statuses: WritableSignal<AnalysisStatusDto> = signal(
 		this.DEFAULT_ANALYSIS_STATUS,
 	);
@@ -90,7 +89,7 @@ export class DashboardComponent implements OnInit {
 		});
 	}
 
-	printStatus(cfType: number): void {
+	switchCFData(cfType: number): void {
 		if (cfType === 0) {
 			this.dataStore.set(CFDataStores.Current);
 		} else {

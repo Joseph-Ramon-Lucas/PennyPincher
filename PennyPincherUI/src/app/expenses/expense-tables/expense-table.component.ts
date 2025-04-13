@@ -50,6 +50,7 @@ export class ExpenseTable implements OnInit, OnDestroy {
 	updateTable(): void {
 		this.expenseHistoryService.getAllItems().subscribe((expenses) => {
 			this.expenses = expenses;
+			console.log("HERE IS TABLE INFO:", this.expenses);
 		});
 	}
 
