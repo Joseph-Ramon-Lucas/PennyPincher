@@ -7,12 +7,10 @@
       <div id="status-text">
         <app-status-text [statuses]="this.statuses()" />
         <div>
-          <button mat-flat-button (click)="switchCFData(0)">
-            Current Status
-          </button>
-          <button mat-flat-button (click)="switchCFData(1)">
-            Budget Status
-          </button>
+          <mat-radio-group [(ngModel)]="dataStore">
+            <mat-radio-button [value]="0"> Current Status </mat-radio-button>
+            <mat-radio-button [value]="1"> Budget Status </mat-radio-button>
+          </mat-radio-group>
         </div>
       </div>
       <div id="status-chart">
@@ -28,7 +26,9 @@
         <app-comparison-text [comparisons]="this.comparisons()" />
       </div>
       <div id="comparsion-chart">
-        <app-comparison-chart [comparisons]="this.comparisons()" />
+        <mat-card>
+          <app-comparison-chart [comparisons]="this.comparisons()" />
+        </mat-card>
       </div>
     </div>
   </mat-card-content>

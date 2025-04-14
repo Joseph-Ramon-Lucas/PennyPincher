@@ -1,6 +1,7 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
+	effect,
 	inject,
 	type OnInit,
 	signal,
@@ -20,28 +21,41 @@ import { StatusChartComponent } from "./status-chart/status-chart.component";
 import { ComparisonChartComponent } from "./comparison-chart/comparison-chart.component";
 import { StatusTextComponent } from "./status-text/status-text.component";
 import { ComparisonTextComponent } from "./comparison-text/comparison-text.component";
+import { MatRadioModule } from "@angular/material/radio";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @Component({
 	selector: "app-dashboard",
 	imports: [
 		MatCardModule,
 		MatButtonModule,
+		MatRadioModule,
 		StatusChartComponent,
 		StatusTextComponent,
 		ComparisonChartComponent,
 		ComparisonTextComponent,
+		ReactiveFormsModule,
+		FormsModule,
 	],
 	templateUrl: "./dashboard.component.html",
 	styleUrl: "./dashboard.component.css",
 	changeDetection: ChangeDetectionStrategy.Default,
 })
 export class DashboardComponent implements OnInit {
+	constructor() {
+		// To track radio button selection and recalculate analysis data
+		effect(() => {
+			this.getFinancialData(this.dataStore());
+		});
+	}
+
 	private analysisService = inject(AnalysisService);
-	private dataStore: WritableSignal<CFDataStores> = signal(
+	public dataStore: WritableSignal<CFDataStores> = signal(
 		CFDataStores.Projected,
 	);
 	private utilityService = inject(UtilityService);
 	protected categoryEnumToString = this.utilityService.categoryEnumToString;
+
 	private DEFAULT_ANALYSIS_STATUS = new AnalysisStatusDto(0, 0, 0, 0, "", 0, 0);
 	private DEFAULT_ANALYSIS_COMPARISON = new AnalysisComparisonDto(
 		[new CashFlowDto(0, "", "", 0, 0, 0)],
@@ -63,41 +77,27 @@ export class DashboardComponent implements OnInit {
 	);
 
 	ngOnInit(): void {
-		this.getFinancialData();
+		this.getFinancialData(this.dataStore());
 	}
 
-	getFinancialData(): void {
+	checkStatus() {
+		console.log("THIS IS THE DATASTORE", this.dataStore());
+	}
+	getFinancialData(dataStore: CFDataStores): void {
 		this.analysisService.UpdateCashFlowItemLogStore().subscribe({
 			complete: () => {
 				this.analysisService
-					.Status(this.dataStore())
+					.Status(dataStore)
 					.subscribe((result: AnalysisStatusDto) => {
 						this.statuses.set(result);
 					});
 				this.analysisService
-					.CompareCashFlows(this.dataStore())
+					.CompareCashFlows(dataStore)
 					.subscribe((result: AnalysisComparisonDto) => {
-						console.log(
-							"comparison data:",
-							result,
-							"datastore:",
-							this.dataStore(),
-						);
+						console.log("comparison data:", result, "datastore:", dataStore);
 						this.comparisons.set(result);
 					});
 			},
 		});
-	}
-
-	switchCFData(cfType: number): void {
-		if (cfType === 0) {
-			this.dataStore.set(CFDataStores.Current);
-		} else {
-			this.dataStore.set(CFDataStores.Projected);
-		}
-		this.getFinancialData();
-		console.log(this.statuses());
-
-		console.log(this.comparisons());
 	}
 }
