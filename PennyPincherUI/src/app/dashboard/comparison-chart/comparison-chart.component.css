@@ -1,1 +1,16 @@
-
+/* tablet + desktop */
+@media (min-width: 500px) {
+	canvas {
+		min-height: 300px;
+		min-width: 400px;
+	}
+}
+/* mobile */
+@media (max-width: 499px) {
+	canvas {
+		min-height: 150px;
+		min-width: 100px;
+		max-height: 300px;
+		max-width: 300px;
+	}
+}
