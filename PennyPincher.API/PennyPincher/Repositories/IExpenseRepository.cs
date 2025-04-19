@@ -1,14 +1,16 @@
-﻿using PennyPincher.Data;
+﻿using PennyPincher.Models;
 
 namespace PennyPincher.Repositories
 {
     public interface IExpenseRepository
     {
+        Task<int?> CreateExpenseAsync(ExpenseForCreationDto expense);
+
+        Task<Expense> GetExpenseByIdAsync(int id);
+
         Task<IEnumerable<Expense>> GetAllExpensesAsync();
-        
-        Task<Expense> GetStudentAsync(int id);
-        
-        Task<int> AddExpenseAsync(Expense expense);
+
+        Task<IEnumerable<Expense>> GetAllExpensesByCategoryAsync(CategoryTypes category);
         
         Task<bool> UpdateExpenseAsync(Expense expense);
         

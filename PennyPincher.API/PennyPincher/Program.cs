@@ -1,4 +1,6 @@
 
+using PennyPincher.Repositories;
+
 namespace PennyPincher
 {
     public class Program
@@ -18,6 +20,9 @@ namespace PennyPincher
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Add custom repository services 
+            builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 
             var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins")!.Split(",");
             

@@ -7,16 +7,22 @@ namespace PennyPincher.Models
     {
         Undefined = 0,
         None = 1,
-        Living = 1,
-        Utilities = 2, 
-        Entertainment = 3,
-        Shopping = 4,
-        Takeout = 5
+        Living = 2,
+        Utilities = 3, 
+        Entertainment = 4,
+        Shopping = 5,
+        Takeout = 6,
+        PrimaryIncome = 7,
+        SecondaryIncome = 8
     }
     
     public class ExpenseDto
     {
+        [Required]  
         public int Id { get; set; }
+
+        [Required]
+        public int UserId { get; set; }
 
         public string Name { get; set; } = string.Empty;
         

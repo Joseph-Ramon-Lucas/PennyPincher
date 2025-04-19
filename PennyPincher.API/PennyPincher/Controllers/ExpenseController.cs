@@ -1,6 +1,8 @@
 using PennyPincher.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch;
+using PennyPincher.Repositories;
+using System.Net.Http.Json;
 
 namespace PennyPincher.Controllers
 {
@@ -8,100 +10,136 @@ namespace PennyPincher.Controllers
     [ApiController]
     public class ExpenseController : Controller
     {
-        [HttpPost]
-        public ActionResult<ExpenseDto> CreateExpense(ExpenseDto expense)
-        {
-            ExpenseDataStore.Current.Expenses.Add(expense);
+        private readonly IExpenseRepository _expenseRepository;
 
-            if (!ExpenseDataStore.Current.Expenses.Contains(expense))
-            {
-                return NotFound();
-            }
-            
-            return Ok(expense);
+        public ExpenseController(IExpenseRepository expenseRepository)
+        {
+            _expenseRepository = expenseRepository;
         }
-        
-        [HttpGet]
-        public ActionResult<List<ExpenseDto>> GetAllExpenses()
+
+        [HttpPost]
+        public async Task<ActionResult<ExpenseDto>> CreateExpense(ExpenseDto expense)
         {
-            if (ExpenseDataStore.Current.Expenses.Count == 0)
+            ExpenseForCreationDto newExpense = new ExpenseForCreationDto() 
+            { 
+                UserId = expense.UserId,
+                Name = expense.Name,
+                Category = expense.Category.ToString(), // 2, "Living" 
+                Price = expense.Price
+            };
+
+            var newExpenseId = await _expenseRepository.CreateExpenseAsync(newExpense);
+            if (newExpenseId != null)
             {
-                return NotFound();
+                return Ok(newExpenseId);
             }
 
-            return Ok(ExpenseDataStore.Current.Expenses);
+            return BadRequest();
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<ExpenseDto>>> GetAllExpenses()
+        {
+            var allExpenses = await _expenseRepository.GetAllExpensesAsync();
+            var allExpenseDtos = new List<ExpenseDto>();    
+
+            if (allExpenses != null && allExpenses.ToList().Count > 0)
+            {
+                foreach (var expense in allExpenses)
+                {
+                    allExpenseDtos.Add(new ExpenseDto()
+                    {
+                        Name = expense.Name,
+                        Category = Enum.Parse<CategoryTypes>(expense.Category),
+                        Price = expense.Price,
+                    });        
+                }
+                
+                return Ok(allExpenseDtos);
+            }
+
+            return NotFound();
         }
         
         [HttpGet("{categoryType}/getExpensesByCategory")]
-        public ActionResult<List<ExpenseDto>> GetExpenseByCategory(CategoryTypes category)
+        public async Task<ActionResult<List<ExpenseDto>>> GetExpenseByCategory(CategoryTypes category)
         {
             if (category == CategoryTypes.Undefined)
             {
                 return NotFound();
             }
-            
-            List<ExpenseDto> expenses = ExpenseDataStore.Current.Expenses
-                .Where(c => c.Category == category)
-                .ToList();
 
-            if (expenses.Count == 0)
-            {
-                return NotFound();  
-            }
+            var expensesByCategory = await _expenseRepository.GetAllExpensesByCategoryAsync(category);
+            var expenseDtosByCategory = new List<ExpenseDto>();
             
-            return Ok(expenses);
+            if (expensesByCategory != null && expensesByCategory.ToList().Count > 0)
+            {
+                foreach (var expense in expensesByCategory)
+                {
+                    expenseDtosByCategory.Add(new ExpenseDto()
+                    {
+                        Name = expense.Name,
+                        Category = Enum.Parse<CategoryTypes>(expense.Category),
+                        Price = expense.Price,
+                    });
+                }
+
+                return Ok(expenseDtosByCategory);
+            }
+
+            return NotFound();
         }
         
         [HttpGet("{expenseId}", Name = "GetExpense")]
         public ActionResult<IEnumerable<ExpenseDto>> GetExpense(int expenseId)
         {
-            var foundExpense = ExpenseDataStore.Current.Expenses
-                .FirstOrDefault(e => e.Id == expenseId);
-            
-            if (foundExpense == null)
+            var foundExpense = _expenseRepository.GetExpenseByIdAsync(expenseId);
+
+            if (foundExpense != null)
             {
-                return NotFound();
+                Json dataMessage = new Json();
+
+                return Ok(foundExpense);
+                
             }
-            
-            return Ok(foundExpense);
+
+            return NotFound();
         }
 
         [HttpPut("{expenseId}")]
-        public ActionResult UpdateExpense(int expenseId, ExpenseForUpdateDto expenseWithUpdateDto)
+        public async Task<ActionResult> UpdateExpense(int Id, ExpenseForUpdateDto expenseWithUpdateDto)
         {
-            ExpenseDto? foundExpense = ExpenseDataStore.Current.Expenses
-                .FirstOrDefault(e => e.Id == expenseId);
-            
-            if (foundExpense == null)
+            if (expenseWithUpdateDto == null || expenseWithUpdateDto.Id != Id)
+            {
+                return BadRequest();
+            }
+
+            var existingExpense = await _expenseRepository.GetExpenseByIdAsync(Id);
+            if (existingExpense == null)
             {
                 return NotFound();
             }
-            
-            foundExpense.Name = expenseWithUpdateDto.Name; 
-            foundExpense.Price = expenseWithUpdateDto.Price;
-            foundExpense.Category = expenseWithUpdateDto.Category;
-            
+
+            await _expenseRepository.UpdateExpenseAsync(existingExpense);
             return NoContent();
         }
 
         [HttpPatch("{itemId}")]
-        public ActionResult PartiallyUpdateExpense(int expenseId, JsonPatchDocument<ExpenseForUpdateDto> patchDocument)
+        public async Task<ActionResult> PartiallyUpdateExpense(int Id, JsonPatchDocument<ExpenseForUpdateDto> patchDocument)
         {
-            ExpenseDto? expenseFromStore = ExpenseDataStore.Current.Expenses
-                .FirstOrDefault(e => e.Id == expenseId);
-            
-            if (expenseFromStore == null)
+            Expense existingExpense = await _expenseRepository.GetExpenseByIdAsync(Id);
+            if (existingExpense == null)
             {
                 return NotFound();
             }
 
-            ExpenseForUpdateDto expenseToPatch = new ExpenseForUpdateDto()
-            {
-                Name = expenseFromStore.Name,
-                Price = expenseFromStore.Price
+            ExpenseForUpdateDto expenseToPatch = new ExpenseForUpdateDto() 
+            { 
+                Name = existingExpense.Name,
+                Price = existingExpense.Price
             };
-            
-            patchDocument.ApplyTo(expenseToPatch, ModelState);
+
+            patchDocument.ApplyTo(expenseToPatch, ModelState);  
 
             if (!ModelState.IsValid)
             {
@@ -112,25 +150,23 @@ namespace PennyPincher.Controllers
             {
                 return BadRequest(ModelState);  
             }
-            
-            expenseFromStore.Name = expenseToPatch.Name;
-            expenseFromStore.Price = expenseToPatch.Price;
-            
-            return NoContent();   
+
+            existingExpense.Name = expenseToPatch.Name;
+            existingExpense.Price = expenseToPatch.Price;
+
+            return NoContent();
         }
         
         [HttpDelete]
-        public ActionResult DeleteExpense(int expenseId)
+        public async Task<ActionResult> DeleteExpense(int Id)
         {
-            ExpenseDto? foundExpense = ExpenseDataStore.Current.Expenses
-                .FirstOrDefault(e => e.Id == expenseId);
-            
-            if (foundExpense == null)
+            Expense existingExpense = await _expenseRepository.GetExpenseByIdAsync(Id);
+            if (existingExpense == null)
             {
                 return NotFound();
             }
 
-            ExpenseDataStore.Current.Expenses.Remove(foundExpense);
+            await _expenseRepository.DeleteExpenseAsync(existingExpense.Id);
             return NoContent();
         }
     }    
