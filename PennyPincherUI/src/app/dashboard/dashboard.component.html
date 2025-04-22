@@ -27,7 +27,10 @@
       </div>
       <div id="comparsion-chart">
         <mat-card>
-          <app-comparison-chart [comparisons]="this.comparisons()" />
+          <app-comparison-chart
+            [comparisons]="this.comparisons()"
+            [expenseCategoryTypes]="this.expenseCategoryTypes"
+          />
         </mat-card>
       </div>
     </div>

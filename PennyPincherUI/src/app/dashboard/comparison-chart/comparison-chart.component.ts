@@ -10,6 +10,7 @@ import { BaseChartDirective } from "ng2-charts";
 import { AnalysisComparisonDto } from "../../models/analysis";
 import { CashFlowDto } from "../../models/cashflow";
 import { UtilityService } from "../../services/utility.service";
+import { CATEGORY_TYPES } from "../../models/expense";
 
 @Component({
 	selector: "app-comparison-chart",
@@ -35,12 +36,17 @@ export class ComparisonChartComponent implements OnChanges {
 	public comparisons: InputSignal<AnalysisComparisonDto> = input(
 		this.DEFAULT_ANALYSIS_COMPARISON,
 	);
+	public expenseCategoryTypes = input([CATEGORY_TYPES.None]);
 
 	public barChartLegend = true;
 	public barChartPlugins = [];
 	public barChartOptions: ChartConfiguration<"bar">["options"] = {
 		responsive: false,
 	};
+
+	public labels = new Array(this.expenseCategoryTypes().length).fill(0);
+	public currData = new Array(this.expenseCategoryTypes().length).fill(0);
+	public projectedData = new Array(this.expenseCategoryTypes().length).fill(0);
 
 	public barChartData: ChartConfiguration<"bar">["data"] = {
 		labels: [],
@@ -51,38 +57,45 @@ export class ComparisonChartComponent implements OnChanges {
 	};
 
 	ngOnChanges(): void {
-		const labels = [
-			// find the union of both category lists with set to remove duplicates
-			...new Set([
-				...this.comparisons().currentCategorySum.map((cf) =>
-					this.utilityService.categoryEnumToString(cf.category),
-				),
-				...this.comparisons().projectedCategorySum.map((cf) =>
-					this.utilityService.categoryEnumToString(cf.category),
-				),
-			]),
-		];
-		const currData = [
-			...this.comparisons().currentCategorySum.map((cf) => cf.amount),
-		];
-		const projData = [
-			...this.comparisons().projectedCategorySum.map((cf) => cf.amount),
-		];
-		console.group("LABEL", labels, "curr", currData, "proj", projData);
-		console.groupEnd;
+		this.comparisons().currentCategorySum.map((catSum) => {
+			this.currData[catSum.category - 1] = catSum.amount;
+		});
+
+		this.comparisons().projectedCategorySum.map((catSum) => {
+			this.projectedData[catSum.category - 1] = catSum.amount;
+		});
+
+		this.expenseCategoryTypes().map((category) => {
+			if (this.currData[category - 1] || this.projectedData[category - 1]) {
+				this.labels[category - 1] =
+					this.utilityService.categoryEnumToString(category);
+			}
+		});
+		// for (let i = 0; i < this.currData.length; i++) {
+		// 	if (this.currData[i] === 0 && this.projectedData[i] === 0) {
+		// 		this.currData.splice(i, 1);
+		// 		this.projectedData.splice(i, 1);
+		// 		this.labels.splice(i, 1);
+		// 	}
+		// }
+
+		console.log(
+			"LABEL",
+			this.labels,
+			"curr",
+			this.currData,
+			"proj",
+			this.projectedData,
+		);
 		this.barChartData = {
-			labels: labels,
+			labels: this.labels,
 			datasets: [
 				{
-					data: [
-						...this.comparisons().currentCategorySum.map((cf) => cf.amount),
-					],
+					data: this.currData,
 					label: "Current Expenses",
 				},
 				{
-					data: [
-						...this.comparisons().projectedCategorySum.map((cf) => cf.amount),
-					],
+					data: this.projectedData,
 					label: "Projected Expenses",
 				},
 			],
