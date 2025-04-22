@@ -65,7 +65,8 @@ namespace PennyPincher.Controllers
             return CFLogs;
         }
 
-        private List<CategoryTypes> GetExpenseCategoryTypes()
+        [HttpGet("getexpensecategorytypes")]
+        public List<CategoryTypes> GetExpenseCategoryTypes()
         {
             //defined which logitem categories are considered a flowtype expense
             //hard coded list of categories for now.
@@ -181,7 +182,7 @@ namespace PennyPincher.Controllers
                 .Where(e => e.Flow == FlowTypes.expense)
                 .OrderByDescending(e => e.Amount)
                 .Take(5);
-
+            
             var CurrCategoriesSummed = CurrItemLogsCF
                 .Where(e => e.Flow == FlowTypes.expense)
                 .GroupBy(e => e.Category)
@@ -190,7 +191,7 @@ namespace PennyPincher.Controllers
                     Amount = g.Sum(e => e.Amount),
                     Category = g.Key,
                 })
-                .OrderByDescending(e => e.Amount);
+                .OrderByDescending(e => e.Category);
 
             var ProjCategoriesSummed = CFData
                 .Where(e =>  e.Flow == FlowTypes.expense)
@@ -200,7 +201,7 @@ namespace PennyPincher.Controllers
                     Amount = g.Sum(e  => e.Amount),
                     Category = g.Key,
                 })
-                .OrderByDescending (e => e.Amount);
+                .OrderByDescending (e => e.Category);
 
             double CurrMostCostlyCategoryPrice = CurrCategoriesSummed.Max(e => e.Amount);
             CategoryTypes CurrMostCostlyCategory = CurrCategoriesSummed.OrderByDescending(e => e.Amount)

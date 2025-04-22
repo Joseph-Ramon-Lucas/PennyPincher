@@ -23,6 +23,7 @@ import { StatusTextComponent } from "./status-text/status-text.component";
 import { ComparisonTextComponent } from "./comparison-text/comparison-text.component";
 import { MatRadioModule } from "@angular/material/radio";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { CATEGORY_TYPES } from "../models/expense";
 
 @Component({
 	selector: "app-dashboard",
@@ -75,6 +76,7 @@ export class DashboardComponent implements OnInit {
 	protected comparisons: WritableSignal<AnalysisComparisonDto> = signal(
 		this.DEFAULT_ANALYSIS_COMPARISON,
 	);
+	protected expenseCategoryTypes: CATEGORY_TYPES[] = [CATEGORY_TYPES.None];
 
 	ngOnInit(): void {
 		this.getFinancialData(this.dataStore());
@@ -94,8 +96,13 @@ export class DashboardComponent implements OnInit {
 				this.analysisService
 					.CompareCashFlows(dataStore)
 					.subscribe((result: AnalysisComparisonDto) => {
-						console.log("comparison data:", result, "datastore:", dataStore);
+						// console.log("comparison data:", result, "datastore:", dataStore);
 						this.comparisons.set(result);
+					});
+				this.analysisService
+					.GetExpenseCategoryTypes()
+					.subscribe((result: CATEGORY_TYPES[]) => {
+						this.expenseCategoryTypes = result;
 					});
 			},
 		});

@@ -8,6 +8,7 @@ import type {
 	AnalysisStatusDto,
 	CFDataStores,
 } from "../models/analysis";
+import type { CATEGORY_TYPES } from "../models/expense";
 
 @Injectable({
 	providedIn: "root",
@@ -15,6 +16,12 @@ import type {
 export class AnalysisService {
 	private apiUrl = `${environment.apiURL}/api/analysis`;
 	private http = inject(HttpClient);
+
+	public GetExpenseCategoryTypes(): Observable<CATEGORY_TYPES[]> {
+		return this.http.get<CATEGORY_TYPES[]>(
+			`${this.apiUrl}/getexpensecategorytypes`,
+		);
+	}
 
 	public UpdateCashFlowItemLogStore(): Observable<CashFlowDto[]> {
 		return this.http.post<CashFlowDto[]>(this.apiUrl, {});
