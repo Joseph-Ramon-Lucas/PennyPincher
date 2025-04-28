@@ -203,13 +203,16 @@ namespace PennyPincher.Controllers
                 })
                 .OrderByDescending (e => e.Category);
 
-            double CurrMostCostlyCategoryPrice = CurrCategoriesSummed.Max(e => e.Amount);
+            double CurrMostCostlyCategoryPrice = CurrCategoriesSummed.OrderByDescending(e => e.Amount)
+                                                                    .Select(e => e.Amount)
+                                                                    .FirstOrDefault();
             CategoryTypes CurrMostCostlyCategory = CurrCategoriesSummed.OrderByDescending(e => e.Amount)
                                                                 .Select(e => e.Category)
                                                                 .FirstOrDefault();
+                          
 
             CategoryTypes ProjMostCostlyCurrCategory = ProjCategoriesSummed.Where(e => e.Category == CurrMostCostlyCategory)
-                                                                .Select (e => e.Category)
+                                                                .Select(e => e.Category)
                                                                 .FirstOrDefault();
 
             CategoryTypes ProjMostCostlyCurrCategoryDisplay = (ProjMostCostlyCurrCategory == CategoryTypes.None ? CurrMostCostlyCategory : ProjMostCostlyCurrCategory);
@@ -253,10 +256,12 @@ namespace PennyPincher.Controllers
             {
                 CurrentTopExpenses = CurrTopCostly,
                 CurrentCategorySum = CurrCategoriesSummed,
+                CurrentMostCostlyCategory = CurrMostCostlyCategory,
                 CurrentMostCostlyCategoryAmount = CurrMostCostlyCategoryPrice,
                 ProjectedTopExpenses = ProjTopCostly,
                 ProjectedCategorySum = ProjCategoriesSummed,
                 ProjectedMostCostlyCategory = ProjMostCostlyCurrCategory,
+                ProjectedMostCostlyCategoryAmount = ProjMostCostlyCurrCategoryPrice,
                 ProjectedMostCostlyCurrentCategoryDisplay = ProjMostCostlyCurrCategoryDisplay,
                 CostlyCategoryRatio = CostlyCategoryRatio,
 

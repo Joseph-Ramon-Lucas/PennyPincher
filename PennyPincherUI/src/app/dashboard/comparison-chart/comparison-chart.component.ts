@@ -44,10 +44,10 @@ export class ComparisonChartComponent implements OnChanges {
 		responsive: false,
 	};
 
-	public labels = new Array(this.expenseCategoryTypes().length).fill(0);
-	public currData = new Array(this.expenseCategoryTypes().length).fill(0);
-	public projectedData = new Array(this.expenseCategoryTypes().length).fill(0);
-
+	// hASH map? {label: [curr, proj]}
+	public chartData: {
+		[key: string]: number[];
+	} = {};
 	public barChartData: ChartConfiguration<"bar">["data"] = {
 		labels: [],
 		datasets: [
@@ -56,46 +56,48 @@ export class ComparisonChartComponent implements OnChanges {
 		],
 	};
 
-	ngOnChanges(): void {
+	public updateChartData(): void {
+		//prefilling all categories with [0 current, 0 projected]
+		this.expenseCategoryTypes().map((category: CATEGORY_TYPES) => {
+			this.chartData[this.utilityService.categoryEnumToString(category)] = [
+				0, 0,
+			];
+		});
+
+		//fill each current / projected with actual data
 		this.comparisons().currentCategorySum.map((catSum) => {
-			this.currData[catSum.category - 1] = catSum.amount;
+			this.chartData[
+				this.utilityService.categoryEnumToString(catSum.category)
+			][0] = catSum.amount;
 		});
-
 		this.comparisons().projectedCategorySum.map((catSum) => {
-			this.projectedData[catSum.category - 1] = catSum.amount;
+			this.chartData[
+				this.utilityService.categoryEnumToString(catSum.category)
+			][1] = catSum.amount;
 		});
 
-		this.expenseCategoryTypes().map((category) => {
-			if (this.currData[category - 1] || this.projectedData[category - 1]) {
-				this.labels[category - 1] =
-					this.utilityService.categoryEnumToString(category);
+		//just need to delete the categories that are unused with 0,0
+		Object.keys(this.chartData).map((category) => {
+			if (
+				this.chartData[category][0] === 0 &&
+				this.chartData[category][1] === 0
+			) {
+				delete this.chartData[category];
 			}
 		});
-		// for (let i = 0; i < this.currData.length; i++) {
-		// 	if (this.currData[i] === 0 && this.projectedData[i] === 0) {
-		// 		this.currData.splice(i, 1);
-		// 		this.projectedData.splice(i, 1);
-		// 		this.labels.splice(i, 1);
-		// 	}
-		// }
+	}
 
-		console.log(
-			"LABEL",
-			this.labels,
-			"curr",
-			this.currData,
-			"proj",
-			this.projectedData,
-		);
+	ngOnChanges(): void {
+		this.updateChartData();
 		this.barChartData = {
-			labels: this.labels,
+			labels: Object.keys(this.chartData),
 			datasets: [
 				{
-					data: this.currData,
+					data: Object.values(this.chartData).map((n) => n[0]),
 					label: "Current Expenses",
 				},
 				{
-					data: this.projectedData,
+					data: Object.values(this.chartData).map((n) => n[1]),
 					label: "Projected Expenses",
 				},
 			],
