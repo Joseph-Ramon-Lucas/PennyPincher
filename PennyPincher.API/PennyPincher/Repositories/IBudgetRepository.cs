@@ -11,7 +11,7 @@ namespace PennyPincher.Repositories
 
         Task<IEnumerable<Budget>> GetAllBudgetsAsync();
 
-        Task<IEnumerable<Budget>> GetAllBudgetsByTypeAsync(BudgetTypes budget);
+        Task<IEnumerable<Budget>> GetAllBudgetsByTypeAsync(BudgetTypes type);
 
         Task<bool> UpdateBudgetAsync(Budget budget);
 

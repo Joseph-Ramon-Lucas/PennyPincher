@@ -54,7 +54,7 @@ namespace PennyPincher.Controllers
             return NotFound();
         }
 
-        [HttpGet("{budgetType}/getBudgetsByType)"] 
+        [HttpGet("{budgetType}/getBudgetsByType")]
         public async Task<ActionResult<List<BudgetDto>>> GetAllBudgetsByTypeAsync(BudgetTypes type)
         {
             if (type == BudgetTypes.Undefined)

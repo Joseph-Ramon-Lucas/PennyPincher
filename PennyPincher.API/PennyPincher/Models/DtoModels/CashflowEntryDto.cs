@@ -2,7 +2,7 @@
 
 namespace PennyPincher.Models.DtoModels
 {
-    public enum FlowTypes
+    public enum CashflowTypes
     {
         Income = 0,
         Expense = 1
@@ -13,7 +13,7 @@ namespace PennyPincher.Models.DtoModels
         public int Amount { get; set; }
 
         [Required(ErrorMessage = "A FlowType (Income / Expense) is required for this CashFlow")]
-        [EnumDataType(typeof(FlowTypes))]
-        public FlowTypes Flow { get; set; }
+        [EnumDataType(typeof(CashflowTypes))]
+        public CashflowTypes Flow { get; set; }
     }
 }
