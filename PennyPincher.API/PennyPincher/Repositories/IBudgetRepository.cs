@@ -7,11 +7,9 @@ namespace PennyPincher.Repositories
     {
         Task<int?> CreateBudgetAsync(BudgetForCreationDto budget);
 
-        Task<Budget> GetBudgetByIdAsync(int id);
-
         Task<IEnumerable<Budget>> GetAllBudgetsAsync();
 
-        Task<IEnumerable<Budget>> GetAllBudgetsByTypeAsync(BudgetTypes type);
+        Task<Budget> GetBudgetByIdAsync(int id);
 
         Task<bool> UpdateBudgetAsync(Budget budget);
 

@@ -22,7 +22,8 @@ namespace PennyPincher
             builder.Services.AddSwaggerGen();
 
             // Add custom repository services 
-            builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            //builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
 
             var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins")!.Split(",");
             

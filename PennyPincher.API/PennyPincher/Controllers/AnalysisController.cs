@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using PennyPincher.Models;
 using PennyPincher.Models.DtoModels;
 using PennyPincher.Repositories;
 

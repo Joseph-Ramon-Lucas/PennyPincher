@@ -17,107 +17,91 @@ namespace PennyPincher.Repositories
 
         public async Task<int?> CreateBudgetAsync(BudgetForCreationDto budget)
         {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync();
-
             try
             {
-                string sql = "";
-                int insertedId = await conn.ExecuteScalarAsync<int>(sql, budget); 
-                return insertedId;
+                await using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                string sql = "INSERT INTO budget_group (group_name) VALUES (@GroupName) RETURNING *";
+                object insertedId = await conn.ExecuteScalarAsync<int>(sql, budget);
+
+                return Convert.ToInt32(insertedId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error inserting budget group: {ex.Message}");
                 throw;
             }
         }
 
         public async Task<IEnumerable<Budget>> GetAllBudgetsAsync()
         {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync();
-
             try
             {
-                string sql = "";
+                await using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync();
+
+                string sql = "SELECT * FROM budget_group";
                 var allBudgets = await conn.QueryAsync<Budget>(sql);
 
-                return allBudgets;  
+                return allBudgets;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<Budget>> GetAllBudgetsByTypeAsync(BudgetTypes budget)
-        {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync();
-
-            try
-            {
-                string sql = @"";
-                var allBudgetsByCategory = await conn.QueryAsync<Budget>(sql);
-
-                return allBudgetsByCategory;
-            }
-            catch (Exception)
-            {
+                Console.WriteLine($"Error getting all budgets from budget_group: {ex.Message}");
                 throw;
             }
         }
 
         public async Task<Budget> GetBudgetByIdAsync(int id)
         {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync(); 
-
             try
             {
-                string sql = "";
-                var foundBudget= await conn.QuerySingleAsync<Budget>(sql);
+                await using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync(); 
+
+                string sql = "SELECT * FROM budget_group WHERE budget_group_id = @id";
+                var foundBudget= await conn.QuerySingleAsync<Budget>(sql, new { id });
 
                 return foundBudget;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error getting specific budget from budget_group: {ex.Message}");
                 throw;
             }
         }
 
         public async Task<bool> UpdateBudgetAsync(Budget budget)
         {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync();
-
             try
             {
-                string sql = "";
+                await using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync();
+                string sql = "UPDATE budget_group SET group_name = @group_name WHERE budget_group_id = @budget_group_id";
                 var rowsAffected = await conn.ExecuteAsync(sql, budget);
                 return rowsAffected > 0;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error updating specific budget from budget_group: {ex.Message}");
                 throw;
             }
         }
 
         public async Task<bool> DeleteBudgetAsync(int id)
         {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync(); 
-
             try
             {
-                string sql = "";
-                var rowsAffected = await conn.ExecuteAsync(sql, id);
+                await using var conn = new NpgsqlConnection(_connectionString);
+                await conn.OpenAsync(); 
+                string sql = "DELETE FROM budget_group WHERE budget_group_id = @id";
+                var rowsAffected = await conn.ExecuteAsync(sql, new { id });
                 return rowsAffected > 0;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error deleting specific budget from budget_group: {ex.Message}");
                 throw;
             }
         }

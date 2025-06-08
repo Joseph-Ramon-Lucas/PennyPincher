@@ -12,14 +12,17 @@ namespace PennyPincher.Controllers
     {
         private readonly IBudgetRepository _budgetRepository;
 
+        public BudgetController(IBudgetRepository budgetRepository)
+        {
+            _budgetRepository = budgetRepository;
+        }
+
         [HttpPost]
         public async Task<ActionResult<BudgetDto>> CreateBudget(BudgetDto budget)
         {
             BudgetForCreationDto newBudget = new BudgetForCreationDto()
             {
-                Id = budget.Id,
-                Name = budget.Name,
-                Type = budget.Type.ToString()
+                GroupName = budget.GroupName
             };
 
             var newBudgetId = await _budgetRepository.CreateBudgetAsync(newBudget);
@@ -32,7 +35,7 @@ namespace PennyPincher.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<BudgetDto>> GetAllBudgets(int id)
+        public async Task<ActionResult<BudgetDto>> GetAllBudgets()
         {
             var allBudgets = await _budgetRepository.GetAllBudgetsAsync();
             var allBudgetDtos = new List<BudgetDto>();
@@ -43,8 +46,8 @@ namespace PennyPincher.Controllers
                 {
                     allBudgetDtos.Add(new BudgetDto()
                     {
-                        Name = budget.Name,
-                        Type = Enum.Parse<BudgetTypes>(budget.Type)
+                        Id = budget.budget_group_id,
+                        GroupName = budget.group_name,
                     });
                 }
 
@@ -54,37 +57,21 @@ namespace PennyPincher.Controllers
             return NotFound();
         }
 
-        [HttpGet("{budgetType}/getBudgetsByType")]
-        public async Task<ActionResult<List<BudgetDto>>> GetAllBudgetsByTypeAsync(BudgetTypes type)
+        [HttpGet("getBudgetById")]
+        public async Task<ActionResult<BudgetDto>> GetBudgetById(int id)
         {
-            if (type == BudgetTypes.Undefined)
+            var foundBudget = await _budgetRepository.GetBudgetByIdAsync(id);
+            if (foundBudget != null)
             {
-                return NotFound();
-            }
-
-            var budgetsByType = await _budgetRepository.GetAllBudgetsByTypeAsync(type);
-            var budgetDtosByType = new List<BudgetDto>();
-
-            if (budgetsByType != null && budgetsByType.ToList().Count > 0)
-            {
-                foreach (var budget in budgetsByType)
-                {
-                    budgetDtosByType.Add(new BudgetDto()
-                    {
-                        Name = budget.Name,
-                        Type = Enum.Parse<BudgetTypes>(budget.Type)
-                    });
-                }
-                
-                return Ok(budgetDtosByType);
+                return Ok(foundBudget);
             }
 
             return NotFound();
         }
 
 
-        [HttpPut("{budgetId}")]
-        public async Task<ActionResult<BudgetDto>> PartiallyUpdateBudget(int id, JsonPatchDocument<BudgetForUpdateDto> patchDocument)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<BudgetDto>> PartiallyUpdateBudget(int id, [FromBody] JsonPatchDocument<BudgetForUpdateDto> patchDocument)
         {
             Budget existingBudget = await _budgetRepository.GetBudgetByIdAsync(id);
             if (existingBudget == null)
@@ -94,26 +81,27 @@ namespace PennyPincher.Controllers
 
             BudgetForUpdateDto budgetToPatch = new BudgetForUpdateDto()
             {
-                Name = existingBudget.Name,
-                Type = Enum.Parse<BudgetTypes>(existingBudget.Type)
+                Name = existingBudget.group_name,
             };
 
             patchDocument.ApplyTo(budgetToPatch, ModelState);
 
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !TryValidateModel(budgetToPatch))
             {
                 return BadRequest(ModelState);
             }
 
-            if (!TryValidateModel(budgetToPatch))
+            existingBudget.group_name = budgetToPatch.Name;
+            
+            bool rowsAffected = await _budgetRepository.UpdateBudgetAsync(existingBudget);
+            if (rowsAffected)
             {
-                return BadRequest(ModelState);  
+                return NoContent();
             }
-
-            existingBudget.Name = budgetToPatch.Name;
-            existingBudget.Type = budgetToPatch.Type.ToString();
-
-            return NoContent();
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete]
@@ -125,7 +113,7 @@ namespace PennyPincher.Controllers
                 return NotFound();
             }
 
-            await _budgetRepository.DeleteBudgetAsync(existingBudget.Id);
+            await _budgetRepository.DeleteBudgetAsync(existingBudget.budget_group_id);
             return NoContent();
         }
     }

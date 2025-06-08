@@ -2,10 +2,11 @@
 {
     public class Budget
     {
-        public int Id { get; set; } 
+        public int budget_group_id { get; set; } 
 
-        public string Name { get; set; }
+        public string group_name { get; set; }
         
-        public string Type { get; set; }
+        public string type { get; set; }
     }
+
 }
