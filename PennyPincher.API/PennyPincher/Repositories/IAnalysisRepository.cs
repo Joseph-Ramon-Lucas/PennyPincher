@@ -16,5 +16,7 @@ namespace PennyPincher.Repositories
         Task<bool> UpdateAnalysisAsync(Analysis analysis);
 
         Task<bool> DeleteAnalysisAsync(int id); 
+
+        Task<AnalysisStatusDto> GetAnalysisStatusByGroupId(int id);
     }
 }

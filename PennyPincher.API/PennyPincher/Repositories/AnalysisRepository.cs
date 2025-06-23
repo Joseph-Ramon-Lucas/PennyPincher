@@ -7,122 +7,39 @@ namespace PennyPincher.Repositories
 {
     public class AnalysisRepository : IAnalysisRepository
     {
-        private readonly string _connectionString;
+        private readonly IDbService _dbService;
 
-        public AnalysisRepository(IConfiguration configuration)
+        public AnalysisRepository(IDbService dbService)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
+            _dbService = dbService;
         }
 
-        public async Task<int?> CreateAnalysisAsync(AnalysisForCreationDto analysis)
-        {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync();
-
-            try
-            {
-                string sql = "";
-                int insertedId = await conn.ExecuteScalarAsync<int>(sql, analysis);
-                return insertedId;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<Analysis>> GetAllAnalysesAsync()
-        {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync();
-
-            try
-            {
-                string sql = "";
-                var allAnalysis = await conn.QueryAsync<Analysis>(sql);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<Analysis>> GetAllAnalysesByTypeAsync()
-        {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync();
-
-            try
-            {
-                string sql = @"";
-                var allAnalysesByType = await conn.QueryAsync<Analysis>(sql);
-
-                return allAnalysesByType;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public async Task<Analysis> GetAnalysisByIdAsync(int id)
-        {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync();
-
-            try
-            {
-                string sql = "";
-                var foundAnalysis = await conn.QuerySingleAsync<Analysis>(sql);
-
-                return foundAnalysis;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-        }
-
-        public async Task<bool> UpdateAnalysisAsync(Analysis analysis)
-        {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync();
-
-            try
-            {
-                string sql = "";
-                var rowsAffected = await conn.ExecuteAsync(sql, analysis);
-                return rowsAffected > 0;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public async Task<bool> DeleteAnalysisAsync(int id)
-        {
-            await using var conn = new NpgsqlConnection(_connectionString);
-            await conn.OpenAsync();
-
-            try
-            {
-                string sql = "";
-                var rowsAffected = await conn.ExecuteAsync(sql, id);
-                return rowsAffected > 0;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
 
         public Task<IEnumerable<Analysis>> GetAllAnalysesByTypeAsync(AnalysisTypes analysis)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<AnalysisStatusDto> GetAnalysisStatusByGroupId(int id)
+        {
+            try
+            {
+                string sql = "SELECT amount FROM budget_junction bj " +
+                            "JOIN budget_cashflow_entry bce " +
+                            "ON bce.budget_cashflow_entry_id = bj.budget_cashflow_entry_id" +
+                            "WHERE budget_group_id = @id";
+
+                var allBudgets = await _dbService.GetAllAsync<Budget>(sql, id);
+                return new AnalysisStatusDto();
+
+
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
     }
 }

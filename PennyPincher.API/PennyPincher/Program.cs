@@ -7,9 +7,17 @@ namespace PennyPincher
     {
         public static void Main(string[] args)
         {
+
+            // Load env variables from .env
+            DotNetEnv.Env.Load();
+
             var builder = WebApplication.CreateBuilder(args);
 
+            //connection string
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
             // Add configuration for connection string
+
             
 
             // Add services to the container.
@@ -23,7 +31,11 @@ namespace PennyPincher
 
             // Add custom repository services 
             //builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            builder.Services.AddScoped<IDbService, DbService>();
             builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
+            builder.Services.AddScoped<IAnalysisRepository, AnalysisRepository>();
+           
+
 
             var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins")!.Split(",");
             
