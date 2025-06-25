@@ -34,7 +34,7 @@ namespace PennyPincher
             builder.Services.AddScoped<IDbService, DbService>();
             builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
             builder.Services.AddScoped<IAnalysisRepository, AnalysisRepository>();
-           
+
 
 
             var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins")!.Split(",");

@@ -11,6 +11,11 @@ namespace PennyPincher.Controllers
     {
         private readonly IAnalysisRepository _analysisRepository;
 
+        public AnalysisController(IAnalysisRepository analysisRepository)
+        {
+            _analysisRepository = analysisRepository;
+        }
+
         [HttpPost]
         public async Task<ActionResult<AnalysisDto>> CreateAnalysis(AnalysisDto analysis)
         {
@@ -34,7 +39,7 @@ namespace PennyPincher.Controllers
         public async Task<ActionResult<AnalysisDto>> GetAllAnalyses(int id)
         {
             var allAnalyses = await _analysisRepository.GetAllAnalysesAsync();
-            var allAnalysesDtos = new List<AnalysisDto>();  
+            var allAnalysesDtos = new List<AnalysisDto>();
 
             if (allAnalyses != null && allAnalyses.ToList().Count > 0)
             {
@@ -58,7 +63,7 @@ namespace PennyPincher.Controllers
         {
             var analysesByType = await _analysisRepository.GetAllAnalysesByTypeAsync(type);
             var analysisDtosByType = new List<AnalysisDto>();
-            
+
             if (analysesByType != null && analysesByType.ToList().Count > 0)
             {
                 foreach (var analysis in analysesByType)
@@ -70,7 +75,7 @@ namespace PennyPincher.Controllers
                     });
                 }
 
-                return Ok(analysisDtosByType);  
+                return Ok(analysisDtosByType);
             }
 
             return NotFound();
@@ -117,7 +122,23 @@ namespace PennyPincher.Controllers
             }
 
             await _analysisRepository.DeleteAnalysisAsync(existingAnalaysis.Id);
-            return NoContent(); 
+            return NoContent();
+        }
+
+        [HttpGet("{budgetGroupId}/status")]
+        public async Task<ActionResult<AnalysisStatusDto>> GetBugetStatus(int budgetGroupId)
+        {
+            AnalysisStatusDto existingAnalysis;
+                
+               existingAnalysis = await _analysisRepository.GetAnalysisStatusByGroupId(budgetGroupId);
+            if (existingAnalysis == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(existingAnalysis);
+
         }
     }
+    
 }

@@ -10,4 +10,11 @@
         public double MostCostlyAmount { get; set; }
         public double PercentOfEarningsGoingToMostCostlyAmount { get; set; }
     }
+
+    public class AnalysisStatusMostCostlyDto
+    {
+        public string Budget_Name { get; set; } = string.Empty;
+
+        public double Amount { get; set; }
+    }
 }
