@@ -16,121 +16,22 @@ namespace PennyPincher.Controllers
             _analysisRepository = analysisRepository;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<AnalysisDto>> CreateAnalysis(AnalysisDto analysis)
+
+        [HttpGet("{groupId}/status")]
+        public async Task<ActionResult<AnalysisStatusDto>> GetStatus(int groupId, bool isBudget=true)
         {
-            var newAnalysis = new AnalysisForCreationDto()
-            {
-                Id = analysis.Id,
-                Name = analysis.Name,
-                Type = analysis.Type.ToString()
-            };
+            AnalysisStatusDto? existingAnalysis;
 
-            var newId = await _analysisRepository.CreateAnalysisAsync(newAnalysis);
-            if (newId != null)
+            bool existingGroup = await _analysisRepository.checkFinanceTypeGroupExists(groupId, isBudget);
+
+            if (!existingGroup)
             {
-                return Ok(newId);
+                string errorMessage = $"Group id {groupId} doesn't exist";
+                Console.WriteLine(errorMessage);
+                return NotFound(errorMessage);
             }
 
-            return BadRequest();
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<AnalysisDto>> GetAllAnalyses(int id)
-        {
-            var allAnalyses = await _analysisRepository.GetAllAnalysesAsync();
-            var allAnalysesDtos = new List<AnalysisDto>();
-
-            if (allAnalyses != null && allAnalyses.ToList().Count > 0)
-            {
-                foreach (var analysis in allAnalyses)
-                {
-                    allAnalysesDtos.Add(new AnalysisDto()
-                    {
-                        Name = analysis.Name,
-                        Type = Enum.Parse<AnalysisTypes>(analysis.Type)
-                    });
-                }
-
-                return Ok(allAnalysesDtos);
-            }
-
-            return NotFound();
-        }
-
-        [HttpGet("{analysisType}/getAnalysisByType")]
-        public async Task<ActionResult<List<AnalysisDto>>> GetAllAnalysisByTypeAsync(AnalysisTypes type)
-        {
-            var analysesByType = await _analysisRepository.GetAllAnalysesByTypeAsync(type);
-            var analysisDtosByType = new List<AnalysisDto>();
-
-            if (analysesByType != null && analysesByType.ToList().Count > 0)
-            {
-                foreach (var analysis in analysesByType)
-                {
-                    analysisDtosByType.Add(new AnalysisDto()
-                    {
-                        Name = analysis.Name,
-                        Type = Enum.Parse<AnalysisTypes>(analysis.Type)
-                    });
-                }
-
-                return Ok(analysisDtosByType);
-            }
-
-            return NotFound();
-        }
-
-        [HttpPut("{analysisId}")]
-        public async Task<ActionResult<AnalysisDto>> PartiallyUpdateAnalysis(int id, JsonPatchDocument<AnalysisForUpdateDto> patchDocument)
-        {
-            var existingAnalysis = await _analysisRepository.GetAnalysisByIdAsync(id);
-            if (existingAnalysis == null)
-            {
-                return NotFound();
-            }
-
-            var analysisToPatch = new AnalysisForUpdateDto()
-            {
-                Name = existingAnalysis.Name,
-                Type = Enum.Parse<AnalysisTypes>(existingAnalysis.Type)
-            };
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (!TryValidateModel(analysisToPatch))
-            {
-                return BadRequest(ModelState);
-            }
-
-            existingAnalysis.Name = analysisToPatch.Name;
-            existingAnalysis.Type = analysisToPatch.Type.ToString();
-
-            return NoContent();
-        }
-
-        [HttpDelete]
-        public async Task<ActionResult<AnalysisDto>> DeleteAnalysis(int id)
-        {
-            var existingAnalaysis = await _analysisRepository.GetAnalysisByIdAsync(id);
-            if (existingAnalaysis == null)
-            {
-                return NotFound();
-            }
-
-            await _analysisRepository.DeleteAnalysisAsync(existingAnalaysis.Id);
-            return NoContent();
-        }
-
-        [HttpGet("{budgetGroupId}/status")]
-        public async Task<ActionResult<AnalysisStatusDto>> GetBugetStatus(int budgetGroupId)
-        {
-            AnalysisStatusDto existingAnalysis;
-                
-               existingAnalysis = await _analysisRepository.GetAnalysisStatusByGroupId(budgetGroupId);
+            existingAnalysis = await _analysisRepository.GetAnalysisStatusByGroupId(groupId, isBudget);
             if (existingAnalysis == null)
             {
                 return NotFound();
