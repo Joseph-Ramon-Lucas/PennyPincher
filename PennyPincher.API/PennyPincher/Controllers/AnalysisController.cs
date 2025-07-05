@@ -18,21 +18,29 @@ namespace PennyPincher.Controllers
 
 
         [HttpGet("{groupId}/status")]
-        public async Task<ActionResult<AnalysisStatusDto>> GetStatus(int groupId, bool isBudget=true)
+        public async Task<ActionResult<AnalysisStatusDto>> GetStatus(int groupId, int userId)
         {
             AnalysisStatusDto? existingAnalysis;
 
-            bool existingGroup = await _analysisRepository.checkFinanceTypeGroupExists(groupId, isBudget);
+            bool groupExists = await _analysisRepository.checkGroupExists(groupId);
 
-            if (!existingGroup)
+            if (!groupExists)
             {
                 string errorMessage = $"Group id {groupId} doesn't exist";
                 Console.WriteLine(errorMessage);
                 return NotFound(errorMessage);
             }
+            bool userExists = await _analysisRepository.checkUserExists(userId);
+            if (!userExists)
+            {
+                string errorMessage = $"User id {userId} does not exist.";
+                Console.WriteLine(errorMessage);
+                return NotFound(errorMessage);
+            }
+            // checkUserExisits()
 
-            existingAnalysis = await _analysisRepository.GetAnalysisStatusByGroupId(groupId, isBudget);
-            if (existingAnalysis == null)
+            existingAnalysis = await _analysisRepository.GetAnalysisStatusByGroupId(groupId, userId);
+            if (existingAnalysis != null)
             {
                 return NotFound();
             }
