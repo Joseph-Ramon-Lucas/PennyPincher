@@ -48,6 +48,28 @@ namespace PennyPincher.Controllers
             return Ok(existingAnalysis);
 
         }
+
+        [HttpGet("status")]
+        public async Task<ActionResult<AnalysisStatusDto>> GetAllStatuses(int userId)
+        {
+            AnalysisStatusDto? existingAnalysis;
+
+            bool userExists = await _analysisRepository.checkUserExists(userId);
+            if (!userExists)
+            {
+                string errorMessage = $"User id {userId} does not exist.";
+                Console.WriteLine(errorMessage);
+                return NotFound(errorMessage);
+            }
+
+            existingAnalysis = await _analysisRepository.GetAllAnalysisStatusesByUserId(userId);
+            if (existingAnalysis == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(existingAnalysis);
+        }
     }
     
 }

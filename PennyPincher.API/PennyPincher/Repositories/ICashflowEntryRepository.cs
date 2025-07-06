@@ -5,13 +5,13 @@ namespace PennyPincher.Repositories
 {
     public interface ICashflowEntryRepository
     {
-        Task<int?> CreateCashflowEntrysync(AnalysisForCreationDto analysis);
+        Task<int?> CreateCashflowEntrysync(CashflowEntryForCreationDto analysis);
 
         Task<Analysis> GetCashflowEntryByIdAsync(int id);
 
         Task<IEnumerable<Analysis>> GetAllCashflowEntriesAsync();
 
-        Task<IEnumerable<Analysis>> GetAllCashflowsByTypeAsync(AnalysisTypes type);
+        Task<IEnumerable<Analysis>> GetAllCashflowsByTypeAsync(CashflowTypes type);
 
         Task<bool> UpdateCashflowEntryAsync(Analysis analysis);
 
