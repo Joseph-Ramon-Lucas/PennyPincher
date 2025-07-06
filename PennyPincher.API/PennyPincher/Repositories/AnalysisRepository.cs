@@ -53,15 +53,31 @@ namespace PennyPincher.Repositories
         }
 
 
-        public async Task<AnalysisStatusDto?> GetAnalysisStatusByGroupId(int groupId, int userId)
+        public async Task<AnalysisStatusDto?> GetUserAnalysisStatusByGroupId(int groupId, int userId)
         {
 
             try
             {
                 // limit 1000 rows to prevent bottle necking
+                // coalesce to avoid nulls when using sum
+                string sql_aggregate_cashflows = @"
+                    SELECT 
+                        COALESCE(SUM(CASE WHEN ce.cashflow_entry_type = 'Income' THEN ce.amount END), 0) AS income,
+                        COALESCE(SUM(CASE WHEN ce.cashflow_entry_type = 'Expense' THEN ce.amount END), 0) AS expense
+                    FROM public.management_profile AS mp
+                    JOIN public.cashflow_entry AS ce
+                        ON mp.cashflow_entry_id = ce.cashflow_entry_id
+                    JOIN public.cashflow_group AS cg
+                        ON mp.cashflow_group_id = cg.cashflow_group_id
+                    JOIN public.user_account AS ua
+                        ON mp.user_id = ua.user_id
+                    WHERE mp.cashflow_group_id = @groupId
+                        AND mp.user_id = @userId
+                    LIMIT 1000;
+                    ";
 
-                string sql_grossIncome = @"
-                    SELECT SUM(ce.amount)
+                string sql_mostCostly = @"
+                    SELECT cashflow_entry_name as Name, COALESCE(amount, 0)
                     FROM public.management_profile AS mp
                     JOIN public.cashflow_entry AS ce
                         ON mp.cashflow_entry_id = ce.cashflow_entry_id
@@ -71,61 +87,36 @@ namespace PennyPincher.Repositories
                         ON mp.user_id = ua.user_id
                     WHERE mp.cashflow_group_id = @groupId
                       AND mp.user_id = @userId
-                      AND ce.cashflow_entry_type = 'Income'
-                    LIMIT 1000;
+                      AND ce.cashflow_entry_type = 'Expense'
+                    ORDER BY amount DESC
+                    LIMIT 1;
                     ";
 
-                //string sql_ = 
-                    
-                    
-                    
-                //    $"SELECT SUM(amount) FROM {financeType}_junction bj " +
-                //        $"JOIN {financeType}_cashflow_entry bce " +
-                //        $"ON bce.{financeType}_cashflow_entry_id = bj.{financeType}_cashflow_entry_id " +
-                //        $"WHERE {financeType}_group_id=@groupId " +
-                //        "AND cashflow_entry_type = 'Income' " +
-                //        "LIMIT 1000"
-                //        ;
+                AnalysisAggregateCashflowsDto aggregateCashflows = await _dbService.GetAsync<AnalysisAggregateCashflowsDto>(sql_aggregate_cashflows, new { groupId, userId });
 
-                //string sql_grossLiabilities = $"SELECT SUM(amount) FROM {financeType}_junction bj " +
-                //            $"JOIN {financeType}_cashflow_entry bce " +
-                //            $"ON bce.{financeType}_cashflow_entry_id = bj.{financeType}_cashflow_entry_id " +
-                //            $"WHERE {financeType}_group_id=@groupId " +
-                //            "AND cashflow_entry_type = 'Expense' " +
-                //            "LIMIT 1000"
-                //            ;
+                double grossIncome = aggregateCashflows.Income;
 
-                //string sql_mostCostly = $"SELECT {financeType}_name, amount FROM {financeType}_junction bj " +
-                //            $"JOIN {financeType}_cashflow_entry bce " +
-                //            $"ON bce.{financeType}_cashflow_entry_id = bj.{financeType}_cashflow_entry_id " +
-                //            $"WHERE {financeType}_group_id=@groupId " +
-                //            $"AND cashflow_entry_type = 'Expense' " +
-                //            $"ORDER BY amount DESC " +
-                //            $"LIMIT 1"
-                //            ;
+                double liabilities = aggregateCashflows.Expense;
 
-                double grossIncome = await _dbService.GetAsync<double>(sql_grossIncome, new { groupId, userId });
+                double netIncome = Math.Round(grossIncome - liabilities, 2, MidpointRounding.ToEven);
 
-                //double liabilities = await _dbService.GetAsync<double>(sql_grossLiabilities, new { groupId });
+                double netIncomeRatio = Math.Round(netIncome / liabilities, 2, MidpointRounding.ToEven) * 100;
 
-                //double netIncome = Math.Round(grossIncome - liabilities, 2, MidpointRounding.ToEven);
+                AnalysisStatusMostCostlyDto mostCostlyItem = await _dbService.GetAsync<AnalysisStatusMostCostlyDto>(sql_mostCostly, new { groupId, userId });
+                if (mostCostlyItem == null) { mostCostlyItem = new AnalysisStatusMostCostlyDto(); }
 
-                //double netIncomeRatio = Math.Round(netIncome / liabilities, 2, MidpointRounding.ToEven) * 100;
-
-                //AnalysisStatusMostCostlyDto mostCostlyItem = await _dbService.GetAsync<AnalysisStatusMostCostlyDto>(sql_mostCostly, new { groupId });
-
-                //double percentOfEarningsGoingToMostCostlyAmount = Math.Round((mostCostlyItem.Amount / grossIncome), 4, MidpointRounding.ToEven) * 100;
+                double percentOfEarningsGoingToMostCostlyAmount = Math.Round((mostCostlyItem.Amount / grossIncome), 4, MidpointRounding.ToEven) * 100;
 
 
                 return new AnalysisStatusDto()
                 {
                     GrossIncome = grossIncome,
-                    //NetIncome = netIncome,
-                    //Liabilities = liabilities,
-                    //NetIncomeRatio = netIncomeRatio,
-                    //MostCostlyName = mostCostlyItem.Budget_Name,
-                    //MostCostlyAmount = mostCostlyItem.Amount,
-                    //PercentOfEarningsGoingToMostCostlyAmount = percentOfEarningsGoingToMostCostlyAmount
+                    NetIncome = netIncome,
+                    Liabilities = liabilities,
+                    NetIncomeRatio = netIncomeRatio,
+                    MostCostlyName = mostCostlyItem.Name,
+                    MostCostlyAmount = mostCostlyItem.Amount,
+                    PercentOfEarningsGoingToMostCostlyAmount = percentOfEarningsGoingToMostCostlyAmount
                 };
 
             }
@@ -135,6 +126,21 @@ namespace PennyPincher.Repositories
                 throw;
             }
 
+        }
+
+        public async Task<AnalysisStatusDto?> GetAllAnalysisStatusesByUserId(int groupId, int userId)
+        {
+            try
+            {
+
+                return new AnalysisStatusDto();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error Gathering specific analysis data from the database: {ex.Message}");
+                throw;
+            }
         }
     }
 }

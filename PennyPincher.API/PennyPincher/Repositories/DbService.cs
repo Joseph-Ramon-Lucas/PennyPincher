@@ -34,6 +34,5 @@ namespace PennyPincher.Repositories
 
             return result;
         }
-
     }
 }

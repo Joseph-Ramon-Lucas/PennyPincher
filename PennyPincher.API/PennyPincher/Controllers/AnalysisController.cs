@@ -22,14 +22,6 @@ namespace PennyPincher.Controllers
         {
             AnalysisStatusDto? existingAnalysis;
 
-            bool groupExists = await _analysisRepository.checkGroupExists(groupId);
-
-            if (!groupExists)
-            {
-                string errorMessage = $"Group id {groupId} doesn't exist";
-                Console.WriteLine(errorMessage);
-                return NotFound(errorMessage);
-            }
             bool userExists = await _analysisRepository.checkUserExists(userId);
             if (!userExists)
             {
@@ -37,10 +29,18 @@ namespace PennyPincher.Controllers
                 Console.WriteLine(errorMessage);
                 return NotFound(errorMessage);
             }
-            // checkUserExisits()
 
-            existingAnalysis = await _analysisRepository.GetAnalysisStatusByGroupId(groupId, userId);
-            if (existingAnalysis != null)
+            bool groupExists = await _analysisRepository.checkGroupExists(groupId);
+            if (!groupExists)
+            {
+                string errorMessage = $"Group id {groupId} doesn't exist";
+                Console.WriteLine(errorMessage);
+                return NotFound(errorMessage);
+            }
+           
+
+            existingAnalysis = await _analysisRepository.GetUserAnalysisStatusByGroupId(groupId, userId);
+            if (existingAnalysis == null)
             {
                 return NotFound();
             }
