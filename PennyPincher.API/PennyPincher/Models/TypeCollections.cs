@@ -24,5 +24,11 @@
             PayYourselfFirst = 2,
             ZeroBased = 3
         }
+
+        public enum CashflowType
+        {
+            Income = 0,
+            Expense = 1
+        }
     }
 }

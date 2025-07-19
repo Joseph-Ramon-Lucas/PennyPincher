@@ -1,5 +1,6 @@
 ﻿using PennyPincher.Models;
 using PennyPincher.Models.DtoModels;
+using static PennyPincher.Models.TypeCollections;
 
 namespace PennyPincher.Repositories
 {

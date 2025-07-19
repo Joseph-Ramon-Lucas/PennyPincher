@@ -17,7 +17,7 @@ namespace PennyPincher.Controllers
         }
 
 
-        [HttpGet("{groupId}/status")]
+        [HttpGet("status/{groupId}")]
         public async Task<ActionResult<AnalysisStatusDto>> GetStatus(int groupId, int userId)
         {
             AnalysisStatusDto? existingAnalysis;
@@ -62,13 +62,35 @@ namespace PennyPincher.Controllers
                 return NotFound(errorMessage);
             }
 
-            existingAnalysis = await _analysisRepository.GetAllAnalysisStatusesByUserId(userId);
+            existingAnalysis = await _analysisRepository.GetAllUserAnalysisStatuses(userId);
             if (existingAnalysis == null)
             {
                 return NotFound();
             }
 
             return Ok(existingAnalysis);
+        }
+
+        [HttpGet("comparison")]
+        public async Task<ActionResult<AnalysisComparisonDto>> GetUserAnalysisComparisonByUserId(int userId, int groupId1, int groupId2)
+        {
+            AnalysisComparisonDto? existingAnalysis;
+
+            bool userExists = await _analysisRepository.checkUserExists(userId);
+            if (!userExists)
+            {
+                string errorMessage = $"User id {userId} does not exist.";
+                Console.WriteLine(errorMessage);
+                return NotFound(errorMessage);
+            }
+
+            existingAnalysis = await _analysisRepository.GetUserAnalysisComparison(userId, groupId1, groupId2);
+            if (existingAnalysis == null) 
+            {     
+                return NotFound(); 
+            }
+            return Ok(existingAnalysis);
+
         }
     }
     

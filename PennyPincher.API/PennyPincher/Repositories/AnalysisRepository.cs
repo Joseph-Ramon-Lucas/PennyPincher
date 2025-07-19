@@ -20,7 +20,7 @@ namespace PennyPincher.Repositories
         {
             try
             {
-                string sql = @"SELECT * FROM public.cashflow_group 
+                string sql = @"SELECT COUNT(*) FROM public.cashflow_group 
                                 WHERE cashflow_group_id = @groupId 
                                 LIMIT 1000";
                 var foundBudget = await _dbService.GetAsync<int>(sql, new { groupId });
@@ -38,7 +38,7 @@ namespace PennyPincher.Repositories
         {
             try
             {
-                string sql = @"SELECT * FROM public.user_account 
+                string sql = @"SELECT COUNT(*) FROM public.user_account 
                                 WHERE user_id = @userId
                                 LIMIT 1000;";
 
@@ -56,7 +56,7 @@ namespace PennyPincher.Repositories
 
         public async Task<AnalysisStatusDto?> GetUserAnalysisStatusByGroupId(int groupId, int userId)
         {
-            //groupid should be an array of ids to select multiple groups at once
+            //groupid should eventually be an array of ids to select multiple groups at once
 
             try
             {
@@ -130,7 +130,7 @@ namespace PennyPincher.Repositories
 
         }
 
-        public async Task<AnalysisStatusDto?> GetAllAnalysisStatusesByUserId(int userId)
+        public async Task<AnalysisStatusDto?> GetAllUserAnalysisStatuses(int userId)
         {
             try
             {
@@ -189,6 +189,37 @@ namespace PennyPincher.Repositories
                     PercentOfEarningsGoingToMostCostlyAmount = percentOfEarningsGoingToMostCostlyAmount
                 };
 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error Gathering specific analysis data from the database: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<AnalysisComparisonDto?> GetUserAnalysisComparison(int userId, int groupId1, int groupId2)
+        {
+            try
+            {
+                string sql_mostCostly = @"
+                    SELECT cashflow_entry_name as Name, COALESCE(ce.amount, 0) as Amount
+                    FROM public.management_profile AS mp
+                    JOIN public.cashflow_entry AS ce
+                        ON mp.cashflow_entry_id = ce.cashflow_entry_id
+                    JOIN public.cashflow_group AS cg
+                        ON mp.cashflow_group_id = cg.cashflow_group_id
+                    JOIN public.user_account AS ua
+                        ON mp.user_id = ua.user_id
+                    WHERE mp.cashflow_group_id = @groupId
+                      AND mp.user_id = @userId
+                      AND ce.cashflow_entry_type = 'Expense'
+                    ORDER BY amount DESC
+                    LIMIT 1;
+                    ";
+                    // can we do a where groupid = @groupid OR groupID2? and get both?
+
+
+                return new AnalysisComparisonDto();
             }
             catch (Exception ex)
             {

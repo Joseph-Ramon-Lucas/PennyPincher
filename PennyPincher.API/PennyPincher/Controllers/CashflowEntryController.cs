@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PennyPincher.Models;
 using PennyPincher.Models.DtoModels;
 using PennyPincher.Repositories;
+using static PennyPincher.Models.TypeCollections;
 
 namespace PennyPincher.Controllers
 {
@@ -51,7 +52,7 @@ namespace PennyPincher.Controllers
             return Ok(allCashflowEntriesDtos); 
         }
  
-        [HttpGet]
+        [HttpGet("/{flow}")]
         public async Task<ActionResult<CashflowEntryDto>> GetAllCashflowEntriesByFlowType(CashflowType flow)
         {
             var allCashflowEntriesByType = await _cashflowRepository.GetAllCashflowEntriesByFlowTypeAsync(flow);

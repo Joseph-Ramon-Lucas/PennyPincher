@@ -8,6 +8,7 @@ namespace PennyPincher.Repositories
         Task<bool> checkGroupExists(int groupId);
         Task<bool> checkUserExists(int userId);
         Task<AnalysisStatusDto?> GetUserAnalysisStatusByGroupId(int groupId, int userId);
-        Task<AnalysisStatusDto?> GetAllAnalysisStatusesByUserId(int userId);
+        Task<AnalysisStatusDto?> GetAllUserAnalysisStatuses(int userId);
+        Task<AnalysisComparisonDto?> GetUserAnalysisComparison(int userId, int groupId1, int groupId2);
     }
 }
