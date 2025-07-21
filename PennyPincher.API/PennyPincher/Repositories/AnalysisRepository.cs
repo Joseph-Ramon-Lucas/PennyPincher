@@ -16,43 +16,6 @@ namespace PennyPincher.Repositories
             _dbService = dbService;
         }
 
-        public async Task<bool> checkGroupExists(int groupId)
-        {
-            try
-            {
-                string sql = @"SELECT COUNT(*) FROM public.cashflow_group 
-                                WHERE cashflow_group_id = @groupId 
-                                LIMIT 1000";
-                var foundBudget = await _dbService.GetAsync<int>(sql, new { groupId });
-
-                return foundBudget != 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error getting specific budget from budget_group: {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task<bool> checkUserExists(int userId)
-        {
-            try
-            {
-                string sql = @"SELECT COUNT(*) FROM public.user_account 
-                                WHERE user_id = @userId
-                                LIMIT 1000;";
-
-                var foundUser = await _dbService.GetAsync<int>(sql, new { userId });
-
-                return foundUser != 0;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error getting specific budget from budget_group: {ex.Message}");
-                throw;
-            }
-        }
-
 
         public async Task<AnalysisStatusDto?> GetUserAnalysisStatusByGroupId(int groupId, int userId)
         {

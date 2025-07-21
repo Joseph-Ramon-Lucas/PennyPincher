@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PennyPincher.Models.DtoModels;
 using PennyPincher.Repositories;
+using System.Text.RegularExpressions;
 
 namespace PennyPincher.Controllers
 {
@@ -10,10 +11,13 @@ namespace PennyPincher.Controllers
     public class AnalysisController : Controller
     {
         private readonly IAnalysisRepository _analysisRepository;
+        private readonly IValidationRepository _validationRepository;
 
-        public AnalysisController(IAnalysisRepository analysisRepository)
+        public AnalysisController(IAnalysisRepository analysisRepository, IValidationRepository validationRepository)
         {
             _analysisRepository = analysisRepository;
+            _validationRepository = validationRepository;
+           
         }
 
 
@@ -22,20 +26,18 @@ namespace PennyPincher.Controllers
         {
             AnalysisStatusDto? existingAnalysis;
 
-            bool userExists = await _analysisRepository.checkUserExists(userId);
-            if (!userExists)
+            ValidationResponseDto userValidationResponse = await _validationRepository.checkUserExists(userId);
+            if (!userValidationResponse.IsSuccess)
             {
-                string errorMessage = $"User id {userId} does not exist.";
-                Console.WriteLine(errorMessage);
-                return NotFound(errorMessage);
+                Console.WriteLine(userValidationResponse.ResponseMessage);
+                return NotFound(userValidationResponse.ResponseMessage);
             }
 
-            bool groupExists = await _analysisRepository.checkGroupExists(groupId);
-            if (!groupExists)
+            ValidationResponseDto cashflowGroupValidationResponse = await _validationRepository.checkCashflowGroupExists(groupId);
+            if (!cashflowGroupValidationResponse.IsSuccess)
             {
-                string errorMessage = $"Group id {groupId} doesn't exist";
-                Console.WriteLine(errorMessage);
-                return NotFound(errorMessage);
+                Console.WriteLine(cashflowGroupValidationResponse.ResponseMessage);
+                return NotFound(cashflowGroupValidationResponse.ResponseMessage);
             }
            
 
@@ -54,12 +56,11 @@ namespace PennyPincher.Controllers
         {
             AnalysisStatusDto? existingAnalysis;
 
-            bool userExists = await _analysisRepository.checkUserExists(userId);
-            if (!userExists)
+            ValidationResponseDto userValidationResponse = await _validationRepository.checkUserExists(userId);
+            if (!userValidationResponse.IsSuccess)
             {
-                string errorMessage = $"User id {userId} does not exist.";
-                Console.WriteLine(errorMessage);
-                return NotFound(errorMessage);
+                Console.WriteLine(userValidationResponse.ResponseMessage);
+                return NotFound(userValidationResponse.ResponseMessage);
             }
 
             existingAnalysis = await _analysisRepository.GetAllUserAnalysisStatuses(userId);
@@ -76,13 +77,27 @@ namespace PennyPincher.Controllers
         {
             AnalysisComparisonDto? existingAnalysis;
 
-            bool userExists = await _analysisRepository.checkUserExists(userId);
-            if (!userExists)
+            ValidationResponseDto userValidationResponse = await _validationRepository.checkUserExists(userId);
+            if (!userValidationResponse.IsSuccess)
             {
-                string errorMessage = $"User id {userId} does not exist.";
-                Console.WriteLine(errorMessage);
-                return NotFound(errorMessage);
+                Console.WriteLine(userValidationResponse.ResponseMessage);
+                return NotFound(userValidationResponse.ResponseMessage);
             }
+
+            ValidationResponseDto cashflowGroup1ValidationResponse = await _validationRepository.checkCashflowGroupExists(groupId1);
+            if (!cashflowGroup1ValidationResponse.IsSuccess)
+            {
+                Console.WriteLine(cashflowGroup1ValidationResponse.ResponseMessage);
+                return NotFound(cashflowGroup1ValidationResponse.ResponseMessage);
+            }
+
+            ValidationResponseDto cashflowGroup2ValidationResponse = await _validationRepository.checkCashflowGroupExists(groupId2);
+            if (!cashflowGroup2ValidationResponse.IsSuccess)
+            {
+                Console.WriteLine(cashflowGroup2ValidationResponse.ResponseMessage);
+                return NotFound(cashflowGroup2ValidationResponse.ResponseMessage);
+            }
+
 
             existingAnalysis = await _analysisRepository.GetUserAnalysisComparison(userId, groupId1, groupId2);
             if (existingAnalysis == null) 

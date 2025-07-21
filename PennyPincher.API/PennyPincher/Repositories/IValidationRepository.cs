@@ -1,0 +1,10 @@
+﻿using PennyPincher.Models.DtoModels;
+
+namespace PennyPincher.Repositories
+{
+    public interface IValidationRepository
+    {
+        Task<ValidationResponseDto> checkCashflowGroupExists(int groupId);
+        Task<ValidationResponseDto> checkUserExists(int userId);
+    }
+}

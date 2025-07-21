@@ -34,6 +34,7 @@ namespace PennyPincher
             builder.Services.AddScoped<IDbService, DbService>();
             builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
             builder.Services.AddScoped<IAnalysisRepository, AnalysisRepository>();
+            builder.Services.AddScoped<IValidationRepository, ValidationRepository>();
 
 
 
