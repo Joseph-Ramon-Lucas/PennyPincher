@@ -9,7 +9,12 @@
             Utilities = 2,
             Entertainment = 3,
             Shopping = 4,
-            Takeout = 5
+            Takeout = 5,
+            Housing = 6,
+            Transportation = 7,
+            Food = 8,
+            Health = 9,
+            Income = 10
         }
         public enum AnalysisTypes
         {

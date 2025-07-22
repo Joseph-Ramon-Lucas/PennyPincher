@@ -100,6 +100,7 @@ namespace PennyPincher.Controllers
 
 
             existingAnalysis = await _analysisRepository.GetUserAnalysisComparison(userId, groupId1, groupId2);
+
             if (existingAnalysis == null) 
             {     
                 return NotFound(); 
