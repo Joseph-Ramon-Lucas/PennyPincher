@@ -6,5 +6,6 @@ namespace PennyPincher.Repositories
     {
         Task<ValidationResponseDto> checkCashflowGroupExists(int groupId);
         Task<ValidationResponseDto> checkUserExists(int userId);
+        Task<ValidationResponseDto> checkUserExistsByEmail(string userEmail);
     }
 }

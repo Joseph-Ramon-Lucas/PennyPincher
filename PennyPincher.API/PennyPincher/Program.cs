@@ -32,10 +32,11 @@ namespace PennyPincher
             // Add custom repository services 
             //builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
             builder.Services.AddScoped<IDbService, DbService>();
+            builder.Services.AddScoped<IUserService,  UserService>();
             builder.Services.AddScoped<IBudgetRepository, BudgetRepository>();
             builder.Services.AddScoped<IAnalysisRepository, AnalysisRepository>();
             builder.Services.AddScoped<IValidationRepository, ValidationRepository>();
-
+            
 
 
             var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins")!.Split(",");

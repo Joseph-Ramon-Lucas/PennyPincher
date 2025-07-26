@@ -1,4 +1,5 @@
-﻿using PennyPincher.Models.DtoModels;
+﻿using PennyPincher.Models;
+using PennyPincher.Models.DtoModels;
 using System.Text.RegularExpressions;
 
 namespace PennyPincher.Repositories
@@ -68,7 +69,37 @@ namespace PennyPincher.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error getting specific budget from budget_group: {ex.Message}");
+                Console.WriteLine($"Error getting specific user from user table: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<ValidationResponseDto> checkUserExistsByEmail(string userEmail)
+        {
+            try
+            {
+                string sql = @"SELECT COUNT(*) FROM public.user_account 
+                                WHERE email = @userEmail
+                                LIMIT 1000;";
+
+                var foundUser = await _dbService.GetAsync<int>(sql, new { userEmail });
+
+                if (foundUser != 0)
+                {
+                    return new ValidationResponseDto()
+                    {
+                        IsSuccess = true,
+                    };
+                }
+                return new ValidationResponseDto()
+                {
+                    IsSuccess = false,
+                    ResponseMessage = $"User Email {userEmail} doesn't exist"
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting specific user from user table: {ex.Message}");
                 throw;
             }
         }
