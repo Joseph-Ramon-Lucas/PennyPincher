@@ -7,31 +7,30 @@ using static PennyPincher.Models.TypeCollections;
 
 namespace PennyPincher.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cashflow_entry")]
     [ApiController]
-    public class CashflowEntryController : ControllerBase
+    public class CashflowEntryController : Controller
     {
         private readonly ICashflowEntryRepository _cashflowRepository;
 
-        [HttpPost]
-        public async Task<ActionResult<CashflowEntryDto>> CreateCashflowEntry(CashflowEntryDto cashflowEntry)
+        public CashflowEntryController(ICashflowEntryRepository cashflowRepository)
         {
-            CashflowEntryForCreationDto newCashflowEntry = new CashflowEntryForCreationDto()
+            _cashflowRepository = cashflowRepository;
+        }
+        
+        [HttpGet("get_entry/{id}")]
+        public async Task<ActionResult<CashflowEntryDto>> GetCashflowEntryById(int id)
+        {
+            var foundCashflowEntry = await _cashflowRepository.GetCashflowEntryByIdAsync(id);
+            if (foundCashflowEntry != null)
             {
-                Amount = cashflowEntry.Amount,
-                Flow = cashflowEntry.Flow,
-            };
-
-            var newCashflowId = await _cashflowRepository.CreateCashflowEntryAsync(newCashflowEntry);
-            if (newCashflowId != null)
-            {
-                return Ok(newCashflowEntry);
+                return Ok(foundCashflowEntry);
             }
             
-            return BadRequest();
+            return NotFound(); 
         }
-
-        [HttpGet]
+        
+        [HttpGet("all_entries")]
         public async Task<ActionResult<CashflowEntryDto>> GetAllCashflowEntries()
         {
             var allCashflowEntries = await _cashflowRepository.GetAllCashflowEntriesAsync();
@@ -51,14 +50,14 @@ namespace PennyPincher.Controllers
             
             return Ok(allCashflowEntriesDtos); 
         }
- 
-        [HttpGet("/{flow}")]
+        
+        [HttpGet("entries_by_flow_type/{flow}")]
         public async Task<ActionResult<CashflowEntryDto>> GetAllCashflowEntriesByFlowType(CashflowType flow)
         {
             var allCashflowEntriesByType = await _cashflowRepository.GetAllCashflowEntriesByFlowTypeAsync(flow);
             var allCashflowEntriesDtos = new List<CashflowEntryDto>();
 
-            if (allCashflowEntriesByType != null && allCashflowEntriesDtos.ToList().Count > 0)
+            if (allCashflowEntriesDtos.ToList().Count > 0)
             {
                 foreach (var cashflowEntry in allCashflowEntriesByType)
                 {
@@ -75,20 +74,26 @@ namespace PennyPincher.Controllers
             
             return NotFound();
         }
-
-        [HttpGet("getCashflowEntryById")]
-        public async Task<ActionResult<CashflowEntryDto>> GetCashflowEntryById(int id)
+        
+        [HttpPost("create_entry")]
+        public async Task<ActionResult<CashflowEntryDto>> CreateCashflowEntry(CashflowEntryDto cashflowEntry)
         {
-            var foundCashflowEntry = await _cashflowRepository.GetCashflowEntryByIdAsync(id);
-            if (foundCashflowEntry != null)
+            CashflowEntryForCreationDto newCashflowEntry = new CashflowEntryForCreationDto()
             {
-                return Ok(foundCashflowEntry);
+                Amount = cashflowEntry.Amount,
+                Flow = cashflowEntry.Flow,
+            };
+
+            var newCashflowId = await _cashflowRepository.CreateCashflowEntryAsync(newCashflowEntry);
+            if (newCashflowId != null)
+            {
+                return Ok(newCashflowEntry);
             }
             
-            return NotFound(); 
+            return BadRequest();
         }
-
-        [HttpPut("{id}")]
+        
+        [HttpPut("update_entry/{id}")]
         public async Task<ActionResult<CashflowEntryDto>> PartiallyUpdateCashflowEntry(int id, [FromBody] JsonPatchDocument<CashflowEntryForUpdateDto> patchDocument)
         {
             CashflowEntry existingCashflowEntry = await _cashflowRepository.GetCashflowEntryByIdAsync(id);
@@ -118,13 +123,11 @@ namespace PennyPincher.Controllers
             {
                 return NoContent();
             }
-            else
-            {
-                return BadRequest();
-            }
+            
+            return BadRequest();
         }
 
-        [HttpDelete]
+        [HttpDelete("delete_entry/{id}")]
         public async Task<ActionResult<CashflowEntryDto>> DeleteCashflowEntry(int id)
         {
             CashflowEntry existingCashflowEntry = await _cashflowRepository.GetCashflowEntryByIdAsync(id);

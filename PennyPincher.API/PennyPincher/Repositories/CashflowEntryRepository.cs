@@ -17,7 +17,11 @@ namespace PennyPincher.Repositories
         {
             try
             {
-                string sql = "";
+                string sql = @"INSERT INTO cashflow_entry 
+                                (cashflow_entry_name, description, amount, entry_date, cashflow_entry_type, category_type) 
+                                VALUES (@Name, @Description, @Amount, @EntryDate, @Flow, @CategoryType) 
+                                RETURNING *";
+                
                 object insertedId = await _dbService.ModifyData<int>(sql, entry);
                 
                 return Convert.ToInt32(insertedId); 
@@ -33,7 +37,7 @@ namespace PennyPincher.Repositories
         {
             try
             {
-                string sql = "";
+                string sql = "SELECT * FROM cashflow_entry WHERE cashflow_entry_id = @id";
                 var foundEntry = await _dbService.GetAsync<CashflowEntry>(sql, new { id });
                 
                 return foundEntry;
@@ -49,7 +53,7 @@ namespace PennyPincher.Repositories
         {
             try
             {
-                string sql = "";
+                string sql = "SELECT * FROM cashflow_entry LIMIT 1000";
                 var allCashflowEntries = await _dbService.GetAllAsync<CashflowEntry>(sql, new { });
 
                 return allCashflowEntries;
@@ -65,13 +69,14 @@ namespace PennyPincher.Repositories
         {
             try
             {
-                string sql = "";
+                string sql = "SELECT * FROM cashflow_entry WHERE flow_type @type LIMIT 1000";
                 var allCashflowEntriesByFlowType = await _dbService.GetAllAsync<CashflowEntry>(sql, new { });
 
                 return allCashflowEntriesByFlowType;
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error getting all cashflow entries from cashflow_entry: {ex.Message}");
                 throw;
             }
         }
@@ -80,7 +85,16 @@ namespace PennyPincher.Repositories
         {
             try
             {
-                string sql = "";
+                // We should add a last updated field to the model, so that clients can see when it was last updated
+                string sql = @"
+                            UPDATE cashflow_entry
+                            SET cashflow_entry_name = @cashflow_entry_name, 
+                                description = @description, 
+                                amount = @amount, 
+                                cashflow_entry_type = @flow, 
+                                category_type = @category_type
+                            ";
+                
                 var rowsAffected = await _dbService.ModifyData<CashflowEntry>(sql, entry);
                 return rowsAffected > 0;
             }
@@ -95,13 +109,13 @@ namespace PennyPincher.Repositories
         {
             try
             {
-                string sql = "";
+                string sql = "DELETE FROM cashflow_entry WHERE cashflow_entry = @id";
                 var rowsAffected = await _dbService.ModifyData<int>(sql, new { id });
                 return rowsAffected > 0;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting entry from cashflow_ntry: {ex.Message}");
+                Console.WriteLine($"Error deleting entry from cashflow_entry: {ex.Message}");
                 throw;
             }
         }
