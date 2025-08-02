@@ -105,6 +105,7 @@ namespace PennyPincher.Controllers
             return BadRequest();
         }
 
+        [HttpDelete("delete_cashflow_group/{id}")]
         public async Task<ActionResult<CashflowGroupDto>> DeleteCashflowGroup(int id)
         {
             CashflowGroup? existingCashflowGroup = await _cashflowGroupRepository.GetCashflowGroupByIdAsync(id);
