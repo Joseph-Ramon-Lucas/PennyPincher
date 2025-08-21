@@ -13,6 +13,8 @@ namespace PennyPincher.Repositories
 
         Task<bool> UpdateUserAsync(User user);
 
-        Task<bool> DeleteUserAsync(int id);
+        Task<bool> DeleteUserByIdAsync(int id);
+
+        public UserDto UserToDto(User user);
     }
 }

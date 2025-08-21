@@ -89,6 +89,7 @@ namespace PennyPincher.Repositories
                     return new ValidationResponseDto()
                     {
                         IsSuccess = true,
+                        ResponseMessage = $"User Email {userEmail} already exists"
                     };
                 }
                 return new ValidationResponseDto()

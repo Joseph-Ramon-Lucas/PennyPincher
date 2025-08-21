@@ -32,9 +32,9 @@ CREATE TABLE IF NOT EXISTS public.management_profile (
     user_id INTEGER NOT NULL,
     cashflow_group_id INTEGER NOT NULL,
     cashflow_entry_id INTEGER NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES public.user_account (user_id),
-    FOREIGN KEY (cashflow_group_id) REFERENCES public.cashflow_group (cashflow_group_id),
-    FOREIGN KEY (cashflow_entry_id) REFERENCES public.cashflow_entry (cashflow_entry_id)
+    FOREIGN KEY (user_id) REFERENCES public.user_account (user_id) ON DELETE CASCADE,
+    FOREIGN KEY (cashflow_group_id) REFERENCES public.cashflow_group (cashflow_group_id) ON DELETE CASCADE,
+    FOREIGN KEY (cashflow_entry_id) REFERENCES public.cashflow_entry (cashflow_entry_id) ON DELETE CASCADE
 );
 
 

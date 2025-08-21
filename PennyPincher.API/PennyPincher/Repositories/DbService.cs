@@ -34,5 +34,11 @@ namespace PennyPincher.Repositories
 
             return result;
         }
+
+        public async Task<T> ModifyDataReturning<T>(string query, object parms)
+        {
+            T? result = (await _connection.QueryAsync<T>(query, parms).ConfigureAwait(false)).FirstOrDefault();
+            return result;
+        }
     }
 }
