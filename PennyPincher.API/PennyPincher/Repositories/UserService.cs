@@ -45,44 +45,17 @@ namespace PennyPincher.Repositories
             }
         }
 
-        public async Task<bool> DeleteUserByIdAsync(int id)
+        public async Task<bool> DeleteUserByIdAsync(int user_id)
         {
             try
             {
-                //first should get all the ids of the user's cashflows and groups
-                string sql_selectUserObjects = @"
-                        SELECT mp.cashflow_entry_id, mp.cashflow_group_id FROM 
-                            public.management_profile mp 
-                        JOIN public.cashflow_group cg
-                            ON mp.cashflow_group_id = cg.cashflow_group_id
-                        JOIN public.cashflow_entry ce 
-                            ON mp.cashflow_entry_id = ce.cashflow_entry_id
-
-                        WHERE mp.user_id = @id;
-                        ";
-
-                List<UserMadeObjectIds> userMadeObjectIds = await _dbService.GetAllAsync<UserMadeObjectIds>(sql_selectUserObjects, new {id});
-                Console.WriteLine($"{userMadeObjectIds}");
-
-                //remove user's cashflow items
-                string sql_removeUserCashflowItems = @"
-                        
-                        ";
-                return true;
-
-
-                //remove from chasflow groups table
-
-
-                //remove user from user from user table
-
-                //remove user from cashflows and groups
+                
                 string sql_deleteUser = @"
-                        DELETE FROM management_profile
-                        WHERE user_id=@id;
+                        DELETE FROM user_account
+                        WHERE user_id = @user_id;
                         ";
 
-                int deletedRows = await _dbService.ModifyData<int>(sql_deleteUser, id);
+                int deletedRows = await _dbService.ModifyData<int>(sql_deleteUser, new { user_id });
                 return deletedRows > 0;
             }
             catch (Exception ex)
@@ -114,7 +87,7 @@ namespace PennyPincher.Repositories
             }
         }
 
-        public async Task<User> GetUserByIdAsync(int id)
+        public async Task<User> GetUserByIdAsync(int user_id)
         {
             try
             {
@@ -125,9 +98,9 @@ namespace PennyPincher.Repositories
                         email
                     FROM
                     public.user_account
-                    WHERE user_id = @id;
+                    WHERE user_id = @user_id;
                     ";
-                User foundUser = await _dbService.GetAsync<User>(sql_getUser, new { id });
+                User foundUser = await _dbService.GetAsync<User>(sql_getUser, new { user_id });
                 return foundUser;
             }
             catch (Exception ex)
