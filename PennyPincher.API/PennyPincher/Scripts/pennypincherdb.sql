@@ -11,24 +11,24 @@ CREATE TABLE IF NOT EXISTS public.user_account (
 
 CREATE TABLE IF NOT EXISTS public.cashflow_group (
     cashflow_group_id SERIAL PRIMARY KEY,
-    group_name VARCHAR(500),
+    group_name VARCHAR(500) NOT NULL,
     description varchar(500),
-    user_id INTEGER,
+    user_id INTEGER NOT NULL,
     
     FOREIGN KEY (user_id) REFERENCES public.user_account (user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS public.cashflow_entry (
     cashflow_entry_id SERIAL PRIMARY KEY,
-    cashflow_entry_name VARCHAR(500),
+    cashflow_entry_name VARCHAR(500) NOT NULL,
     description VARCHAR(500),
-    amount NUMERIC,
+    amount NUMERIC NOT NULL,
     entry_date DATE,
     cashflow_entry_type VARCHAR(500),
     category_type VARCHAR(500),
     -- side note that category types modeled in back end use Enums 
     -- and strings don't carry over nicely when querying
-    user_id INTEGER,
+    user_id INTEGER NOT NULL,
     
     FOREIGN KEY (user_id) REFERENCES public.user_account (user_id) ON DELETE CASCADE
 );
