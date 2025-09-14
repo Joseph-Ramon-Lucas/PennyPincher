@@ -26,5 +26,7 @@ namespace PennyPincher.Models.DtoModels
         public CategoryTypes CategoryType { get; set; }
 
         public string CategoryTypeAsString { get; set;} = string.Empty;
+
+        public int UserId { get; set; }
     }
 }

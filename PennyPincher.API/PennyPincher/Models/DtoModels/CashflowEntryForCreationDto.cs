@@ -20,5 +20,8 @@ namespace PennyPincher.Models.DtoModels
         
         [EnumDataType(typeof(CategoryTypes))]
         public CategoryTypes CategoryType { get; set; }
+
+
+        public int UserId { get; set; }
     }
 }

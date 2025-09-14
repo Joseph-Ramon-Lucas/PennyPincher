@@ -57,15 +57,19 @@ namespace PennyPincher.Controllers
             var allCashflowEntriesByType = await _cashflowRepository.GetAllCashflowEntriesByFlowTypeAsync(flow);
             var allCashflowEntriesDtos = new List<CashflowEntryDto>();
 
-            if (allCashflowEntriesDtos.ToList().Count > 0)
+            if (allCashflowEntriesByType.ToList().Count > 0)
             {
                 foreach (var cashflowEntry in allCashflowEntriesByType)
                 {
                     allCashflowEntriesDtos.Add(new CashflowEntryDto()
                     {
                         Id = cashflowEntry.cashflow_entry_id,
+                        Name = cashflowEntry.cashflow_entry_name,
+                        Description = cashflowEntry.description,
                         Amount = cashflowEntry.amount,
-                        Flow = cashflowEntry.flow
+                        EntryDate = cashflowEntry.entry_date,
+                        Flow = cashflowEntry.flow,
+                        CategoryTypeAsString = cashflowEntry.category_type.ToString()
                     });
                 }
                 
@@ -80,8 +84,13 @@ namespace PennyPincher.Controllers
         {
             CashflowEntryForCreationDto newCashflowEntry = new CashflowEntryForCreationDto()
             {
+                Name = cashflowEntry.Name,
+                Description = cashflowEntry.Description,
                 Amount = cashflowEntry.Amount,
+                EntryDate = cashflowEntry.EntryDate,
                 Flow = cashflowEntry.Flow,
+                CategoryType = cashflowEntry.CategoryType,
+                UserId = cashflowEntry.UserId
             };
 
             var newCashflowId = await _cashflowRepository.CreateCashflowEntryAsync(newCashflowEntry);
@@ -93,7 +102,7 @@ namespace PennyPincher.Controllers
             return BadRequest();
         }
         
-        [HttpPut("update_entry/{id}")]
+        [HttpPatch("partially_update_entry/{id}")]
         public async Task<ActionResult<CashflowEntryDto>> PartiallyUpdateCashflowEntry(int id, [FromBody] JsonPatchDocument<CashflowEntryForUpdateDto> patchDocument)
         {
             CashflowEntry existingCashflowEntry = await _cashflowRepository.GetCashflowEntryByIdAsync(id);
@@ -104,19 +113,19 @@ namespace PennyPincher.Controllers
 
             CashflowEntryForUpdateDto cashflowEntryToPatch = new CashflowEntryForUpdateDto()
             {
+                Name = existingCashflowEntry.cashflow_entry_name,
                 Amount = existingCashflowEntry.amount,
-                Flow = existingCashflowEntry.flow
             };
 
             patchDocument.ApplyTo(cashflowEntryToPatch, ModelState);
 
-            if (!ModelState.IsValid || (TryValidateModel(cashflowEntryToPatch)))
+            if (!ModelState.IsValid || !TryValidateModel(cashflowEntryToPatch))
             {
                 return BadRequest(ModelState);
             }
-            
+
             existingCashflowEntry.amount = cashflowEntryToPatch.Amount;
-            existingCashflowEntry.flow = cashflowEntryToPatch.Flow;
+            existingCashflowEntry.cashflow_entry_name = cashflowEntryToPatch.Name;
             
             bool rowsAffected = await _cashflowRepository.UpdateCashflowEntryAsync(existingCashflowEntry);
             if (rowsAffected)
@@ -124,6 +133,31 @@ namespace PennyPincher.Controllers
                 return NoContent();
             }
             
+            return BadRequest();
+        }
+
+        [HttpPut("completely_update_entry/{id}")]
+        public async Task<ActionResult<CashflowEntryDto>> CompletelyUpdateCashflowEntry(int id, [FromBody] CashflowEntryForUpdateDto cashflowEntryWithUpdate)
+        {
+            CashflowEntry existingCashflowEntry = await _cashflowRepository.GetCashflowEntryByIdAsync(id);
+            if (existingCashflowEntry == null)
+            {
+                return NotFound();
+            }
+
+            existingCashflowEntry.cashflow_entry_name = cashflowEntryWithUpdate.Name;
+            existingCashflowEntry.description = cashflowEntryWithUpdate.Description;
+            existingCashflowEntry.amount = cashflowEntryWithUpdate.Amount;
+            existingCashflowEntry.entry_date = cashflowEntryWithUpdate.EntryDate;
+            existingCashflowEntry.flow = cashflowEntryWithUpdate.Flow;
+            existingCashflowEntry.category_type = cashflowEntryWithUpdate.CategoryType;
+
+            bool rowsAffected = await _cashflowRepository.UpdateCashflowEntryAsync(existingCashflowEntry);
+            if (rowsAffected)
+            {
+                return NoContent();
+            }
+
             return BadRequest();
         }
 

@@ -14,14 +14,20 @@
             Transportation = 7,
             Food = 8,
             Health = 9,
-            Income = 10
+            Income = 10,
+            Job = 11,
+            Freelance = 12,
+            Gift = 13,
+            Investment = 14
         }
+
         public enum AnalysisTypes
         {
             Pie = 0,
             Bar = 1,
             Line = 2
         }
+
         public enum BudgetTypes
         {
             Undefined = 0,

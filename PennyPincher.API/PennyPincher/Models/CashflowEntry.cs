@@ -18,5 +18,7 @@ namespace PennyPincher.Models
         public CashflowType flow { get; set; }
 
         public CategoryTypes category_type { get; set; }
+
+        public int user_id { get; set; }
     }
 }

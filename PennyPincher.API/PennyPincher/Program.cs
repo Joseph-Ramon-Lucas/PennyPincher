@@ -33,6 +33,7 @@ namespace PennyPincher
             builder.Services.AddScoped<IDbService, DbService>();
             builder.Services.AddScoped<IUserService,  UserService>();
             builder.Services.AddScoped<ICashflowGroupRepository, CashflowGroupRepository>();
+            builder.Services.AddScoped<ICashflowEntryRepository, CashflowEntryRepository>();
             builder.Services.AddScoped<IAnalysisRepository, AnalysisRepository>();
             builder.Services.AddScoped<IValidationRepository, ValidationRepository>();
 
