@@ -34,7 +34,7 @@ namespace PennyPincher.Controllers
             return Ok(allUserDtos);
         }
         [HttpGet("{userId}")]
-        public async Task<ActionResult<UserDto>>GertUserById(int userId)
+        public async Task<ActionResult<UserDto>>GetUserById(int userId)
         {
             User foundUser = await _userService.GetUserByIdAsync(userId);
             if (foundUser == null) { return BadRequest($"Cannot find user id {userId}"); }
@@ -58,6 +58,24 @@ namespace PennyPincher.Controllers
 
             return Ok(newUserId);
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<bool>> LoginAsync(UserForCreationDto userLoggingIn)
+        {
+            if (userLoggingIn == null) { return BadRequest("User data missing"); }
+
+            ValidationResponseDto validationResponseDto = await _validationRepository.checkUserExistsByEmail(userLoggingIn.Email);
+            if (!validationResponseDto.IsSuccess) { return NotFound(validationResponseDto.ResponseMessage); }
+
+            User foundUser = await _userService.GetUserByEmailAsync(userLoggingIn.Email);
+
+            ValidationResponseDto validatePasswordMatch = await _validationRepository.validateUserPassword(userLoggingIn, foundUser.Password, userLoggingIn.Password).ConfigureAwait(false);
+
+            //temporary true / false check if passwords match
+            return validatePasswordMatch.IsSuccess;
+
+        }
+
 
         [HttpDelete("delete_user/{userId}")]
         public async Task<ActionResult>DeleteUser(int userId)

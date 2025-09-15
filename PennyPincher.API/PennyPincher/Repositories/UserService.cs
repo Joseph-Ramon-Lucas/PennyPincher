@@ -118,6 +118,30 @@ namespace PennyPincher.Repositories
             }
         }
 
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            try
+            {
+                string sql_getUser = @"
+                    SELECT 
+                        user_id as id, 
+                        token_id as tokenId,
+                        email,
+                        password
+                    FROM
+                    public.user_account
+                    WHERE email = @email;
+                    ";
+                User foundUser = await _dbService.GetAsync<User>(sql_getUser, new { email });
+                return foundUser;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting user from user_account: {ex.Message}");
+                throw;
+            }
+        }
+
         public Task<bool> UpdateUserAsync(User user)
         {
             throw new NotImplementedException();
