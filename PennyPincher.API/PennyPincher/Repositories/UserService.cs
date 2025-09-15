@@ -1,4 +1,5 @@
-﻿using PennyPincher.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using PennyPincher.Models;
 using PennyPincher.Models.DtoModels;
 
 namespace PennyPincher.Repositories
@@ -26,15 +27,22 @@ namespace PennyPincher.Repositories
         {
             try
             {
-                string email = newUser.Email;
-                string password = newUser.Password;
+                var passwordHasher = new PasswordHasher<UserForCreationDto>();
 
+                string email = newUser.Email;
+                string rawPassword = newUser.Password;
+                string hashedPassword = passwordHasher.HashPassword(newUser, rawPassword);
+                Console.WriteLine(hashedPassword);
+                
+                newUser.Password = hashedPassword;
 
                 string sql_addUser = @"
                     INSERT INTO public.user_account (email, password)
                     VALUES (@email, @password)
                     RETURNING user_id;
                     ";
+
+
                 int newUserId = await _dbService.ModifyDataReturning<int>(sql_addUser, newUser);
                 return newUserId;
             }

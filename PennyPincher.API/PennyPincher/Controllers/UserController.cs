@@ -17,21 +17,6 @@ namespace PennyPincher.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<int>>CreateUserAsync(UserForCreationDto newUser)
-        {
-            if (newUser == null) { return BadRequest("User data missing"); }
-
-            //Users should not share the same email
-            ValidationResponseDto validationResponseDto = await _validationRepository.checkUserExistsByEmail(newUser.Email);
-            if (validationResponseDto.IsSuccess) { return BadRequest(validationResponseDto.ResponseMessage); }
-
-            var newUserId = await _userService.CreatUserAsync(newUser);
-            if (newUserId == null) { return BadRequest(); }
-            
-            return Ok(newUserId);
-        }
-
         [HttpGet]
         public async Task<ActionResult<List<UserDto>>>GetAllUsers()
         {
@@ -57,6 +42,21 @@ namespace PennyPincher.Controllers
             UserDto userDto = _userService.UserToDto(foundUser);
 
             return Ok(userDto);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> CreateUserAsync(UserForCreationDto newUser)
+        {
+            if (newUser == null) { return BadRequest("User data missing"); }
+
+            //Users should not share the same email
+            ValidationResponseDto validationResponseDto = await _validationRepository.checkUserExistsByEmail(newUser.Email);
+            if (validationResponseDto.IsSuccess) { return BadRequest(validationResponseDto.ResponseMessage); }
+
+            var newUserId = await _userService.CreatUserAsync(newUser);
+            if (newUserId == null) { return BadRequest(); }
+
+            return Ok(newUserId);
         }
 
         [HttpDelete("delete_user/{userId}")]
