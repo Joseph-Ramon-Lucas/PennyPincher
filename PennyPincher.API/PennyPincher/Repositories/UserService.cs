@@ -137,14 +137,38 @@ namespace PennyPincher.Repositories
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error getting user from user_account: {ex.Message}");
+                Console.WriteLine($"Error getting user by email from user_account: {ex.Message}");
                 throw;
             }
         }
 
-        public Task<bool> UpdateUserAsync(User user)
+        public async Task<bool> UpdateUserAsync(int user_id, UserForUpdateDto user)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var passwordHasher = new PasswordHasher<UserForUpdateDto>();
+
+                string email = user.Email;
+                string rawPassword = user.Password;
+                string hashedPassword = passwordHasher.HashPassword(user, rawPassword);
+
+                user.Password = hashedPassword;
+
+                string sql_updateUser = @"
+                                        UPDATE user_account
+                                        SET email = @email,
+                                            password = @password
+                                        WHERE user_id = @user_id
+                                         ";
+                // no nested object params for Dapper
+                var rowsAffected = await _dbService.ModifyData<User>(sql_updateUser, new { user.Email, user.Password, user_id });
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating user from user_account: {ex.Message}");
+                throw;
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using PennyPincher.Models;
 using PennyPincher.Models.DtoModels;
 using PennyPincher.Repositories;
+using System.Reflection.Metadata.Ecma335;
 
 namespace PennyPincher.Controllers
 {
@@ -37,7 +38,7 @@ namespace PennyPincher.Controllers
         public async Task<ActionResult<UserDto>>GetUserById(int userId)
         {
             User foundUser = await _userService.GetUserByIdAsync(userId);
-            if (foundUser == null) { return BadRequest($"Cannot find user id {userId}"); }
+            if (foundUser == null) { return NotFound($"Cannot find user id {userId}"); }
 
             UserDto userDto = _userService.UserToDto(foundUser);
 
@@ -45,7 +46,7 @@ namespace PennyPincher.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateUserAsync(UserForCreationDto newUser)
+        public async Task<ActionResult<int>> CreateUserAsync([FromBody] UserForCreationDto newUser)
         {
             if (newUser == null) { return BadRequest("User data missing"); }
 
@@ -60,7 +61,7 @@ namespace PennyPincher.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<bool>> LoginAsync(UserForCreationDto userLoggingIn)
+        public async Task<ActionResult<bool>> LoginAsync([FromBody] UserForCreationDto userLoggingIn)
         {
             if (userLoggingIn == null) { return BadRequest("User data missing"); }
 
@@ -76,8 +77,20 @@ namespace PennyPincher.Controllers
 
         }
 
+        [HttpPut("{userId}")]
+        public async Task<ActionResult<UserDto>> CompetelyUpdateUser(int userId, [FromBody] UserForUpdateDto userWithUpdate)
+        {
+            ValidationResponseDto response = await _validationRepository.checkUserExists(userId);
+            if (!response.IsSuccess) { return NotFound(response.ResponseMessage); }
 
-        [HttpDelete("delete_user/{userId}")]
+            bool rowsAffected = await _userService.UpdateUserAsync(userId, userWithUpdate);
+            
+            if (rowsAffected) { return NoContent(); }
+            return BadRequest();
+        }
+
+
+        [HttpDelete("{userId}")]
         public async Task<ActionResult>DeleteUser(int userId)
         {
             User foundUser = await _userService.GetUserByIdAsync(userId);

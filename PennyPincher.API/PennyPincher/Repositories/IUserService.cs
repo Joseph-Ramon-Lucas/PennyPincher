@@ -7,15 +7,15 @@ namespace PennyPincher.Repositories
     {
         Task<IEnumerable<User>> GetAllUsersAsync();
 
-        Task<User> GetUserByIdAsync(int id);
+        Task<User> GetUserByIdAsync(int user_id);
 
         Task<User> GetUserByEmailAsync(string email);
 
-        Task<bool> UpdateUserAsync(User user);
-
         Task<int?> CreatUserAsync(UserForCreationDto user);
 
-        Task<bool> DeleteUserByIdAsync(int id);
+        Task<bool> UpdateUserAsync(int user_Id, UserForUpdateDto user);
+
+        Task<bool> DeleteUserByIdAsync(int user_id);
 
         public UserDto UserToDto(User user);
     }
