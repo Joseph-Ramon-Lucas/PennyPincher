@@ -1,11 +1,24 @@
 
+using PennyPincher.Repositories;
+
 namespace PennyPincher
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+
+            // Load env variables from .env
+            DotNetEnv.Env.Load();
+
             var builder = WebApplication.CreateBuilder(args);
+
+            //connection string
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            // Add configuration for connection string
+
+            
 
             // Add services to the container.
             builder.Services.AddControllers()
@@ -15,6 +28,14 @@ namespace PennyPincher
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Add custom repository services 
+            builder.Services.AddScoped<IDbService, DbService>();
+            builder.Services.AddScoped<IUserService,  UserService>();
+            builder.Services.AddScoped<ICashflowGroupRepository, CashflowGroupRepository>();
+            builder.Services.AddScoped<ICashflowEntryRepository, CashflowEntryRepository>();
+            builder.Services.AddScoped<IAnalysisRepository, AnalysisRepository>();
+            builder.Services.AddScoped<IValidationRepository, ValidationRepository>();
 
             var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins")!.Split(",");
             
@@ -27,14 +48,14 @@ namespace PennyPincher
             });
             
             var app = builder.Build();
-
+            
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            
             app.UseHttpsRedirection();
 
             app.UseCors();
