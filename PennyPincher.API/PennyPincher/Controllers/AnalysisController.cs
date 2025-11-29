@@ -17,9 +17,7 @@ namespace PennyPincher.Controllers
         {
             _analysisRepository = analysisRepository;
             _validationRepository = validationRepository;
-           
         }
-
 
         [HttpGet("status/{groupId}")]
         public async Task<ActionResult<AnalysisStatusDto>> GetStatus(int groupId, int userId)

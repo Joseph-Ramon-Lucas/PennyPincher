@@ -6,7 +6,7 @@ using PennyPincher.Repositories;
 
 namespace PennyPincher.Controllers
 {
-    [Route("/api/cashflow_group")]
+    [Route("/api/groups")]
     [ApiController]
     public class CashflowGroupController : Controller
     {
@@ -17,7 +17,7 @@ namespace PennyPincher.Controllers
             _cashflowGroupRepository = cashflowGroupRepository;
         }
 
-        [HttpGet("get_group/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<CashflowGroupDto>> GetCashflowGroupById(int id)
         {
             var foundGroup = await _cashflowGroupRepository.GetCashflowGroupByIdAsync(id);
@@ -29,7 +29,7 @@ namespace PennyPincher.Controllers
             return NotFound();
         }
 
-        [HttpGet("all_cashflow_groups")]
+        [HttpGet]
         public async Task<ActionResult<CashflowGroupDto>> GetAllCashflowGroups()
         {
             var allCashflowGroups = await _cashflowGroupRepository.GetAllCashflowGroupsAsync();
@@ -53,7 +53,7 @@ namespace PennyPincher.Controllers
             return NotFound();
         }
 
-        [HttpPost("create_cashflow_group")]
+        [HttpPost]
         public async Task<ActionResult<CashflowGroupDto>> CreateCashflowGroup(CashflowGroupDto cashflowGroup)
         {
             CashflowGroupForCreationDto newCashflowGroup = new CashflowGroupForCreationDto()
@@ -71,7 +71,7 @@ namespace PennyPincher.Controllers
             return BadRequest();
         }
 
-        [HttpPut("update_cashflow_group/{id}")]
+        [HttpPut("{id}")]
         public async Task<ActionResult<CashflowGroupDto>> PartiallyUpdateCashflowGroup(int id, [FromBody] JsonPatchDocument<CashflowGroupForUpdateDto> patchDocument)
         {
             CashflowGroup? existingCashflowGroup = await _cashflowGroupRepository.GetCashflowGroupByIdAsync(id);
@@ -105,7 +105,7 @@ namespace PennyPincher.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("delete_cashflow_group/{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<CashflowGroupDto>> DeleteCashflowGroup(int id)
         {
             CashflowGroup? existingCashflowGroup = await _cashflowGroupRepository.GetCashflowGroupByIdAsync(id);

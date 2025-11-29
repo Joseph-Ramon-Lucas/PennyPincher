@@ -59,7 +59,7 @@ namespace PennyPincher.Controllers
             return Ok(userDto);
         }
 
-        [HttpDelete("delete_user/{userId}")]
+        [HttpDelete("{userId}")]
         public async Task<ActionResult>DeleteUser(int userId)
         {
             User foundUser = await _userService.GetUserByIdAsync(userId);
