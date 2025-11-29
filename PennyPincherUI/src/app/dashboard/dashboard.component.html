@@ -1,0 +1,38 @@
+<mat-card id="base-card">
+  <mat-card-header>
+    <mat-card-title><strong>Financial Summary</strong></mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div id="status">
+      <div id="status-text">
+        <app-status-text [statuses]="this.statuses()" />
+        <div>
+          <mat-radio-group [(ngModel)]="dataStore">
+            <mat-radio-button [value]="0"> Current Status </mat-radio-button>
+            <mat-radio-button [value]="1"> Budget Status </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <div id="status-chart">
+        <mat-card>
+          <app-status-chart [statuses]="this.statuses()" />
+        </mat-card>
+      </div>
+    </div>
+  </mat-card-content>
+  <mat-card-content>
+    <div id="comparisons">
+      <div id="comparison-text">
+        <app-comparison-text [comparisons]="this.comparisons()" />
+      </div>
+      <div id="comparsion-chart">
+        <mat-card>
+          <app-comparison-chart
+            [comparisons]="this.comparisons()"
+            [expenseCategoryTypes]="this.expenseCategoryTypes"
+          />
+        </mat-card>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

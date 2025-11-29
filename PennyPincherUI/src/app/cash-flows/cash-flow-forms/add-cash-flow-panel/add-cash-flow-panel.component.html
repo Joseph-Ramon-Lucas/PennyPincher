@@ -1,0 +1,64 @@
+<div>
+  <mat-card style="padding: 1rem">
+    <form
+      id="add-cash-flow-form"
+      [formGroup]="cashFlowForm"
+      (submit)="handleSubmit()"
+    >
+      <mat-form-field appearance="outline">
+        <mat-label>ID to add</mat-label>
+        <input id="Id" type="number" formControlName="id" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Cash Flow Name</mat-label>
+        <input id="Name" type="text" formControlName="name" matInput />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <input
+          id="Description"
+          type="text"
+          formControlName="description"
+          matInput
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select id="Category" formControlName="category">
+          <mat-option value="0">None</mat-option>
+          <mat-option value="1">Living</mat-option>
+          <mat-option value="2">Utilities</mat-option>
+          <mat-option value="3">Entertainment</mat-option>
+          <mat-option value="4">Shopping</mat-option>
+          <mat-option value="5">Takeout</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Price</mat-label>
+        <input id="Price" type="number" formControlName="amount" matInput />
+      </mat-form-field>
+
+      <label id="FlowTypeLabel">Income or Expense?</label>
+      <mat-radio-group
+        id="FlowType"
+        aria-labelledby="FlowTypeLabel"
+        formControlName="flow"
+      >
+        <mat-radio-button [value]="0">Income</mat-radio-button>
+        <mat-radio-button [value]="1">Expense</mat-radio-button>
+      </mat-radio-group>
+
+      <div>
+        <button
+          class="submit-button"
+          type="submit"
+          matTooltip="Add Item"
+          mat-fab
+        >
+          <mat-icon>add</mat-icon>
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

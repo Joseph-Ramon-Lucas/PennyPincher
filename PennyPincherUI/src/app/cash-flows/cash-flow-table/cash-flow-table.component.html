@@ -1,0 +1,63 @@
+<mat-card>
+  <mat-card-header><h3>Your Finance Budget</h3></mat-card-header>
+  <div>
+    <mat-card-content>
+      <button (click)="updateTable()" mat-mini-fab matTooltip="Refresh Table">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </mat-card-content>
+  </div>
+  <div>
+    @if (cashFlows.length === 0) {
+    <div>
+      <mat-spinner></mat-spinner>
+    </div>
+    } @else {
+
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>FlowType</th>
+            <th>Category</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (cf of cashFlows; track $index) {
+          <tr>
+            <td>{{ cf.id }}</td>
+            <td>{{ cf.name }}</td>
+            <td>{{ cf.description }}</td>
+            <td>{{ cf.amount }}</td>
+            @if (cf.flow == 0) {
+            <td>Income</td>
+            } @else {
+            <td>Expense</td>
+            }
+            <td>
+              {{ this.categoryEnumToString(cf.category) }}
+            </td>
+            <td>
+              <button
+                mat-fab
+                (click)="deleteRow(cf.id)"
+                style="align-items: center"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+          } @empty {
+          <tr></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+</mat-card>

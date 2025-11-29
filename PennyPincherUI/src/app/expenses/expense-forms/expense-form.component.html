@@ -1,0 +1,25 @@
+<div>
+  <mat-card style="padding: 1rem">
+    <mat-card-header><h3>Table Interactions</h3></mat-card-header>
+    <mat-tab-group>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>add</mat-icon>
+          Add
+        </ng-template>
+        <div class="item-panel">
+          <add-expense-panel />
+        </div>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon>edit</mat-icon>
+          Edit
+        </ng-template>
+        <div class="item-panel">
+          <edit-expense-panel />
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>
