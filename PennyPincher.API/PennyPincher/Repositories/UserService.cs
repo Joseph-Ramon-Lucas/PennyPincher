@@ -1,4 +1,5 @@
-﻿using PennyPincher.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using PennyPincher.Models;
 using PennyPincher.Models.DtoModels;
 
 namespace PennyPincher.Repositories
@@ -26,15 +27,22 @@ namespace PennyPincher.Repositories
         {
             try
             {
-                string email = newUser.Email;
-                string password = newUser.Password;
+                var passwordHasher = new PasswordHasher<UserForCreationDto>();
 
+                string email = newUser.Email;
+                string rawPassword = newUser.Password;
+                string hashedPassword = passwordHasher.HashPassword(newUser, rawPassword);
+                Console.WriteLine(hashedPassword);
+                
+                newUser.Password = hashedPassword;
 
                 string sql_addUser = @"
                     INSERT INTO public.user_account (email, password)
                     VALUES (@email, @password)
                     RETURNING user_id;
                     ";
+
+
                 int newUserId = await _dbService.ModifyDataReturning<int>(sql_addUser, newUser);
                 return newUserId;
             }
@@ -110,9 +118,57 @@ namespace PennyPincher.Repositories
             }
         }
 
-        public Task<bool> UpdateUserAsync(User user)
+        public async Task<User> GetUserByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string sql_getUser = @"
+                    SELECT 
+                        user_id as id, 
+                        token_id as tokenId,
+                        email,
+                        password
+                    FROM
+                    public.user_account
+                    WHERE email = @email;
+                    ";
+                User foundUser = await _dbService.GetAsync<User>(sql_getUser, new { email });
+                return foundUser;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting user by email from user_account: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateUserAsync(int user_id, UserForUpdateDto user)
+        {
+            try
+            {
+                var passwordHasher = new PasswordHasher<UserForUpdateDto>();
+
+                string email = user.Email;
+                string rawPassword = user.Password;
+                string hashedPassword = passwordHasher.HashPassword(user, rawPassword);
+
+                user.Password = hashedPassword;
+
+                string sql_updateUser = @"
+                                        UPDATE user_account
+                                        SET email = @email,
+                                            password = @password
+                                        WHERE user_id = @user_id
+                                         ";
+                // no nested object params for Dapper
+                var rowsAffected = await _dbService.ModifyData<User>(sql_updateUser, new { user.Email, user.Password, user_id });
+                return rowsAffected > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating user from user_account: {ex.Message}");
+                throw;
+            }
         }
     }
 }

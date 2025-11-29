@@ -1,4 +1,5 @@
-﻿using PennyPincher.Models.DtoModels;
+﻿using PennyPincher.Models;
+using PennyPincher.Models.DtoModels;
 
 namespace PennyPincher.Repositories
 {
@@ -7,5 +8,7 @@ namespace PennyPincher.Repositories
         Task<ValidationResponseDto> checkCashflowGroupExists(int groupId);
         Task<ValidationResponseDto> checkUserExists(int userId);
         Task<ValidationResponseDto> checkUserExistsByEmail(string userEmail);
+
+        Task<ValidationResponseDto> validateUserPassword(UserForCreationDto userLoggingIn, string hashedPassword, string providedPassword);
     }
 }
