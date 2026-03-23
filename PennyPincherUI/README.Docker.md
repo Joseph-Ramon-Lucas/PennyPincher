@@ -17,6 +17,11 @@
     - Current dev docker container will allow for hot reloading when making edits to local files
 
 
+# How to stop the container
+In the terminal running the container, perform the following:
+1. Ctrl + C
+2. `docker compose down`
+
 First, build your image, e.g.: `docker build -t PennyPincher .`.
 If your cloud uses a different CPU architecture than your development
 machine (e.g., you are on a Mac M1 and your cloud provider is amd64),
