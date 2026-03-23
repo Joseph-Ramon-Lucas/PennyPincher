@@ -8,13 +8,14 @@ services:
     container_name : pennypincherdb
     image: postgres:18
     restart: always
+    user: postgres
     secrets:
       - db-password
     volumes:
-      - pennypincher-postgres-data:/var/lib/postgresql
+      - pennypincher-postgres-data:/var/lib/postgresql/
+      - ../pennypincherdb.sql:/docker-entrypoint-initdb.d/pennypincherdb.sql:ro
     environment:
-      - POSTGRES_DB=penny_pincher_db
-      - POSTGRES_USER=postgres
+      # - POSTGRES_DB=penny_pincher_db
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     expose:
       - 5432
