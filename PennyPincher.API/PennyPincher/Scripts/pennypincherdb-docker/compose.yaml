@@ -1,0 +1,30 @@
+services:
+  # depends_on:
+  #   db:
+  #     condition: service_healthy
+  #     restart: true
+
+  db:
+    container_name : pennypincherdb
+    image: postgres:18
+    restart: always
+    user: postgres
+    secrets:
+      - db-password
+    volumes:
+      - pennypincher-postgres-data:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=penny_pincher_db
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  pennypincher-postgres-data:
+secrets:
+  db-password:
+    file: ./dbpassword.txt
