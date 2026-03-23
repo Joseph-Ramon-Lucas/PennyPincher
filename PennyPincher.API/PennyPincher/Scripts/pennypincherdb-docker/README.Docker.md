@@ -2,7 +2,8 @@
 
 ## Setting up a Docker DB Container with Compose (Recommended)
 - Ensure a dbpassword file is created `touch dbpassword.txt`
-- enter your password for the psql db
+- Open the dbpassword.txt file and enter your password for the psql db 
+- Add this file to docker secrets `docker create secret dbpassword ./dbpassword.txt`
 - `docker compose up`
 
 ## Setting up a Docker DB Container Manually
