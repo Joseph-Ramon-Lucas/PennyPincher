@@ -24,13 +24,15 @@
 - `postgres:18` = Run this container with the postgres Docker image version 18
 
 ## How to stop the container
-In the terminal running the container, perform the following:
-1. Ctrl + C
-2. `docker compose down`
+- `docker compose down`
+- Optional: `docker compose down -v`
+    - To delete the volume
 
 ## Access PostgreSQL within a client
-`docker exec -it pennypincherdb psql -U postgres`
-This command logs into the Docker container and runs the psql command as the postgres user from there.  
+- `docker exec -it pennypincherdb psql -U postgres`
+    - This command logs into the Docker container and runs the psql command as the postgres user from there.  
+- `\c penny_pincher_db`
+    - To connect to the Penny Pincher Database
 
 
 ## Inspect Docker Volume
