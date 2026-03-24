@@ -30,8 +30,14 @@ namespace PennyPincher.Controllers
                 {
                     allCashflowEntriesDtos.Add(new CashflowEntryDto()
                     {
+                        UserId = cashflowEntry.user_id,
+                        Id = cashflowEntry.cashflow_entry_id,
+                        Name = cashflowEntry.cashflow_entry_name,
+                        Description = cashflowEntry.description,
                         Amount = cashflowEntry.amount,
-                        Flow = cashflowEntry.flow
+                        EntryDate = cashflowEntry.entry_date,
+                        Flow = cashflowEntry.flow,
+                        CategoryTypeAsString = cashflowEntry.category_type.ToString()
                     });
                 }
             }
