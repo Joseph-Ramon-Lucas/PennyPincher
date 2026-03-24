@@ -1,4 +1,9 @@
 # Internal Configuration Notes
+Before starting, make sure to disable existing psql services that may be runnin on the host machine:
+- On Windows: stop the PostgreSQL service in Services.msc.
+- On Linux/macOS: sudo service postgresql stop or brew services stop postgresql depending on how you installed it.
+- You want no Postgres listening on 5432 except what Docker will start.
+
 
 ## Setting up a Docker DB Container with Compose (Recommended)
 - Ensure a dbpassword file is created `touch dbpassword.txt`
