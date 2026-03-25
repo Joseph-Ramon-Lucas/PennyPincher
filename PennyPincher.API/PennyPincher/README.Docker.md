@@ -1,5 +1,6 @@
-### Building and running your application
+Before starting, make sure to set up the DB docker container located in `/Scripts/pennypincher-docker`
 
+### Building and running your application
 When you're ready, start your application by running:
 `docker compose watch`.
 
