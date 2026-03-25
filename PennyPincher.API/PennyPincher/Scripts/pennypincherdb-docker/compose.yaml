@@ -1,7 +1,7 @@
 services:
 
   db:
-    container_name : pennypincherdb
+    container_name : pennypincher_db
     image: postgres:18
     restart: always
     user: postgres

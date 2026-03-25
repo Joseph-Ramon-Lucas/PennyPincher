@@ -9,6 +9,10 @@
 # https://github.com/docker/awesome-compose
 services:
   server:
+    container_name: pennypincher_api
+    environment:
+      # env variables found in launchSettings.json
+      - ASPNETCORE_ENVIRONMENT=Development
     build:
       context: .
       target: final
