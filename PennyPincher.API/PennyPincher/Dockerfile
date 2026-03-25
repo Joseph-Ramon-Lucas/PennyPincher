@@ -46,7 +46,7 @@ RUN --mount=type=cache,id=nuget,target=/root/.nuget/packages \
 FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS development
 COPY . /source
 WORKDIR /source/src
-CMD dotnet run --no-launch-profile
+# CMD dotnet run --no-launch-profile
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 WORKDIR /app

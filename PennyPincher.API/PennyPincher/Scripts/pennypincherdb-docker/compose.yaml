@@ -11,7 +11,7 @@ services:
       - pennypincher-postgres-data:/var/lib/postgresql/
       - ../pennypincherdb.sql:/docker-entrypoint-initdb.d/pennypincherdb.sql:ro
     environment:
-      # - POSTGRES_DB=penny_pincher_db
+      # - POSTGRES_DB=penny_pincher_db - removing this because it interferes with the sql setup script
       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
     ports:
       - "5432:5432"
@@ -25,3 +25,8 @@ volumes:
 secrets:
   db-password:
     file: ./dbpassword.txt
+
+networks:
+  default:
+    name: pennypincher_network
+    driver: bridge

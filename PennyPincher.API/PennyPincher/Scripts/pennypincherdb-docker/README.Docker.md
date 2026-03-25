@@ -9,7 +9,7 @@ Before starting, make sure to disable existing psql services that may be runnin 
 - Ensure a dbpassword file is created `touch dbpassword.txt`
 - Open the dbpassword.txt file and enter your password for the psql db 
 - Add this file to docker secrets `docker create secret dbpassword ./dbpassword.txt`
-- `docker compose up`
+- `docker compose up --build`
 
 ## Setting up a Docker DB Container Manually
 

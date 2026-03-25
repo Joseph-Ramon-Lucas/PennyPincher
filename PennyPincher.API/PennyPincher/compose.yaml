@@ -8,7 +8,7 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
-  server:
+  api:
     container_name: pennypincher_api
     environment:
       # env variables found in launchSettings.json
@@ -22,6 +22,11 @@ services:
       watch:
         - action: rebuild
           path: .
+
+networks:
+  default:
+    name: pennypincher_network
+    external: true
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
