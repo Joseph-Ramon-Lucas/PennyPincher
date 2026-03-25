@@ -1,3 +1,4 @@
+# Internal API Configuration Notes 
 Before starting, make sure to set up the DB docker container located in `/Scripts/pennypincher-docker`
 
 ### Building and running your application

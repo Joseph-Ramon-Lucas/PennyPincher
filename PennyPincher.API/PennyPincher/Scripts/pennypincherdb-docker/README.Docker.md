@@ -1,4 +1,4 @@
-# Internal Configuration Notes
+# Internal DB Configuration Notes
 Before starting, make sure to disable existing psql services that may be running on the host machine:
 - On Windows: stop the PostgreSQL service in Services.msc.
 - On Linux/macOS: sudo service postgresql stop or brew services stop postgresql depending on how you installed it.
