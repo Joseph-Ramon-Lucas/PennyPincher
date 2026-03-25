@@ -46,8 +46,8 @@ namespace PennyPincher.Controllers
         }
 
         [HttpGet("test")]
-        public ActionResult<string> Test() {
-            return "hola mundo!";
+        public ActionResult<string> Test(string name) {
+            return "hola " + name + "!";
         }
 
         [HttpGet("{id}")]
