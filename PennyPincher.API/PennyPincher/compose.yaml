@@ -11,11 +11,11 @@ services:
   api:
     container_name: pennypincher_api
     secrets:
-      - db-password
+      - db-conn-str
     environment:
       # env variables found in launchSettings.json
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=penny_pincher_db;Username=postgres;Passfile=/run/secrets/db-password
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=penny_pincher_db;Username=postgres;Passfile=/run/secrets/db-conn-str
     build:
       context: .
       target: final
@@ -32,5 +32,5 @@ networks:
     external: true
 
 secrets:
-  db-password:
-    file: ./Scripts/pennypincherdb-docker/dbpassword.conf
+  db-conn-str:
+    file: ./dbConnectionString.secret.conf

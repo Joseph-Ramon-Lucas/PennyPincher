@@ -2,8 +2,15 @@
 Before starting, make sure to set up the DB docker container located in `/Scripts/pennypincher-docker`
 
 ### Building and running your application
-When you're ready, start your application by running:
-`docker compose watch`.
+
+- Ensure a dbConnectionString.secret.conf file is created `touch dbConnectionString.secret.conf`
+- Open the dbConnectionString.secret.conf file and enter your password for the psql db in the following format:
+    - hostname:port:database:username:password`
+    - For example: `db:5432:penny_pincher_db:postgres:yourpassword`
+- Add this file to docker secrets `docker create secret db-conn-str ./dbConnectionString.secret.conf`
+
+
+- When you're ready, start your application by running: `docker compose watch`.
 
 Your application will be available at http://localhost:7181/.
 
