@@ -24,7 +24,7 @@ volumes:
   pennypincher-postgres-data:
 secrets:
   db-password:
-    file: ./dbpassword.txt
+    file: ./dbpassword.conf
 
 networks:
   default:

@@ -10,9 +10,12 @@
 services:
   api:
     container_name: pennypincher_api
+    secrets:
+      - db-password
     environment:
       # env variables found in launchSettings.json
-      - ASPNETCORE_ENVIRONMENT=Development
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=penny_pincher_db;Username=postgres;Passfile=/run/secrets/db-password
     build:
       context: .
       target: final
@@ -27,6 +30,10 @@ networks:
   default:
     name: pennypincher_network
     external: true
+
+secrets:
+  db-password:
+    file: ./Scripts/pennypincherdb-docker/dbpassword.conf
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
