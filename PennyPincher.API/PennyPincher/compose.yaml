@@ -13,9 +13,13 @@ services:
     secrets:
       - db-conn-str
     environment:
-      # env variables found in launchSettings.json
+      # aspnetcore env variables found in launchSettings.json
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=penny_pincher_db;Username=postgres;Passfile=/run/secrets/db-conn-str
+      ASPNETCORE_URLS: https://+:8080;http://+:8081
+      ASPNETCORE_HTTPS_PORT: 7181
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/pennypincher-api.pfx
+      ASPNETCORE_Kestrel__Certificates__Default__Password: ${API_CERT_PASSWORD}
     build:
       context: .
       target: final
@@ -25,6 +29,8 @@ services:
       watch:
         - action: rebuild
           path: .
+    volumes:
+      - ${USERPROFILE}\\.aspnet\\https:/https:ro
 
 networks:
   default:
