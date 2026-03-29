@@ -13,7 +13,7 @@
     - `cd PennyPincherUI`
 2. Start up Docker Desktop
 3. Build and Run the Docker image
-    - `docker compose up --build`
+    - `docker compose watch`
     - Current dev docker container will allow for hot reloading when making edits to local files
 
 
