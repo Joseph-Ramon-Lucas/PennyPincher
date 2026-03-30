@@ -3,7 +3,7 @@
 #Development container for hot reloads
 # Modified from: https://docs.docker.com/guides/angular/develop/
 
-ARG NODE_VERSION=24.12.0
+ARG NODE_VERSION=24.14.1
 
 FROM node:${NODE_VERSION}-alpine
 
