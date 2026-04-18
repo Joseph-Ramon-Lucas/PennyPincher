@@ -1,9 +1,4 @@
-﻿using Dapper;
-using Npgsql;
-using PennyPincher.Models;
-using PennyPincher.Models.DtoModels;
-using System;
-using System.Text.RegularExpressions;
+﻿using PennyPincher.Models.DtoModels;
 using static PennyPincher.Models.TypeCollections;
 
 namespace PennyPincher.Repositories
@@ -20,42 +15,18 @@ namespace PennyPincher.Repositories
         // Need to find a better spot to house these utilities... maybe a utility class?
         public CategoryTypes ConvertStringToCategoryType(string categoryTypeAsString)
         {
-            switch (categoryTypeAsString)
+            if (Enum.TryParse<CategoryTypes>(categoryTypeAsString, ignoreCase: true, out var result))
             {
-                case "None": return CategoryTypes.None;
-                case "Living": return CategoryTypes.Living;
-                case "Utilities": return CategoryTypes.Utilities;
-                case "Entertainment": return CategoryTypes.Entertainment;
-                case "Shopping": return CategoryTypes.Shopping;
-                case "Takeout": return CategoryTypes.Takeout;
-                case "Housing": return CategoryTypes.Housing;
-                case "Transportation": return CategoryTypes.Transportation;
-                case "Food": return CategoryTypes.Food;
-                case "Health": return CategoryTypes.Health;
-                case "Income": return CategoryTypes.Income;
+                return result;
+            }
 
-                default: return CategoryTypes.None;
-            };
+            return CategoryTypes.None;
+
         }
 
         public string ConvertCategoryTypesToString(CategoryTypes categoryType)
         {
-            switch (categoryType)
-            {
-                case CategoryTypes.None: return "None";
-                case CategoryTypes.Living: return "Living";
-                case CategoryTypes.Utilities: return "Utilities";
-                case CategoryTypes.Entertainment: return "Entertainment";
-                case CategoryTypes.Shopping: return "Shopping";
-                case CategoryTypes.Takeout: return "Takeout";
-                case CategoryTypes.Housing: return "Housing";
-                case CategoryTypes.Transportation: return "Transportation";
-                case CategoryTypes.Food: return "Food";
-                case CategoryTypes.Health: return "Health";
-                case CategoryTypes.Income: return "Income";
-                
-                default: return "None";
-            }
+            return categoryType.ToString();
         }
 
 
@@ -290,7 +261,7 @@ namespace PennyPincher.Repositories
                     LIMIT 5;
                     ";
 
-                    
+
 
                 List<CashflowEntryDto> mostCostlyGroupList1 =
                     await _dbService.GetAllAsync<CashflowEntryDto>(sql_mostCostly1, new { userId, groupId1 });
@@ -312,13 +283,13 @@ namespace PennyPincher.Repositories
                                             .DefaultIfEmpty(new CashflowEntryDto() { CategoryTypeAsString = "None" })
                                             .First().CategoryTypeAsString;
 
-                CategoryTypes mostCostlyCategoryForDisplay = 
-                   (mostCostlyAmount1 > mostCostlyAmount2) ? 
-                        ConvertStringToCategoryType(mostCostlyCategoryAsString1) : 
+                CategoryTypes mostCostlyCategoryForDisplay =
+                   (mostCostlyAmount1 > mostCostlyAmount2) ?
+                        ConvertStringToCategoryType(mostCostlyCategoryAsString1) :
                         ConvertStringToCategoryType(mostCostlyCategoryAsString2);
 
                 double mostCostlyAmountBetweenGroupsRatio = Math.Round((mostCostlyAmount1 / mostCostlyAmount2), 4) * 100;
-                
+
                 double groupSum1 = await _dbService.GetAsync<double>(sql_groupSum1, new { userId, groupId1 });
                 double groupSum2 = await _dbService.GetAsync<double>(sql_groupSum2, new { userId, groupId2 });
 

@@ -10,13 +10,13 @@
             Entertainment = 3,
             Shopping = 4,
             Takeout = 5,
-            Housing = 6,
+            Hobbies = 6,
             Transportation = 7,
             Food = 8,
             Health = 9,
             Income = 10,
-            Job = 11,
-            Freelance = 12,
+            Insurance = 11,
+            Travel = 12,
             Gift = 13,
             Investment = 14
         }
