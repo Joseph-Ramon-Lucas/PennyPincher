@@ -30,7 +30,7 @@ services:
         - action: rebuild
           path: .
     volumes:
-      - ${USERPROFILE}\\.aspnet\\https:/https:ro
+      - ~/.aspnet/https:/https:ro
 
 networks:
   default:

@@ -1,20 +1,20 @@
 # Internal API Configuration Notes 
 Before starting, make sure to set up the DB docker container located in `/Scripts/pennypincher-docker`
 
-## Building and running your application
-
-### Creating secrets for container connection
-#### DB connection string 
+## 1. Set up secrets with Docker Swarm
+- Enable Docker swarm if not enabled
+    - ```docker swarm init```
 - Ensure a `dbConnectionString.secret.conf` file is created:
-    - `touch dbConnectionString.secret.conf`
+    - ```touch dbConnectionString.secret.conf```
 - Open the `dbConnectionString.secret.conf` file and enter your password for the psql db in the following format:
-    - `hostname:port:database:username:password`
+    - ```hostname:port:database:username:password```
     - For example: `db:5432:penny_pincher_db:postgres:YOUR_PASSWORD_HERE`
 - Add this file to docker secrets: 
-    - `docker create secret db-conn-str ./dbConnectionString.secret.conf`
+    - ```docker create secret db-conn-str ./dbConnectionString.secret.conf```
 
-#### dev TLS certificate HTTPS on the API
-1. Create a local directory to store the cert (using BASH or similar shell)
+  
+## 2. Create dev TLS certificate HTTPS on the API
+1. Create a local directory to store the cert (using BASH or similar POSIX shell)
     - `mkdir -p "$HOME/.aspnet/https"`
 2. Create TLS dev-cert
     - create a password for the cert
@@ -26,10 +26,16 @@ Before starting, make sure to set up the DB docker container located in `/Script
         - `API_CERT_PASSWORD=YOUR_PASSWORD_HERE`
 
 
-## Build and run Dev API   
-- When you're ready, start your application by running: `docker compose watch`.
+## 3. Build and run Dev API   
+- When you're ready, start your application by running: 
+```docker compose watch```
 
 Your application will be available at http://localhost:7181/.
+
+# 4. How to stop the container
+In the terminal running the container, perform the following:
+1. Ctrl + C
+2. `docker compose down`
 
 ### Deploying your application to the cloud
 

@@ -12,15 +12,15 @@ Before starting, make sure to disable existing psql services that may be running
 ```touch dbpassword.conf```
 - Open the dbpassword.conf file and enter your password for the psql db
 - Add this file to docker secrets 
-`docker secret create db-password ./dbpassword.conf`
+```docker secret create db-password ./dbpassword.conf``
     
 ## 2.  Setting up a Docker DB Container with Compose (Recommended)
-- `docker compose up --build`
+```docker compose up --build```
 
 ## 3. How to stop the container with Compose
-- `docker compose down`
+```docker compose down```
 - Optionally delete all data from the volume: 
-`docker compose down -v`
+```docker compose down -v```
 
 ## Setting up a Docker DB Container Manually (Deprecated)
 ```
@@ -47,14 +47,19 @@ docker run --name pennypincher_db \
 - `postgres:18` = Run this container with the postgres Docker image version 18
 
 ## How to stop the container Manually
-- `docker stop pennypincher_db`
+```docker stop pennypincher_db```
 
 ## Access PostgreSQL within a client
-- `docker exec -it pennypincher_db psql -U postgres`
-    - This command logs into the Docker container and runs the psql command as the postgres user from there.  
-- `\c penny_pincher_db`
-    - To connect to the Penny Pincher Database
+- Connect to the Docker container and run the psql command
+```docker exec -it pennypincher_db psql -U postgres```
+- Connect to the Penny Pincher Database
+```\c penny_pincher_db```
+
+### Exec Command explanation
+- `exec` = execute a command on the running Docker container
+- `-i` = Keep the terminal session interactive
+- `-t` = Specifies to Linux that the type of connection is to a terminal interface (tty)
 
 
 ## Inspect Docker Volume
-`docker volume inspect pennypincher-postgres-data`
+```docker volume inspect pennypincher-postgres-data```
