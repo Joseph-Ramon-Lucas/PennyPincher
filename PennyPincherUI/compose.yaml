@@ -7,16 +7,28 @@
 # You can add other services your application may depend on here, such as a
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
+
+#Compose modified from: https://docs.docker.com/guides/angular/develop/
+
 services:
-  angular:
-    build: .
+  angular-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - 4200:4200
-    volumes:
-      - .:/app
-      - /app/node_modules
     command: ng serve --host 0.0.0.0 --poll=1000
+  
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
 
+networks:
+  default:
+    name: pennypincher_network
+    external: true
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
 # start the database before your application. The `db-data` volume persists the

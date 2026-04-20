@@ -1,0 +1,42 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker Compose reference guide at
+# https://docs.docker.com/go/compose-spec-reference/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+services:
+  api:
+    container_name: pennypincher_api
+    secrets:
+      - db-conn-str
+    environment:
+      # aspnetcore env variables found in launchSettings.json
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=penny_pincher_db;Username=postgres;Passfile=/run/secrets/db-conn-str
+      ASPNETCORE_URLS: https://+:8080;http://+:8081
+      ASPNETCORE_HTTPS_PORT: 7181
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/pennypincher-api.pfx
+      ASPNETCORE_Kestrel__Certificates__Default__Password: ${API_CERT_PASSWORD}
+    build:
+      context: .
+      target: final
+    ports:
+      - 7181:8080
+    develop:
+      watch:
+        - action: rebuild
+          path: .
+    volumes:
+      - ~/.aspnet/https:/https:ro
+
+networks:
+  default:
+    name: pennypincher_network
+    external: true
+
+secrets:
+  db-conn-str:
+    file: ./dbConnectionString.secret.conf
