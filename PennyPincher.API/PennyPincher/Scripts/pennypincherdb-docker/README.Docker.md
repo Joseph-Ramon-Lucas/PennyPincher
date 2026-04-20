@@ -4,16 +4,34 @@ Before starting, make sure to disable existing psql services that may be running
 - On Linux/macOS: sudo service postgresql stop or brew services stop postgresql depending on how you installed it.
 - You want no Postgres listening on 5432 except what Docker will start.
 
+## 1. Set up secrets with Docker Swarm
 
-## Setting up a Docker DB Container with Compose (Recommended)
-- Ensure a dbpassword file is created `touch dbpassword.conf`
+- Enable Docker swarm if not enabled
+```docker swarm init```
+- Ensure a dbpassword file is created
+```touch dbpassword.conf```
 - Open the dbpassword.conf file and enter your password for the psql db
-- Add this file to docker secrets `docker create secret db-password ./dbpassword.conf`
+- Add this file to docker secrets 
+`docker secret create db-password ./dbpassword.conf`
+    
+## 2.  Setting up a Docker DB Container with Compose (Recommended)
 - `docker compose up --build`
 
-## Setting up a Docker DB Container Manually
+## 3. How to stop the container with Compose
+- `docker compose down`
+- Optionally delete all data from the volume: 
+`docker compose down -v`
 
-`docker run --name pennypincherdb -e POSTGRES_PASSWORD=password -e POSTGRES_USER=postgres -e POSTGRES_DB=penny_pincher_db -p 5432:5432 -v pennypincher-postgres-data:/var/lib/postgresql -d postgres:18`
+## Setting up a Docker DB Container Manually (Deprecated)
+```
+docker run --name pennypincher_db \
+  -e POSTGRES_PASSWORD=/run/secrets/db-password \
+  -e POSTGRES_USER=postgres \
+  -p 5432:5432 \
+  -v pennypincher-postgres-data:/var/lib/postgresql \
+  -v ../pennypincherdb.sql:/docker-entrypoint-initdb.d/pennypincherdb.sql:ro \
+  -d postgres:18
+  ```
 
 ### Command explanation
 - `--name` = Container Name
@@ -28,13 +46,11 @@ Before starting, make sure to disable existing psql services that may be running
 - `-d` = Run container in detached mode so it doesn't block the terminal for commandline access
 - `postgres:18` = Run this container with the postgres Docker image version 18
 
-## How to stop the container
-- `docker compose down`
-- Optional: `docker compose down -v`
-    - To delete the volume
+## How to stop the container Manually
+- `docker stop pennypincher_db`
 
 ## Access PostgreSQL within a client
-- `docker exec -it pennypincherdb psql -U postgres`
+- `docker exec -it pennypincher_db psql -U postgres`
     - This command logs into the Docker container and runs the psql command as the postgres user from there.  
 - `\c penny_pincher_db`
     - To connect to the Penny Pincher Database

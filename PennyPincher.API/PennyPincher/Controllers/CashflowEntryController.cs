@@ -45,11 +45,6 @@ namespace PennyPincher.Controllers
             return Ok(allCashflowEntriesDtos); 
         }
 
-        [HttpGet("test")]
-        public ActionResult<string> Test(string name) {
-            return "hola " + name + "!";
-        }
-
         [HttpGet("{id}")]
         public async Task<ActionResult<CashflowEntryDto>> GetCashflowEntryById(int id)
         {
