@@ -1,5 +1,5 @@
 # Internal API Configuration Notes 
-Before starting, make sure to set up the DB docker container located in `/Scripts/pennypincher-docker`
+Before starting, make sure to set up the DB docker container located in `/PennyPincher.API/PennyPincher/Scripts/pennypincherdb-docker/`
 
 ## 1. Set up secrets with Docker Swarm
 - Enable Docker swarm if not enabled
